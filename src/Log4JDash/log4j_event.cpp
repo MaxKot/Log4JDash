@@ -3,6 +3,9 @@
 
 const char log4j_event<char>::zero = '0';
 
+const char log4j_event<char>::tag_event[] = "log4j:event";
+const size_t log4j_event<char>::tag_event_size = sizeof (tag_event) - 1U;
+
 const char log4j_event<char>::attr_level[] = "level";
 const size_t log4j_event<char>::attr_level_size = sizeof (attr_level) - 1U;
 

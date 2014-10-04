@@ -8,6 +8,9 @@ class log4j_event {
 private:
     static const Ch zero;
 
+    static const char tag_event[];
+    static const size_t tag_event_size;
+
     static const Ch attr_level[];
     static const size_t attr_level_size;
 
@@ -45,6 +48,10 @@ private:
 
 private:
     const rapidxml::xml_node<Ch> *_node;
+
+public:
+    static rapidxml::xml_node<Ch> *first_node (const rapidxml::xml_node<Ch> *source);
+    static rapidxml::xml_node<Ch> *next_sibling (const rapidxml::xml_node<Ch> *source);
 };
 
 template<typename Ch>
@@ -118,4 +125,16 @@ int64_t log4j_event<Ch>::parse_timestamp (const Ch *value, const size_t value_si
     }
 
     return result;
+}
+
+template<typename Ch>
+rapidxml::xml_node<Ch> *log4j_event<Ch>::first_node (const rapidxml::xml_node<Ch> *source) {
+    auto node = source->first_node (tag_event, tag_event_size);
+    return node;
+}
+
+template<typename Ch>
+rapidxml::xml_node<Ch> *log4j_event<Ch>::next_sibling (const rapidxml::xml_node<Ch> *source) {
+    auto node = source->next_sibling (tag_event, tag_event_size);
+    return node;
 }

@@ -39,9 +39,6 @@ void print_event (const log4j_event<> &event) {
 }
 
 void parse_xml (const char *filename) {
-    const char tag_event[] = "log4j:event";
-    const size_t tag_event_len = sizeof (tag_event) - 1U;
-
     TIME_TRACE_BEGIN (total);
 
     xml_file doc (filename);
@@ -57,11 +54,10 @@ void parse_xml (const char *filename) {
     logger_filter<> logger_filter ("Root.ChildB");
     message_filter<> message_filter ("#2");
 
-    auto first_event = doc.document ().first_node (tag_event, tag_event_len);
     auto count = 0;
-    auto node = first_event;
+    auto node = log4j_event<>::first_node (doc.document ());
 
-    for (; node; node = node->next_sibling (tag_event, tag_event_len)) {
+    for (; node; node = log4j_event<>::next_sibling (node)) {
         log4j_event<> event (node);
 
         auto match =
