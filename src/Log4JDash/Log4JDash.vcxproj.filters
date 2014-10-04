@@ -94,7 +94,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="test-log.xml.1">
+    <None Include="test-log.xml">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="test-log.cyr.xml">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

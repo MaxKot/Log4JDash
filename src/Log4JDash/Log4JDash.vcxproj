@@ -180,7 +180,10 @@
     <ClCompile Include="xml_file.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="test-log.xml.1">
+    <None Include="test-log.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="test-log.cyr.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

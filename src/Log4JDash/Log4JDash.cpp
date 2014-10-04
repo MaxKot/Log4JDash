@@ -24,10 +24,14 @@ void parse_xml (const char *filename) {
 
     TIME_TRACE_BEGIN (process);
 
-    timestamp_filter<> ts_filter (1407784678030L, 1407784678050L);
+    //timestamp_filter<> ts_filter (1407784678030L, 1407784678050L);
+    //level_filter<> lvl_filter ("INFO", "ERROR");
+    //logger_filter<> logger_filter ("Root.ChildB");
+    //message_filter<> message_filter ("#4");
+    timestamp_filter<> ts_filter (1411231371536L, 1411231371556L);
     level_filter<> lvl_filter ("INFO", "ERROR");
     logger_filter<> logger_filter ("Root.ChildB");
-    message_filter<> message_filter ("#4");
+    message_filter<> message_filter ("#2");
 
     auto first_event = doc.document ().first_node (tag_event, tag_event_len);
     auto count = 0;
@@ -82,7 +86,8 @@ int main (int argc, char **argv)
 
     //fgets (buffer_in, sizeof (buffer_in), stdin);
 
-    const char filename[] = "test-log.xml.1";
+    setlocale (LC_ALL, "ru-RU");
+    const char filename[] = "test-log.cyr.xml";
 
     parse_xml (filename);
 
