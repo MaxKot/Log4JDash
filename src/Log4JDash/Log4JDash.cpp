@@ -14,6 +14,30 @@
 using namespace std;
 using namespace rapidxml;
 
+void print_event (const log4j_event<> &event) {
+    auto level = event.get_level ();
+    auto logger = event.get_logger ();
+    auto thread = event.get_thread ();
+    auto message = event.get_message ();
+    auto throwable = event.get_throwable ();
+
+    auto time = event.get_time ();
+    time_t t = time / 1000UL;
+    auto millis = time % 1000UL;
+    auto tm = localtime (&t);
+    char tbuf[1024];
+    strftime (tbuf, sizeof (tbuf), "%Y-%m-%d %H:%M:%S", tm);
+
+    cout << tbuf << ".";
+    cout.width (3);
+    cout.fill ('0');
+    cout << millis;
+    cout << " [" << level << "] " << logger << " (" << thread << ") " << message << endl;
+    if (throwable.size () > 0) {
+        cout << throwable << endl;
+    }
+}
+
 void parse_xml (const char *filename) {
     const char tag_event[] = "log4j:event";
     const size_t tag_event_len = sizeof (tag_event) - 1U;
@@ -47,28 +71,7 @@ void parse_xml (const char *filename) {
             message_filter (&event);
 
         if (match) {
-            auto level = event.get_level ();
-            auto logger = event.get_logger ();
-            auto thread = event.get_thread ();
-            auto message = event.get_message ();
-            auto throwable = event.get_throwable ();
-
-            auto time = event.get_time ();
-            time_t t = time / 1000UL;
-            auto millis = time % 1000UL;
-            auto tm = localtime (&t);
-            char tbuf[1024];
-            strftime (tbuf, sizeof (tbuf), "%Y-%m-%d %H:%M:%S", tm);
-
-            cout << tbuf << ".";
-            cout.width (3);
-            cout.fill ('0');
-            cout << millis;
-            cout << " [" << level << "] " << logger << " (" << thread << ") " << message << endl;
-            if (throwable.size () > 0) {
-                cout << throwable << endl;
-            }
-
+            print_event (event);
             ++count;
         }
     }
