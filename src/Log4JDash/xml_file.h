@@ -8,7 +8,7 @@ class xml_file {
 public:
     xml_file (const char *filename);
 
-    rapidxml::xml_document<> &document ();
+    const rapidxml::xml_document<> *document ();
 
 private:
     file_string _str;

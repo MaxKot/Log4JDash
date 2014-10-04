@@ -12,6 +12,6 @@ xml_file::xml_file (const char *filename) : _str (filename) {
     TIME_TRACE_END (parse_xml);
 }
 
-xml_document<> &xml_file::document () {
-    return _doc;
+const xml_document<> *xml_file::document () {
+    return &_doc;
 }
