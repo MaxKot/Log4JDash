@@ -9,6 +9,7 @@
 #include "logger_filter.h"
 #include "message_filter.h"
 #include "log4j_event.h"
+#include "filter.h"
 #include <ctime>
 
 using namespace std;
@@ -49,10 +50,19 @@ void parse_xml (const char *filename) {
     //level_filter<> lvl_filter ("INFO", "ERROR");
     //logger_filter<> logger_filter ("Root.ChildB");
     //message_filter<> message_filter ("#4");
-    timestamp_filter<> ts_filter (1411231371536L, 1411231371556L);
-    level_filter<> lvl_filter ("INFO", "ERROR");
-    logger_filter<> logger_filter ("Root.ChildB");
-    message_filter<> message_filter ("#2");
+
+    //timestamp_filter<> ts_filter (1411231371536L, 1411231371556L);
+    filter_timestamp_context *filter_ts_ctx;
+    filter_timestamp_init (&filter_ts_ctx, 1411231371536L, 1411231371556L);
+    //level_filter<> lvl_filter ("INFO", "ERROR");
+    filter_level_context *filter_lvl_ctx;
+    filter_level_init_c (&filter_lvl_ctx, "INFO", "ERROR");
+    //logger_filter<> logger_filter ("Root.ChildB");
+    filter_logger_context *filter_lgr_ctx;
+    filter_logger_init_nt (&filter_lgr_ctx, "Root.ChildB");
+    //message_filter<> message_filter ("#2");
+    filter_message_context *filter_msg_ctx;
+    filter_message_init_nt (&filter_msg_ctx, "#2");
 
     auto count = 0;
     auto node = log4j_event<>::first_node (doc.document ());
@@ -61,10 +71,10 @@ void parse_xml (const char *filename) {
         log4j_event<> event (node);
 
         auto match =
-            ts_filter (&event) &&
-            lvl_filter (&event) &&
-            logger_filter (&event) &&
-            message_filter (&event);
+            filter_timestamp (filter_ts_ctx, &event) &&
+            filter_level (filter_lvl_ctx, &event) &&
+            filter_logger (filter_lgr_ctx, &event) &&
+            filter_message (filter_msg_ctx, &event);
 
         if (match) {
             print_event (event);
@@ -73,6 +83,11 @@ void parse_xml (const char *filename) {
     }
 
     cout << "Found events: " << count << endl;
+
+    filter_timestamp_destroy (filter_ts_ctx);
+    filter_message_destroy (filter_msg_ctx);
+    filter_logger_destroy (filter_lgr_ctx);
+    filter_level_destroy (filter_lvl_ctx);
 
     TIME_TRACE_END (process);
 

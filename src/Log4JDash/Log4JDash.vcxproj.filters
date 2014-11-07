@@ -57,6 +57,9 @@
     <ClInclude Include="message_filter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -90,6 +93,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="message_filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="filter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
