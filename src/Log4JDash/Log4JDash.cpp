@@ -64,19 +64,20 @@ void parse_xml (const char *filename) {
     filter_message_context *filter_msg_ctx;
     filter_message_init_nt (&filter_msg_ctx, "#2");
 
+    filter_and_context *filter_and_ctx;
+    filter_and_init (&filter_and_ctx);
+    filter_and_add (filter_and_ctx, &filter_timestamp, filter_ts_ctx);
+    filter_and_add (filter_and_ctx, &filter_level, filter_lvl_ctx);
+    filter_and_add (filter_and_ctx, &filter_message, filter_msg_ctx);
+    filter_and_add (filter_and_ctx, &filter_logger, filter_lgr_ctx);
+
     auto count = 0;
     auto node = log4j_event<>::first_node (doc.document ());
 
     for (; node; node = log4j_event<>::next_sibling (node)) {
         log4j_event<> event (node);
 
-        auto match =
-            filter_timestamp (filter_ts_ctx, &event) &&
-            filter_level (filter_lvl_ctx, &event) &&
-            filter_logger (filter_lgr_ctx, &event) &&
-            filter_message (filter_msg_ctx, &event);
-
-        if (match) {
+        if (filter_and (filter_and_ctx, &event)) {
             print_event (event);
             ++count;
         }
@@ -84,6 +85,7 @@ void parse_xml (const char *filename) {
 
     cout << "Found events: " << count << endl;
 
+    filter_and_destroy (filter_and_ctx);
     filter_timestamp_destroy (filter_ts_ctx);
     filter_message_destroy (filter_msg_ctx);
     filter_logger_destroy (filter_lgr_ctx);
