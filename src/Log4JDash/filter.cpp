@@ -270,3 +270,47 @@ bool filter_all (void *context, const log4j_event<> *event) {
 
     return result;
 }
+
+// Any filter
+
+struct _filter_any_context {
+    _filter_entry *children_head;
+};
+
+void filter_any_init (filter_any_context **context) {
+    auto result = (filter_any_context *) malloc (sizeof (filter_any_context));
+
+    result->children_head = nullptr;
+
+    *context = result;
+}
+
+void filter_any_destroy (filter_any_context *context) {
+    if (context->children_head) {
+        _filter_list_destroy (context->children_head);
+    }
+
+    free (context);
+}
+
+void filter_any_add (filter_any_context *context, filter *child, void *child_context) {
+    context->children_head = _filter_list_add (context->children_head, child, child_context);
+}
+
+void filter_any_remove (filter_any_context *context, filter *child, void *child_context) {
+    context->children_head = _filter_list_remove (context->children_head, child, child_context);
+}
+
+bool filter_any (void *context, const log4j_event<> *event) {
+    auto context_a = (filter_any_context *) context;
+
+    auto current = context_a->children_head;
+
+    bool result = false;
+    while (current && !result) {
+        result = result || current->filter (current->context, event);
+        current = current->next;
+    }
+
+    return result;
+}

@@ -60,3 +60,16 @@ void filter_all_add (filter_all_context *context, filter *child, void *child_con
 void filter_all_remove (filter_all_context *context, filter *child, void *child_context);
 
 bool filter_all (void *context, const log4j_event<> *event);
+
+// Any filter
+
+typedef struct _filter_any_context filter_any_context;
+
+void filter_any_init (filter_any_context **context);
+
+void filter_any_destroy (filter_any_context *context);
+
+void filter_any_add (filter_any_context *context, filter *child, void *child_context);
+void filter_any_remove (filter_any_context *context, filter *child, void *child_context);
+
+bool filter_any (void *context, const log4j_event<> *event);

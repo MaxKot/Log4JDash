@@ -61,14 +61,21 @@ void parse_xml (const char *filename) {
     filter_logger_context *filter_lgr_ctx;
     filter_logger_init_nt (&filter_lgr_ctx, "Root.ChildB");
     //message_filter<> message_filter ("#2");
-    filter_message_context *filter_msg_ctx;
-    filter_message_init_nt (&filter_msg_ctx, "#2");
+    filter_message_context *filter_msg1_ctx;
+    filter_message_init_nt (&filter_msg1_ctx, "#2");
+    filter_message_context *filter_msg2_ctx;
+    filter_message_init_nt (&filter_msg2_ctx, "#3");
+
+    filter_any_context *filter_any_ctx;
+    filter_any_init (&filter_any_ctx);
+    filter_any_add (filter_any_ctx, &filter_message, filter_msg1_ctx);
+    filter_any_add (filter_any_ctx, &filter_message, filter_msg2_ctx);
 
     filter_all_context *filter_all_ctx;
     filter_all_init (&filter_all_ctx);
     filter_all_add (filter_all_ctx, &filter_timestamp, filter_ts_ctx);
     filter_all_add (filter_all_ctx, &filter_level, filter_lvl_ctx);
-    filter_all_add (filter_all_ctx, &filter_message, filter_msg_ctx);
+    filter_all_add (filter_all_ctx, &filter_any, filter_any_ctx);
     filter_all_add (filter_all_ctx, &filter_logger, filter_lgr_ctx);
 
     auto count = 0;
@@ -86,8 +93,10 @@ void parse_xml (const char *filename) {
     cout << "Found events: " << count << endl;
 
     filter_all_destroy (filter_all_ctx);
+    filter_any_destroy (filter_any_ctx);
     filter_timestamp_destroy (filter_ts_ctx);
-    filter_message_destroy (filter_msg_ctx);
+    filter_message_destroy (filter_msg1_ctx);
+    filter_message_destroy (filter_msg2_ctx);
     filter_logger_destroy (filter_lgr_ctx);
     filter_level_destroy (filter_lvl_ctx);
 
