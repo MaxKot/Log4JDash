@@ -227,21 +227,21 @@ static _filter_entry *_filter_list_remove (_filter_entry *head, filter *filter, 
     return head;
 }
 
-// And filter
+// All filter
 
-struct _filter_and_context {
+struct _filter_all_context {
     _filter_entry *children_head;
 };
 
-void filter_and_init (filter_and_context **context) {
-    auto result = (filter_and_context *) malloc (sizeof (filter_and_context));
+void filter_all_init (filter_all_context **context) {
+    auto result = (filter_all_context *) malloc (sizeof (filter_all_context));
 
     result->children_head = nullptr;
 
     *context = result;
 }
 
-void filter_and_destroy (filter_and_context *context) {
+void filter_all_destroy (filter_all_context *context) {
     if (context->children_head) {
         _filter_list_destroy (context->children_head);
     }
@@ -249,16 +249,16 @@ void filter_and_destroy (filter_and_context *context) {
     free (context);
 }
 
-void filter_and_add (filter_and_context *context, filter *child, void *child_context) {
+void filter_all_add (filter_all_context *context, filter *child, void *child_context) {
     context->children_head = _filter_list_add (context->children_head, child, child_context);
 }
 
-void filter_and_remove (filter_and_context *context, filter *child, void *child_context) {
+void filter_all_remove (filter_all_context *context, filter *child, void *child_context) {
     context->children_head = _filter_list_remove (context->children_head, child, child_context);
 }
 
-bool filter_and (void *context, const log4j_event<> *event) {
-    auto context_a = (filter_and_context *) context;
+bool filter_all (void *context, const log4j_event<> *event) {
+    auto context_a = (filter_all_context *) context;
 
     auto current = context_a->children_head;
 

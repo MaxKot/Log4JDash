@@ -48,15 +48,15 @@ void filter_timestamp_destroy (filter_timestamp_context *context);
 
 bool filter_timestamp (void *context, const log4j_event<> *event);
 
-// And filter
+// All filter
 
-typedef struct _filter_and_context filter_and_context;
+typedef struct _filter_all_context filter_all_context;
 
-void filter_and_init (filter_and_context **context);
+void filter_all_init (filter_all_context **context);
 
-void filter_and_destroy (filter_and_context *context);
+void filter_all_destroy (filter_all_context *context);
 
-void filter_and_add (filter_and_context *context, filter *child, void *child_context);
-void filter_and_remove (filter_and_context *context, filter *child, void *child_context);
+void filter_all_add (filter_all_context *context, filter *child, void *child_context);
+void filter_all_remove (filter_all_context *context, filter *child, void *child_context);
 
-bool filter_and (void *context, const log4j_event<> *event);
+bool filter_all (void *context, const log4j_event<> *event);
