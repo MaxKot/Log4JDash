@@ -56,31 +56,31 @@ void parse_xml (const char *filename) {
     //logger_filter<> logger_filter ("Root.ChildB");
     //message_filter<> message_filter ("#2");
 
-    filter_timestamp_context *filter_ts_ctx;
-    filter_timestamp_init (&filter_ts_ctx, 1411231371536L, 1411231371556L);
-    filter_level_context *filter_lvl_ctx;
-    filter_level_init_c (&filter_lvl_ctx, "INFO", "ERROR");
-    filter_logger_context *filter_lgr_ctx;
-    filter_logger_init_nt (&filter_lgr_ctx, "Root.ChildB");
-    filter_message_context *filter_msg1_ctx;
-    filter_message_init_nt (&filter_msg1_ctx, "#2");
-    filter_message_context *filter_msg2_ctx;
-    filter_message_init_nt (&filter_msg2_ctx, "#3");
+    filter *filter_ts;
+    filter_init_timestamp (&filter_ts, 1411231371536L, 1411231371556L);
+    filter *filter_lvl;
+    filter_init_level_c (&filter_lvl, "INFO", "ERROR");
+    filter *filter_lgr;
+    filter_init_logger_nt (&filter_lgr, "Root.ChildB");
+    filter *filter_msg1;
+    filter_init_message_nt (&filter_msg1, "#2");
+    filter *filter_msg2;
+    filter_init_message_nt (&filter_msg2, "#3");
 
-    filter_not_context *filter_not_ctx;
-    filter_not_init (&filter_not_ctx, &filter_level, filter_lvl_ctx);
+    filter *filter_not;
+    filter_init_not (&filter_not, filter_lvl);
 
-    filter_any_context *filter_any_ctx;
-    filter_any_init (&filter_any_ctx);
-    filter_any_add (filter_any_ctx, &filter_message, filter_msg1_ctx);
-    filter_any_add (filter_any_ctx, &filter_message, filter_msg2_ctx);
+    filter *filter_any;
+    filter_init_any (&filter_any);
+    filter_any_add (filter_any, filter_msg1);
+    filter_any_add (filter_any, filter_msg2);
 
-    filter_all_context *filter_all_ctx;
-    filter_all_init (&filter_all_ctx);
-    filter_all_add (filter_all_ctx, &filter_timestamp, filter_ts_ctx);
-    filter_all_add (filter_all_ctx, &filter_not, filter_not_ctx);
-    filter_all_add (filter_all_ctx, &filter_any, filter_any_ctx);
-    filter_all_add (filter_all_ctx, &filter_logger, filter_lgr_ctx);
+    filter *filter_all;
+    filter_init_all (&filter_all);
+    filter_all_add (filter_all, filter_ts);
+    filter_all_add (filter_all, filter_not);
+    filter_all_add (filter_all, filter_any);
+    filter_all_add (filter_all, filter_lgr);
 
     auto count = 0;
     auto node = log4j_event<>::first_node (doc.document ());
@@ -88,7 +88,7 @@ void parse_xml (const char *filename) {
     for (; node; node = log4j_event<>::next_sibling (node)) {
         log4j_event<> event (node);
 
-        if (filter_all (filter_all_ctx, &event)) {
+        if (filter_apply (filter_all, &event)) {
             print_event (event);
             ++count;
         }
@@ -96,14 +96,14 @@ void parse_xml (const char *filename) {
 
     cout << "Found events: " << count << endl;
 
-    filter_all_destroy (filter_all_ctx);
-    filter_any_destroy (filter_any_ctx);
-    filter_not_destroy (filter_not_ctx);
-    filter_timestamp_destroy (filter_ts_ctx);
-    filter_message_destroy (filter_msg1_ctx);
-    filter_message_destroy (filter_msg2_ctx);
-    filter_logger_destroy (filter_lgr_ctx);
-    filter_level_destroy (filter_lvl_ctx);
+    filter_destroy (filter_all);
+    filter_destroy (filter_any);
+    filter_destroy (filter_not);
+    filter_destroy (filter_ts);
+    filter_destroy (filter_msg1);
+    filter_destroy (filter_msg2);
+    filter_destroy (filter_lgr);
+    filter_destroy (filter_lvl);
 
     TIME_TRACE_END (process);
 

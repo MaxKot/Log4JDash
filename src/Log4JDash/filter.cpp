@@ -2,35 +2,68 @@
 #include "filter.h"
 #include "level_parser.h"
 
-// Level filter
+typedef bool filter_apply_cb (void *context, const log4j_event<> *event);
+
+typedef void filter_destroy_cb (void *context);
+
+struct _filter {
+    void *context;
+
+    filter_apply_cb *apply;
+    filter_destroy_cb *destroy;
+};
+
+void filter_destroy (filter *self) {
+    self->destroy (self->context);
+    free (self);
+}
+
+bool filter_apply (const filter *self, const log4j_event<> *event) {
+    return self->apply (self->context, event);
+}
+
+static bool _filter_equals (const filter *x, const filter *y) {
+    return x->context == y->context &&
+           x->apply == y->apply &&
+           x->destroy == y->destroy;
+}
+
+#pragma region Level lilter
 
 struct _filter_level_context {
     int32_t min;
     int32_t max;
 };
 
-void filter_level_init_i (filter_level_context **context, int32_t min, int32_t max) {
-    auto result = (filter_level_context *) malloc (sizeof (filter_level_context));
+static void _filter_level_destroy (void *context);
+static bool _filter_level_apply (void *context, const log4j_event<> *event);
 
-    result->min = min;
-    result->max = max;
+void filter_init_level_i (filter **self, int32_t min, int32_t max) {
+    auto context = (_filter_level_context *) malloc (sizeof (_filter_level_context));
+    *context = {min, max};
 
-    *context = result;
+    auto result = (filter *) malloc (sizeof (filter));
+    *result = {context, &_filter_level_apply, &_filter_level_destroy};
+
+    *self = result;
 }
 
-void filter_level_init_c (filter_level_context **context, const char *min, const char *max) {
+void filter_init_level_c (filter **self, const char *min, const char *max) {
     auto min_i = level_parser<char>::instance.get_value (min);
     auto max_i = level_parser<char>::instance.get_value (max);
 
-    filter_level_init_i (context, min_i, max_i);
+    filter_init_level_i (self, min_i, max_i);
 }
 
-void filter_level_destroy (filter_level_context *context) {
-    free (context);
+static void _filter_level_destroy (void *context) {
+    auto context_l = (_filter_level_context *) context;
+
+    *context_l = {0, 0};
+    free (context_l);
 }
 
-bool filter_level (void *context, const log4j_event<> *event) {
-    auto context_l = (filter_level_context *) context;
+static bool _filter_level_apply (void *context, const log4j_event<> *event) {
+    auto context_l = (_filter_level_context *) context;
 
     auto val_string = event->get_level ();
     int32_t value = level_parser<char>::instance.get_value (val_string.value (), val_string.size ());
@@ -38,40 +71,49 @@ bool filter_level (void *context, const log4j_event<> *event) {
     return context_l->min <= value && value <= context_l->max;
 }
 
-// Logger filter
+#pragma endregion
+
+#pragma region Logger filter
 
 struct _filter_logger_context {
     char *logger;
     size_t logger_size;
 };
 
-void filter_logger_init_fs (filter_logger_context **context, const char *logger, const size_t logger_size) {
-    auto result = (filter_logger_context *) malloc (sizeof (filter_logger_context));
+static void _filter_logger_destroy (void *context);
+static bool _filter_logger_apply (void *context, const log4j_event<> *event);
 
+void filter_init_logger_fs (filter **self, const char *logger, const size_t logger_size) {
+    auto context = (_filter_logger_context *) malloc (sizeof (_filter_logger_context));
     // Reminder: logger_size must be multiplied by sizeof (Ch) if this code is reused for non-char
     // strings (e.g. wchar strings).
-    result->logger = (char *) malloc (logger_size);
-    memcpy (result->logger, logger, logger_size);
-    result->logger_size = logger_size;
+    auto context_logger = (char *) malloc (logger_size);
+    memcpy (context_logger, logger, logger_size);
+    *context = {context_logger, logger_size};
 
-    *context = result;
+    auto result = (filter *) malloc (sizeof (filter));
+    *result = {context, &_filter_logger_apply, &_filter_logger_destroy};
+
+    *self = result;
 }
 
-void filter_logger_init_nt (filter_logger_context **context, const char *logger) {
+void filter_init_logger_nt (filter **self, const char *logger) {
     auto logger_size = strlen (logger);
-    filter_logger_init_fs (context, logger, logger_size);
+    filter_init_logger_fs (self, logger, logger_size);
 }
 
-void filter_logger_destroy (filter_logger_context *context) {
-    free (context->logger);
-    context->logger = nullptr;
-    context->logger_size = 0;
+static void _filter_logger_destroy (void *context) {
+    auto context_l = (_filter_logger_context *) context;
+
+    free (context_l->logger);
+    context_l->logger = nullptr;
+    context_l->logger_size = 0;
 
     free (context);
 }
 
-bool filter_logger (void *context, const log4j_event<> *event) {
-    auto context_l = (filter_logger_context *) context;
+static bool _filter_logger_apply (void *context, const log4j_event<> *event) {
+    auto context_l = (_filter_logger_context *) context;
 
     auto value = event->get_logger ();
 
@@ -82,40 +124,49 @@ bool filter_logger (void *context, const log4j_event<> *event) {
            _strnicmp (value.value (), logger, logger_size) == 0;
 }
 
-// Message filter
+#pragma endregion
+
+#pragma region Message filter
 
 struct _filter_message_context {
     char *message;
     size_t message_size;
 };
 
-void filter_message_init_fs (filter_message_context **context, const char *message, const size_t message_size) {
-    auto result = (filter_message_context *) malloc (sizeof (filter_message_context));
+static void _filter_message_destroy (void *context);
+static bool _filter_message_apply (void *context, const log4j_event<> *event);
 
+void filter_init_message_fs (filter **self, const char *message, const size_t message_size) {
+    auto context = (_filter_message_context *) malloc (sizeof (_filter_message_context));
     // Reminder: message_size must be multiplied by sizeof (Ch) if this code is reused for non-char
     // strings (e.g. wchar strings).
-    result->message = (char *) malloc (message_size);
-    memcpy (result->message, message, message_size);
-    result->message_size = message_size;
+    auto context_message = (char *) malloc (message_size);
+    memcpy (context_message, message, message_size);
+    *context = {context_message, message_size};
 
-    *context = result;
+    auto result = (filter *) malloc (sizeof (filter));
+    *result = {context, &_filter_message_apply, &_filter_message_destroy};
+
+    *self = result;
 }
 
-void filter_message_init_nt (filter_message_context **context, const char *message) {
+void filter_init_message_nt (filter **self, const char *message) {
     auto message_size = strlen (message);
-    filter_message_init_fs (context, message, message_size);
+    filter_init_message_fs (self, message, message_size);
 }
 
-void filter_message_destroy (filter_message_context *context) {
-    free (context->message);
-    context->message = nullptr;
-    context->message_size = 0;
+static void _filter_message_destroy (void *context) {
+    auto context_m = (_filter_message_context *) context;
+
+    free (context_m->message);
+    context_m->message = nullptr;
+    context_m->message_size = 0;
 
     free (context);
 }
 
-bool filter_message (void *context, const log4j_event<> *event) {
-    auto context_m = (filter_message_context *) context;
+static bool _filter_message_apply (void *context, const log4j_event<> *event) {
+    auto context_m = (_filter_message_context *) context;
 
     if (context_m->message_size == 0) {
         return true;
@@ -150,42 +201,49 @@ bool filter_message (void *context, const log4j_event<> *event) {
     return true;
 }
 
-// Timestamp filter
+#pragma endregion
+
+#pragma region Timestamp filter
 
 struct _filter_timestamp_context {
     int64_t min;
     int64_t max;
 };
 
-void filter_timestamp_init (filter_timestamp_context **context, int64_t min, int64_t max) {
-    auto result = (filter_timestamp_context *) malloc (sizeof (filter_timestamp_context));
+static void _filter_timestamp_destroy (void *context);
+static bool _filter_timestamp_apply (void *context, const log4j_event<> *event);
 
-    result->min = min;
-    result->max = max;
+void filter_init_timestamp (filter **self, int64_t min, int64_t max) {
+    auto context = (_filter_timestamp_context *) malloc (sizeof (_filter_timestamp_context));
+    *context = {min, max};
 
-    *context = result;
+    auto result = (filter *) malloc (sizeof (filter));
+    *result = {context, &_filter_timestamp_apply, &_filter_timestamp_destroy};
+
+    *self = result;
 }
 
-void filter_timestamp_destroy (filter_timestamp_context *context) {
-    context->min = 0;
-    context->max = 0;
+static void _filter_timestamp_destroy (void *context) {
+    auto context_t = (_filter_timestamp_context *) context;
 
-    free (context);
+    *context_t = {0, 0};
+    free (context_t);
 }
 
-bool filter_timestamp (void *context, const log4j_event<> *event) {
-    auto context_t = (filter_timestamp_context *) context;
+static bool _filter_timestamp_apply (void *context, const log4j_event<> *event) {
+    auto context_t = (_filter_timestamp_context *) context;
 
     auto value = event->get_time ();
 
     return context_t->min <= value && value <= context_t->max;
 }
 
+#pragma endregion
+
 // Composite filters
 
 struct _filter_entry {
     filter *filter;
-    void *context;
     _filter_entry *next;
 };
 
@@ -193,28 +251,25 @@ static void _filter_list_destroy (_filter_entry *head) {
     if (head->next) {
         _filter_list_destroy (head->next);
     }
-    head->filter = nullptr;
-    head->context = nullptr;
+    *head = {nullptr, nullptr};
 
     free (head);
 }
 
-static _filter_entry *_filter_list_add (_filter_entry *head, filter *filter, void *context) {
+static _filter_entry *_filter_list_add (_filter_entry *head, filter *filter) {
     auto result = (_filter_entry *) malloc (sizeof (_filter_entry));
-    *result = _filter_entry { filter, context, head };
+    *result = {filter, head};
     return result;
 }
 
-static _filter_entry *_filter_list_remove (_filter_entry *head, filter *filter, void *context) {
+static _filter_entry *_filter_list_remove (_filter_entry *head, filter *filter) {
     auto current = head;
     auto prev_ptr = &head;
 
     while (current) {
-        if (current->context == context && current->filter == filter) {
+        if (_filter_equals (current->filter, filter)) {
             *prev_ptr = current->next;
-            current->context = nullptr;
-            current->filter = nullptr;
-            current->next = nullptr;
+            *current = {nullptr, nullptr};
             free (current);
 
             break;
@@ -227,119 +282,153 @@ static _filter_entry *_filter_list_remove (_filter_entry *head, filter *filter, 
     return head;
 }
 
-// All filter
+#pragma region All filter
 
 struct _filter_all_context {
     _filter_entry *children_head;
 };
 
-void filter_all_init (filter_all_context **context) {
-    auto result = (filter_all_context *) malloc (sizeof (filter_all_context));
+static void _filter_all_destroy (void *context);
+static bool _filter_all_apply (void *context, const log4j_event<> *event);
 
-    result->children_head = nullptr;
+void filter_init_all (filter **self) {
+    auto context = (_filter_all_context *) malloc (sizeof (_filter_all_context));
+    *context = {nullptr};
 
-    *context = result;
+    auto result = (filter *) malloc (sizeof (filter));
+    *result = {context, &_filter_all_apply, &_filter_all_destroy};
+
+    *self = result;
 }
 
-void filter_all_destroy (filter_all_context *context) {
-    if (context->children_head) {
-        _filter_list_destroy (context->children_head);
+static void _filter_all_destroy (void *context) {
+    auto context_a = (_filter_all_context *) context;
+
+    if (context_a->children_head) {
+        _filter_list_destroy (context_a->children_head);
     }
+    context_a = {nullptr};
 
     free (context);
 }
 
-void filter_all_add (filter_all_context *context, filter *child, void *child_context) {
-    context->children_head = _filter_list_add (context->children_head, child, child_context);
+void filter_all_add (filter *self, filter *child) {
+    auto context = (_filter_all_context *) self->context;
+
+    context->children_head = _filter_list_add (context->children_head, child);
 }
 
-void filter_all_remove (filter_all_context *context, filter *child, void *child_context) {
-    context->children_head = _filter_list_remove (context->children_head, child, child_context);
+void filter_all_remove (filter *self, filter *child) {
+    auto context = (_filter_all_context *) self->context;
+
+    context->children_head = _filter_list_remove (context->children_head, child);
 }
 
-bool filter_all (void *context, const log4j_event<> *event) {
-    auto context_a = (filter_all_context *) context;
+static bool _filter_all_apply (void *context, const log4j_event<> *event) {
+    auto context_a = (_filter_all_context *) context;
 
     auto current = context_a->children_head;
 
     bool result = true;
     while (current && result) {
-        result = result && current->filter (current->context, event);
+        result = result && filter_apply (current->filter, event);
         current = current->next;
     }
 
     return result;
 }
 
-// Any filter
+#pragma endregion
+
+#pragma region Any filter
 
 struct _filter_any_context {
     _filter_entry *children_head;
 };
 
-void filter_any_init (filter_any_context **context) {
-    auto result = (filter_any_context *) malloc (sizeof (filter_any_context));
+static void _filter_any_destroy (void *context);
+static bool _filter_any_apply (void *context, const log4j_event<> *event);
 
-    result->children_head = nullptr;
+void filter_init_any (filter **self) {
+    auto context = (_filter_any_context *) malloc (sizeof (_filter_any_context));
+    *context = {nullptr};
 
-    *context = result;
+    auto result = (filter *) malloc (sizeof (filter));
+    *result = {context, &_filter_any_apply, &_filter_any_destroy};
+
+    *self = result;
 }
 
-void filter_any_destroy (filter_any_context *context) {
-    if (context->children_head) {
-        _filter_list_destroy (context->children_head);
+static void _filter_any_destroy (void *context) {
+    auto context_a = (_filter_any_context *) context;
+
+    if (context_a->children_head) {
+        _filter_list_destroy (context_a->children_head);
     }
+    context_a = {nullptr};
 
     free (context);
 }
 
-void filter_any_add (filter_any_context *context, filter *child, void *child_context) {
-    context->children_head = _filter_list_add (context->children_head, child, child_context);
+void filter_any_add (filter *self, filter *child) {
+    auto context = (_filter_any_context *) self->context;
+
+    context->children_head = _filter_list_add (context->children_head, child);
 }
 
-void filter_any_remove (filter_any_context *context, filter *child, void *child_context) {
-    context->children_head = _filter_list_remove (context->children_head, child, child_context);
+void filter_any_remove (filter *self, filter *child) {
+    auto context = (_filter_any_context *) self->context;
+
+    context->children_head = _filter_list_remove (context->children_head, child);
 }
 
-bool filter_any (void *context, const log4j_event<> *event) {
-    auto context_a = (filter_any_context *) context;
+static bool _filter_any_apply (void *context, const log4j_event<> *event) {
+    auto context_a = (_filter_any_context *) context;
 
     auto current = context_a->children_head;
 
     bool result = false;
     while (current && !result) {
-        result = result || current->filter (current->context, event);
+        result = result || filter_apply (current->filter, event);
         current = current->next;
     }
 
     return result;
 }
 
-// Not filter
+#pragma endregion
+
+#pragma region Not filter
 
 struct _filter_not_context {
     filter *child_filter;
-    void *child_context;
 };
 
-void filter_not_init (filter_not_context **context, filter *child_filter, void *child_context) {
-    auto result = (filter_not_context *) malloc (sizeof (filter_not_context));
+static void _filter_not_destroy (void *context);
+static bool _filter_not_apply (void *context, const log4j_event<> *event);
 
-    result->child_filter = child_filter;
-    result->child_context = child_context;
+void filter_init_not (filter **self, filter *child_filter) {
+    auto context = (_filter_not_context *) malloc (sizeof (_filter_not_context));
+    *context = {child_filter};
 
-    *context = result;
+    auto result = (filter *) malloc (sizeof (filter));
+    *result = {context, &_filter_not_apply, &_filter_not_destroy};
+
+    *self = result;
 }
 
-void filter_not_destroy (filter_not_context *context) {
-    context->child_filter = nullptr;
-    context->child_context = nullptr;
+static void _filter_not_destroy (void *context) {
+    auto context_n = (_filter_not_context *) context;
+
+    *context_n = {nullptr};
 
     free (context);
 }
 
-bool filter_not (void *context, const log4j_event<> *event) {
-    auto context_n = (filter_not_context *) context;
+static bool _filter_not_apply (void *context, const log4j_event<> *event) {
+    auto context_n = (_filter_not_context *) context;
 
-    return !context_n->child_filter (context_n->child_context, event);
+    return !filter_apply (context_n->child_filter, event);
 }
+
+#pragma endregion
