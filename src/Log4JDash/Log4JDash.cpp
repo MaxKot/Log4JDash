@@ -112,6 +112,8 @@ void parse_xml (const char *filename) {
 
 int main (int argc, char **argv)
 {
+    _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
     char buffer_in[10 * 1204];
 
     //fgets (buffer_in, sizeof (buffer_in), stdin);
