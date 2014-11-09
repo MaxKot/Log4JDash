@@ -66,6 +66,9 @@ void parse_xml (const char *filename) {
     filter_message_context *filter_msg2_ctx;
     filter_message_init_nt (&filter_msg2_ctx, "#3");
 
+    filter_not_context *filter_not_ctx;
+    filter_not_init (&filter_not_ctx, &filter_level, filter_lvl_ctx);
+
     filter_any_context *filter_any_ctx;
     filter_any_init (&filter_any_ctx);
     filter_any_add (filter_any_ctx, &filter_message, filter_msg1_ctx);
@@ -74,7 +77,7 @@ void parse_xml (const char *filename) {
     filter_all_context *filter_all_ctx;
     filter_all_init (&filter_all_ctx);
     filter_all_add (filter_all_ctx, &filter_timestamp, filter_ts_ctx);
-    filter_all_add (filter_all_ctx, &filter_level, filter_lvl_ctx);
+    filter_all_add (filter_all_ctx, &filter_not, filter_not_ctx);
     filter_all_add (filter_all_ctx, &filter_any, filter_any_ctx);
     filter_all_add (filter_all_ctx, &filter_logger, filter_lgr_ctx);
 
@@ -94,6 +97,7 @@ void parse_xml (const char *filename) {
 
     filter_all_destroy (filter_all_ctx);
     filter_any_destroy (filter_any_ctx);
+    filter_not_destroy (filter_not_ctx);
     filter_timestamp_destroy (filter_ts_ctx);
     filter_message_destroy (filter_msg1_ctx);
     filter_message_destroy (filter_msg2_ctx);

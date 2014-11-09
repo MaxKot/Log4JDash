@@ -73,3 +73,13 @@ void filter_any_add (filter_any_context *context, filter *child, void *child_con
 void filter_any_remove (filter_any_context *context, filter *child, void *child_context);
 
 bool filter_any (void *context, const log4j_event<> *event);
+
+// Not filter
+
+typedef struct _filter_not_context filter_not_context;
+
+void filter_not_init (filter_not_context **context, filter *child_filter, void *child_context);
+
+void filter_not_destroy (filter_not_context *context);
+
+bool filter_not (void *context, const log4j_event<> *event);

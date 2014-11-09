@@ -314,3 +314,32 @@ bool filter_any (void *context, const log4j_event<> *event) {
 
     return result;
 }
+
+// Not filter
+
+struct _filter_not_context {
+    filter *child_filter;
+    void *child_context;
+};
+
+void filter_not_init (filter_not_context **context, filter *child_filter, void *child_context) {
+    auto result = (filter_not_context *) malloc (sizeof (filter_not_context));
+
+    result->child_filter = child_filter;
+    result->child_context = child_context;
+
+    *context = result;
+}
+
+void filter_not_destroy (filter_not_context *context) {
+    context->child_filter = nullptr;
+    context->child_context = nullptr;
+
+    free (context);
+}
+
+bool filter_not (void *context, const log4j_event<> *event) {
+    auto context_n = (filter_not_context *) context;
+
+    return !context_n->child_filter (context_n->child_context, event);
+}
