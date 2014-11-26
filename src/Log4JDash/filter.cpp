@@ -14,7 +14,16 @@ struct _filter {
 void filter_destroy (filter *self) {
     self->destroy (self);
     *self = {nullptr, nullptr};
+
     free (self);
+}
+
+static inline void _filter_init (filter **self, size_t size, filter_apply_cb *apply, filter_destroy_cb *destroy) {
+    auto result = (_filter *) malloc (size);
+
+    *result = {apply, destroy};
+
+    *self = result;
 }
 
 bool filter_apply (const filter *self, const log4j_event<> *event) {
@@ -37,10 +46,11 @@ static void _filter_level_destroy (filter *context);
 static bool _filter_level_apply (const filter *context, const log4j_event<> *event);
 
 void filter_init_level_i (filter **self, int32_t min, int32_t max) {
-    auto result = (_filter_level *) malloc (sizeof (_filter_level));
-    *result = {{&_filter_level_apply, &_filter_level_destroy}, min, max};
+    _filter_init (self, sizeof (_filter_level), &_filter_level_apply, &_filter_level_destroy);
 
-    *self = (_filter *) result;
+    auto result = (_filter_level *) *self;
+    result->min = min;
+    result->max = max;
 }
 
 void filter_init_level_c (filter **self, const char *min, const char *max) {
@@ -52,6 +62,7 @@ void filter_init_level_c (filter **self, const char *min, const char *max) {
 
 static void _filter_level_destroy (filter *self) {
     auto self_l = (_filter_level *) self;
+
     self_l->min = 0;
     self_l->max = 0;
 }
@@ -84,10 +95,11 @@ void filter_init_logger_fs (filter **self, const char *logger, const size_t logg
     auto context_logger = (char *) malloc (logger_size);
     memcpy (context_logger, logger, logger_size);
 
-    auto result = (_filter_logger *) malloc (sizeof (_filter_logger));
-    *result = {{&_filter_logger_apply, &_filter_logger_destroy}, context_logger, logger_size};
+    _filter_init (self, sizeof (_filter_logger), &_filter_logger_apply, &_filter_logger_destroy);
 
-    *self = (filter *) result;
+    auto result = (_filter_logger *) *self;
+    result->logger = context_logger;
+    result->logger_size = logger_size;
 }
 
 void filter_init_logger_nt (filter **self, const char *logger) {
@@ -134,10 +146,11 @@ void filter_init_message_fs (filter **self, const char *message, const size_t me
     auto context_message = (char *) malloc (message_size);
     memcpy (context_message, message, message_size);
 
-    auto result = (_filter_message *) malloc (sizeof (_filter_message));
-    *result = {{&_filter_message_apply, &_filter_message_destroy}, context_message, message_size};
+    _filter_init (self, sizeof (_filter_message), &_filter_message_apply, &_filter_message_destroy);
 
-    *self = (filter *) result;
+    auto result = (_filter_message *) *self;
+    result->message = context_message;
+    result->message_size = message_size;
 }
 
 void filter_init_message_nt (filter **self, const char *message) {
@@ -203,10 +216,11 @@ static void _filter_timestamp_destroy (filter *self);
 static bool _filter_timestamp_apply (const filter *self, const log4j_event<> *event);
 
 void filter_init_timestamp (filter **self, int64_t min, int64_t max) {
-    auto result = (_filter_timestamp *) malloc (sizeof (_filter_timestamp));
-    *result = {{&_filter_timestamp_apply, &_filter_timestamp_destroy}, min, max};
+    _filter_init (self, sizeof (_filter_timestamp), &_filter_timestamp_apply, &_filter_timestamp_destroy);
 
-    *self = (filter *) result;
+    auto result = (_filter_timestamp *) *self;
+    result->min = min;
+    result->max = max;
 }
 
 static void _filter_timestamp_destroy (filter *self) {
@@ -279,10 +293,10 @@ static void _filter_all_destroy (filter *self);
 static bool _filter_all_apply (const filter *self, const log4j_event<> *event);
 
 void filter_init_all (filter **self) {
-    auto result = (_filter_all *) malloc (sizeof (_filter_all));
-    *result = {{&_filter_all_apply, &_filter_all_destroy}, nullptr};
+    _filter_init (self, sizeof (_filter_all), &_filter_all_apply, &_filter_all_destroy);
 
-    *self = (filter *) result;
+    auto result = (_filter_all *) *self;
+    result->children_head = nullptr;
 }
 
 static void _filter_all_destroy (filter *self) {
@@ -333,10 +347,10 @@ static void _filter_any_destroy (filter *self);
 static bool _filter_any_apply (const filter *self, const log4j_event<> *event);
 
 void filter_init_any (filter **self) {
-    auto result = (_filter_any *) malloc (sizeof (_filter_any));
-    *result = {{&_filter_any_apply, &_filter_any_destroy}, nullptr};
+    _filter_init (self, sizeof (_filter_any), &_filter_any_apply, &_filter_any_destroy);
 
-    *self = (filter *) result;
+    auto result = (_filter_any *) *self;
+    result->children_head = nullptr;
 }
 
 static void _filter_any_destroy (filter *self) {
@@ -387,10 +401,10 @@ static void _filter_not_destroy (filter *context);
 static bool _filter_not_apply (const filter *context, const log4j_event<> *event);
 
 void filter_init_not (filter **self, filter *child_filter) {
-    auto result = (_filter_not *) malloc (sizeof (_filter_not));
-    *result = {{&_filter_not_apply, &_filter_not_destroy}, child_filter};
+    _filter_init (self, sizeof (_filter_not), &_filter_not_apply, &_filter_not_destroy);
 
-    *self = (filter *) result;
+    auto result = (_filter_not *) *self;
+    result->child_filter = child_filter;
 }
 
 static void _filter_not_destroy (filter *self) {
