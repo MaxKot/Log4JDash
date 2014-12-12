@@ -10,6 +10,7 @@
 #include "message_filter.h"
 #include "log4j_event.h"
 #include "filter.h"
+#include "iterator.h"
 #include <ctime>
 
 using namespace std;
@@ -82,19 +83,24 @@ void parse_xml (const char *filename) {
     filter_all_add (filter_all, filter_any);
     filter_all_add (filter_all, filter_lgr);
 
+    ::iterator *iterator_doc;
+    iterator_init_document (&iterator_doc, doc.document ());
+
+    ::iterator *iterator_filter;
+    iterator_init_filter (&iterator_filter, iterator_doc, filter_all);
+
     auto count = 0;
-    auto node = log4j_event<>::first_node (doc.document ());
 
-    for (; node; node = log4j_event<>::next_sibling (node)) {
-        log4j_event<> event (node);
-
-        if (filter_apply (filter_all, &event)) {
-            print_event (event);
-            ++count;
-        }
+    while (iterator_move_next (iterator_filter)) {
+        auto event = iterator_current (iterator_filter);
+        print_event (event);
+        ++count;
     }
 
     cout << "Found events: " << count << endl;
+
+    iterator_destroy (iterator_filter);
+    iterator_destroy (iterator_doc);
 
     filter_destroy (filter_all);
     filter_destroy (filter_any);

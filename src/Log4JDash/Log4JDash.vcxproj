@@ -150,6 +150,7 @@
     <ClInclude Include="file_string.h" />
     <ClInclude Include="filter.h" />
     <ClInclude Include="fixed_string.h" />
+    <ClInclude Include="iterator.h" />
     <ClInclude Include="level_filter.h" />
     <ClInclude Include="level_parser.h" />
     <ClInclude Include="level_tree_node.h" />
@@ -165,6 +166,7 @@
   <ItemGroup>
     <ClCompile Include="file_string.cpp" />
     <ClCompile Include="filter.cpp" />
+    <ClCompile Include="iterator.cpp" />
     <ClCompile Include="level_filter.cpp" />
     <ClCompile Include="level_parser.cpp" />
     <ClCompile Include="level_tree_node.cpp" />
