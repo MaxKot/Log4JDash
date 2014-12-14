@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.21901.1
+VisualStudioVersion = 14.0.22310.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Log4JDash", "Log4JDash\Log4JDash.vcxproj", "{5CD45FCF-BF8A-44E4-95D0-CEEE6450E4E5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Log4JParserC", "Log4JParserC\Log4JParserC.vcxproj", "{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{5CD45FCF-BF8A-44E4-95D0-CEEE6450E4E5}.Release|Win32.Build.0 = Release|Win32
 		{5CD45FCF-BF8A-44E4-95D0-CEEE6450E4E5}.Release|x64.ActiveCfg = Release|x64
 		{5CD45FCF-BF8A-44E4-95D0-CEEE6450E4E5}.Release|x64.Build.0 = Release|x64
+		{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}.Debug|Win32.Build.0 = Debug|Win32
+		{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}.Debug|x64.ActiveCfg = Debug|x64
+		{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}.Debug|x64.Build.0 = Debug|x64
+		{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}.Release|Win32.ActiveCfg = Release|Win32
+		{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}.Release|Win32.Build.0 = Release|Win32
+		{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}.Release|x64.ActiveCfg = Release|x64
+		{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
