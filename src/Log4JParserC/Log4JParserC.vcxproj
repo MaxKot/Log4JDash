@@ -145,10 +145,10 @@
     <ClInclude Include="Log4JIterator.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Filter.cpp" />
-    <ClCompile Include="LevelParser.cpp" />
+    <ClCompile Include="Filter.c" />
+    <ClCompile Include="LevelParser.c" />
     <ClCompile Include="Log4JEvent.cpp" />
-    <ClCompile Include="Log4JIterator.cpp" />
+    <ClCompile Include="Log4JIterator.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LevelParserLevels.py" />

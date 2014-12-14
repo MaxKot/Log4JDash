@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <memory.h>
+#include <stdbool.h>
 #include "Log4JIterator.h"
 
 typedef void Log4JIteratorDestroyCb (void *context);
@@ -35,12 +36,12 @@ const Log4JEvent Log4JIteratorCurrent (const Log4JIterator *self)
 
 #pragma region XML string log4j_iterator
 
-struct Log4JIteratorEventSourceContext_
+typedef struct
 {
     const Log4JEventSource *Source;
     bool Start;
     Log4JEvent Current;
-};
+} Log4JIteratorEventSourceContext_;
 
 static void Log4JIteratorEventSourceDestroy (void *context);
 static bool Log4JIteratorEventSourceMoveNext (void *context);
@@ -48,16 +49,16 @@ static const Log4JEvent Log4JIteratorEventSourceCurrent (const void *context);
 
 void Log4JIteratorInitEventSource (Log4JIterator **self, const Log4JEventSource *source)
 {
-    auto context = (Log4JIteratorEventSourceContext_ *) malloc (sizeof (Log4JIteratorEventSourceContext_));
-    *context = { source, true, nullptr };
+    Log4JIteratorEventSourceContext_ *context = (Log4JIteratorEventSourceContext_ *) malloc (sizeof (Log4JIteratorEventSourceContext_));
+    *context = (Log4JIteratorEventSourceContext_ ) { .Source = source, .Start = true, .Current = NULL };
 
-    auto result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
-    *result =
+    Log4JIterator *result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
+    *result = (Log4JIterator)
     {
-        context,
-        &Log4JIteratorEventSourceDestroy,
-        &Log4JIteratorEventSourceMoveNext,
-        &Log4JIteratorEventSourceCurrent
+        .Context = context,
+        .Destroy = &Log4JIteratorEventSourceDestroy,
+        .MoveNext = &Log4JIteratorEventSourceMoveNext,
+        .Current = &Log4JIteratorEventSourceCurrent
     };
 
     *self = result;
@@ -65,15 +66,15 @@ void Log4JIteratorInitEventSource (Log4JIterator **self, const Log4JEventSource 
 
 void Log4JIteratorEventSourceDestroy (void *context)
 {
-    auto contextD = (Log4JIteratorEventSourceContext_ *) context;
+    Log4JIteratorEventSourceContext_ *contextD = (Log4JIteratorEventSourceContext_ *) context;
 
-    *contextD = { nullptr, false, nullptr };
+    *contextD = (Log4JIteratorEventSourceContext_) { .Source = NULL, .Start = false, .Current = NULL };
     free (contextD);
 }
 
 bool Log4JIteratorEventSourceMoveNext (void *context)
 {
-    auto contextD = (Log4JIteratorEventSourceContext_ *) context;
+    Log4JIteratorEventSourceContext_ *contextD = (Log4JIteratorEventSourceContext_ *) context;
 
     if (!contextD->Source)
     {
@@ -93,16 +94,16 @@ bool Log4JIteratorEventSourceMoveNext (void *context)
     }
     else
     {
-        nextEvent = nullptr;
+        nextEvent = NULL;
     }
 
     contextD->Current = nextEvent;
-    return nextEvent != nullptr;
+    return nextEvent != NULL;
 }
 
 const Log4JEvent Log4JIteratorEventSourceCurrent (const void *context)
 {
-    auto contextD = (const Log4JIteratorEventSourceContext_ *) context;
+    Log4JIteratorEventSourceContext_ *contextD = (const Log4JIteratorEventSourceContext_ *) context;
     return contextD->Current;
 }
 
@@ -110,11 +111,11 @@ const Log4JEvent Log4JIteratorEventSourceCurrent (const void *context)
 
 #pragma region Filtering iterator
 
-struct Log4JIteratorFilterContext
+typedef struct
 {
     Log4JIterator *Inner;
     const Filter *Filter;
-};
+} Log4JIteratorFilterContext_;
 
 static void Log4JIteratorFilterDestroy_ (void *context);
 static bool Log4JIteratorFilterMoveNext_ (void *context);
@@ -122,16 +123,16 @@ static const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context);
 
 void log4j_iterator_init_filter (Log4JIterator **self, Log4JIterator *inner, const Filter *filter)
 {
-    auto context = (Log4JIteratorFilterContext *) malloc (sizeof (Log4JIteratorFilterContext));
-    *context = { inner, filter };
+    Log4JIteratorFilterContext_ *context = (Log4JIteratorFilterContext_ *) malloc (sizeof (Log4JIteratorFilterContext_));
+    *context = (Log4JIteratorFilterContext_) { .Inner = inner, .Filter = filter };
 
-    auto result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
-    *result =
+    Log4JIterator *result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
+    *result = (Log4JIterator)
     {
-        context,
-        &Log4JIteratorFilterDestroy_,
-        &Log4JIteratorFilterMoveNext_,
-        &Log4JIteratorFilterCurrent_
+        .Context = context,
+        .Destroy = &Log4JIteratorFilterDestroy_,
+        .MoveNext = &Log4JIteratorFilterMoveNext_,
+        .Current = &Log4JIteratorFilterCurrent_
     };
 
     *self = result;
@@ -139,19 +140,19 @@ void log4j_iterator_init_filter (Log4JIterator **self, Log4JIterator *inner, con
 
 void Log4JIteratorFilterDestroy_ (void *context)
 {
-    auto contextF = (Log4JIteratorFilterContext *) context;
+    Log4JIteratorFilterContext_ *contextF = (Log4JIteratorFilterContext_ *) context;
 
-    *contextF = { nullptr, nullptr };
+    *contextF = (Log4JIteratorFilterContext_ ) { .Inner = NULL, .Filter = NULL };
     free (contextF);
 }
 
 bool Log4JIteratorFilterMoveNext_ (void *context)
 {
-    auto contextF = (Log4JIteratorFilterContext *) context;
+    Log4JIteratorFilterContext_ *contextF = (Log4JIteratorFilterContext_ *) context;
 
     while (Log4JIteratorMoveNext (contextF->Inner))
     {
-        auto event = Log4JIteratorCurrent (contextF->Inner);
+        Log4JEvent event = Log4JIteratorCurrent (contextF->Inner);
         if (FilterApply (contextF->Filter, &event))
         {
             return true;
@@ -163,7 +164,7 @@ bool Log4JIteratorFilterMoveNext_ (void *context)
 
 const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context)
 {
-    auto contextF = (Log4JIteratorFilterContext *) context;
+    Log4JIteratorFilterContext_ *contextF = (Log4JIteratorFilterContext_ *) context;
 
     return Log4JIteratorCurrent (contextF->Inner);
 }

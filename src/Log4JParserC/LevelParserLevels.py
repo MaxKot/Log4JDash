@@ -47,7 +47,7 @@ def node_name (rp, i = None):
 
 def tree_node_ref (r, rp, i):
     c = r.C[i]
-    return 'nullptr' if r.C[i] is None else '&{}'.format (node_name (rp, i))
+    return 'NULL' if r.C[i] is None else '&{}'.format (node_name (rp, i))
 
 def tree_node_name (r, rp, i):
     c = r.C[i]

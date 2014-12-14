@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <memory.h>
+#include <stdbool.h>
 #include <string.h>
 #include "filter.h"
 #include "LevelParser.h"
@@ -12,9 +13,16 @@ struct Filter_
 {
     void *Context;
 
-    FilterApplyCb_ *Apply;
     FilterDestroyCb_ *Destroy;
+    FilterApplyCb_ *Apply;
 };
+
+static void InitFilter_ (Filter *self, void *context, FilterDestroyCb_ *destroy, FilterApplyCb_ *apply)
+{
+    self->Context = context;
+    self->Destroy = destroy;
+    self->Apply = apply;
+}
 
 void FilterDestroy (Filter *self)
 {
@@ -36,47 +44,47 @@ static bool FilterEquals_ (const Filter *x, const Filter *y)
 
 #pragma region Level lilter
 
-struct FilterLevelContext_
+typedef struct
 {
     int32_t Min;
     int32_t Max;
-};
+} FilterLevelContext_;
 
 static void FilterLevelDestroy_ (void *context);
 static bool FilterLevelApply_ (void *context, const Log4JEvent event);
 
 void FilterInitLevelI (Filter **self, int32_t min, int32_t max)
 {
-    auto context = (FilterLevelContext_ *) malloc (sizeof (FilterLevelContext_));
-    *context = { min, max };
+    FilterLevelContext_ *context = (FilterLevelContext_ *) malloc (sizeof (FilterLevelContext_));
+    *context = (FilterLevelContext_ ) { .Min = min, .Max = max };
 
-    auto result = (Filter *) malloc (sizeof (Filter));
-    *result = { context, &FilterLevelApply_, &FilterLevelDestroy_ };
+    Filter *result = (Filter *) malloc (sizeof (Filter));
+    InitFilter_ (result, context, &FilterLevelDestroy_, &FilterLevelApply_);
 
     *self = result;
 }
 
 void FilterInitLevelC (Filter **self, const char *min, const char *max)
 {
-    auto minI = GetLevelValue (min, INT_MAX);
-    auto maxI = GetLevelValue (max, INT_MAX);
+    int minI = GetLevelValue (min, INT_MAX);
+    int maxI = GetLevelValue (max, INT_MAX);
 
     FilterInitLevelI (self, minI, maxI);
 }
 
 static void FilterLevelDestroy_ (void *context)
 {
-    auto contextL = (FilterLevelContext_ *) context;
+    FilterLevelContext_ *contextL = (FilterLevelContext_ *) context;
 
-    *contextL = { 0, 0 };
+    *contextL = (FilterLevelContext_ ) { .Min = 0, .Max = 0 };
     free (contextL);
 }
 
 static bool FilterLevelApply_ (void *context, const Log4JEvent event)
 {
-    auto contextL = (FilterLevelContext_ *) context;
+    FilterLevelContext_ *contextL = (FilterLevelContext_ *) context;
 
-    auto valString = Log4JEventLevel (event);
+    FixedString valString = Log4JEventLevel (event);
     int32_t value = GetLevelValue (valString.Value, valString.Size);
 
     return contextL->Min <= value && value <= contextL->Max;
@@ -86,55 +94,54 @@ static bool FilterLevelApply_ (void *context, const Log4JEvent event)
 
 #pragma region Logger filter
 
-struct FilterLoggerContext_
+typedef struct
 {
     char *Logger;
     size_t LoggerSize;
-};
+} FilterLoggerContext_;
 
 static void FilterLoggerDestroy_ (void *context);
 static bool FilterLoggerApply_ (void *context, const Log4JEvent event);
 
 void FilterInitLoggerFs (Filter **self, const char *logger, const size_t loggerSize)
 {
-    auto context = (FilterLoggerContext_ *) malloc (sizeof (FilterLoggerContext_));
+    FilterLoggerContext_ *context = (FilterLoggerContext_ *) malloc (sizeof (FilterLoggerContext_));
     // Reminder: logger_size must be multiplied by sizeof (Ch) if this code is reused for non-char
     // strings (e.g. wchar strings).
-    auto contextLogger = (char *) malloc (loggerSize);
+    char *contextLogger = (char *) malloc (loggerSize);
     memcpy (contextLogger, logger, loggerSize);
-    *context = { contextLogger, loggerSize };
+    *context = (FilterLoggerContext_ ) { .Logger = contextLogger, .LoggerSize = loggerSize };
 
-    auto result = (Filter *) malloc (sizeof (Filter));
-    *result = { context, &FilterLoggerApply_, &FilterLoggerDestroy_ };
+    Filter *result = (Filter *) malloc (sizeof (Filter));
+    InitFilter_ (result, context, &FilterLoggerDestroy_, &FilterLoggerApply_);
 
     *self = result;
 }
 
 void filterInitLoggerNt (Filter **self, const char *logger)
 {
-    auto loggerSize = strlen (logger);
+    size_t loggerSize = strlen (logger);
     FilterInitLoggerFs (self, logger, loggerSize);
 }
 
 static void FilterLoggerDestroy_ (void *context)
 {
-    auto contextL = (FilterLoggerContext_ *) context;
+    FilterLoggerContext_ *contextL = (FilterLoggerContext_ *) context;
 
     free (contextL->Logger);
-    contextL->Logger = nullptr;
-    contextL->LoggerSize = 0;
+    *contextL = (FilterLoggerContext_) { .Logger = NULL, .LoggerSize = 0 };
 
     free (context);
 }
 
 static bool FilterLoggerApply_ (void *context, const Log4JEvent event)
 {
-    auto contextL = (FilterLoggerContext_ *) context;
+    FilterLoggerContext_ *contextL = (FilterLoggerContext_ *) context;
 
-    auto value = Log4JEventLogger (event);
+    FixedString value = Log4JEventLogger (event);
 
-    auto logger = contextL->Logger;
-    auto loggerSize = contextL->LoggerSize;
+    char *logger = contextL->Logger;
+    size_t loggerSize = contextL->LoggerSize;
 
     return value.Size >= loggerSize &&
            _strnicmp (value.Value, logger, loggerSize) == 0;
@@ -144,57 +151,56 @@ static bool FilterLoggerApply_ (void *context, const Log4JEvent event)
 
 #pragma region Message filter
 
-struct FilterMessageContext_
+typedef struct 
 {
     char *Message;
     size_t MessageSize;
-};
+} FilterMessageContext_;
 
 static void FilterMessageDestroy_ (void *context);
 static bool FilterMessageApply_ (void *context, const Log4JEvent event);
 
 void FilterInitMessageFs (Filter **self, const char *message, const size_t messageSize)
 {
-    auto context = (FilterMessageContext_ *) malloc (sizeof (FilterMessageContext_));
+    FilterMessageContext_ *context = (FilterMessageContext_ *) malloc (sizeof (FilterMessageContext_));
     // Reminder: message_size must be multiplied by sizeof (Ch) if this code is reused for non-char
     // strings (e.g. wchar strings).
-    auto contextMessage = (char *) malloc (messageSize);
+    char *contextMessage = (char *) malloc (messageSize);
     memcpy (contextMessage, message, messageSize);
-    *context = { contextMessage, messageSize };
+    *context = (FilterMessageContext_) { .Message = contextMessage, .MessageSize = messageSize };
 
-    auto result = (Filter *) malloc (sizeof (Filter));
-    *result = { context, &FilterMessageApply_, &FilterMessageDestroy_ };
+    Filter *result = (Filter *) malloc (sizeof (Filter));
+    InitFilter_ (result, context, &FilterMessageDestroy_, &FilterMessageApply_);
 
     *self = result;
 }
 
 void FilterInitMessageNt (Filter **self, const char *message)
 {
-    auto messageSize = strlen (message);
+    size_t messageSize = strlen (message);
     FilterInitMessageFs (self, message, messageSize);
 }
 
 static void FilterMessageDestroy_ (void *context)
 {
-    auto contextM = (FilterMessageContext_ *) context;
+    FilterMessageContext_ *contextM = (FilterMessageContext_ *) context;
 
     free (contextM->Message);
-    contextM->Message = nullptr;
-    contextM->MessageSize = 0;
+    *contextM = (FilterMessageContext_) { .Message = NULL, .MessageSize = 0 };
 
     free (context);
 }
 
 static bool FilterMessageApply_ (void *context, const Log4JEvent event)
 {
-    auto contextM = (FilterMessageContext_ *) context;
+    FilterMessageContext_ *contextM = (FilterMessageContext_ *) context;
 
     if (contextM->MessageSize == 0)
     {
         return true;
     }
 
-    auto message = Log4JEventMessage (event);
+    FixedString message = Log4JEventMessage (event);
     size_t valueSize = message.Size;
 
     if (valueSize < contextM->MessageSize)
@@ -230,39 +236,39 @@ static bool FilterMessageApply_ (void *context, const Log4JEvent event)
 
 #pragma region Timestamp filter
 
-struct FilterTimestampContext_
+typedef struct
 {
     int64_t Min;
     int64_t Max;
-};
+} FilterTimestampContext_;
 
 static void FilterTimestampDestroy_ (void *context);
 static bool FilterTimestampApply_ (void *context, const Log4JEvent event);
 
 void FilterInitTimestamp (Filter **self, int64_t min, int64_t max)
 {
-    auto context = (FilterTimestampContext_ *) malloc (sizeof (FilterTimestampContext_));
-    *context = { min, max };
+    FilterTimestampContext_ *context = (FilterTimestampContext_ *) malloc (sizeof (FilterTimestampContext_));
+    *context = (FilterTimestampContext_) { .Min = min, .Max = max };
 
-    auto result = (Filter *) malloc (sizeof (Filter));
-    *result = { context, &FilterTimestampApply_, &FilterTimestampDestroy_ };
+    Filter *result = (Filter *) malloc (sizeof (Filter));
+    InitFilter_ (result, context, &FilterTimestampDestroy_, &FilterTimestampApply_);
 
     *self = result;
 }
 
 static void FilterTimestampDestroy_ (void *context)
 {
-    auto contextT = (FilterTimestampContext_ *) context;
+    FilterTimestampContext_ *contextT = (FilterTimestampContext_ *) context;
 
-    *contextT = { 0, 0 };
+    *contextT = (FilterTimestampContext_) { .Min = 0, .Max = 0 };
     free (contextT);
 }
 
 static bool FilterTimestampApply_ (void *context, const Log4JEvent event)
 {
-    auto contextT = (FilterTimestampContext_ *) context;
+    FilterTimestampContext_ *contextT = (FilterTimestampContext_ *) context;
 
-    auto value = Log4JEventTime (event);
+    int64_t value = Log4JEventTime (event);
 
     return contextT->Min <= value && value <= contextT->Max;
 }
@@ -271,11 +277,11 @@ static bool FilterTimestampApply_ (void *context, const Log4JEvent event)
 
 // Composite filters
 
-struct FilterEntry_
+typedef struct FilterEntry_
 {
     Filter *Filter;
-    FilterEntry_ *Next;
-};
+    struct FilterEntry_ *Next;
+} FilterEntry_;
 
 static void FilterListDestroy_ (FilterEntry_ *head)
 {
@@ -283,29 +289,29 @@ static void FilterListDestroy_ (FilterEntry_ *head)
     {
         FilterListDestroy_ (head->Next);
     }
-    *head = { nullptr, nullptr };
+    *head = (FilterEntry_ ) { .Filter = NULL, .Next = NULL };
 
     free (head);
 }
 
 static FilterEntry_ *FilterListAdd_ (FilterEntry_ *head, Filter *filter)
 {
-    auto result = (FilterEntry_ *) malloc (sizeof (FilterEntry_));
-    *result = { filter, head };
+    FilterEntry_ *result = (FilterEntry_ *) malloc (sizeof (FilterEntry_));
+    *result = (FilterEntry_ ) { .Filter = filter, .Next = head };
     return result;
 }
 
 static FilterEntry_ *FilterListRemove_ (FilterEntry_ *head, Filter *filter)
 {
-    auto current = head;
-    auto prevPtr = &head;
+    FilterEntry_ *current = head;
+    FilterEntry_ **prevPtr = &head;
 
     while (current)
     {
         if (FilterEquals_ (current->Filter, filter))
         {
             *prevPtr = current->Next;
-            *current = { nullptr, nullptr };
+            *current = (FilterEntry_) { .Filter = NULL, .Next = NULL };
             free (current);
 
             break;
@@ -320,57 +326,57 @@ static FilterEntry_ *FilterListRemove_ (FilterEntry_ *head, Filter *filter)
 
 #pragma region All filter
 
-struct FilterAllContext_
+typedef struct
 {
     FilterEntry_ *ChildrenHead;
-};
+} FilterAllContext_;
 
 static void FilterAllDestroy_ (void *context);
 static bool FilterAllApply (void *context, const Log4JEvent event);
 
 void filter_init_all (Filter **self)
 {
-    auto context = (FilterAllContext_ *) malloc (sizeof (FilterAllContext_));
-    *context = { nullptr };
+    FilterAllContext_ *context = (FilterAllContext_ *) malloc (sizeof (FilterAllContext_));
+    *context = (FilterAllContext_ ) { .ChildrenHead = NULL };
 
-    auto result = (Filter *) malloc (sizeof (Filter));
-    *result = { context, &FilterAllApply, &FilterAllDestroy_ };
+    Filter *result = (Filter *) malloc (sizeof (Filter));
+    InitFilter_ (result, context, &FilterAllDestroy_, &FilterAllApply);
 
     *self = result;
 }
 
 static void FilterAllDestroy_ (void *context)
 {
-    auto contextA = (FilterAllContext_ *) context;
+    FilterAllContext_ *contextA = (FilterAllContext_ *) context;
 
     if (contextA->ChildrenHead)
     {
         FilterListDestroy_ (contextA->ChildrenHead);
     }
-    contextA = { nullptr };
+    *contextA = (FilterAllContext_) { .ChildrenHead = NULL };
 
     free (context);
 }
 
 void FilterAllAdd (Filter *self, Filter *child)
 {
-    auto context = (FilterAllContext_ *) self->Context;
+    FilterAllContext_ *context = (FilterAllContext_ *) self->Context;
 
     context->ChildrenHead = FilterListAdd_ (context->ChildrenHead, child);
 }
 
 void filterAllRemove (Filter *self, Filter *child)
 {
-    auto context = (FilterAllContext_ *) self->Context;
+    FilterAllContext_ *context = (FilterAllContext_ *) self->Context;
 
     context->ChildrenHead = FilterListRemove_ (context->ChildrenHead, child);
 }
 
 static bool FilterAllApply (void *context, const Log4JEvent event)
 {
-    auto contextA = (FilterAllContext_ *) context;
+    FilterAllContext_ *contextA = (FilterAllContext_ *) context;
 
-    auto current = contextA->ChildrenHead;
+    FilterEntry_ *current = contextA->ChildrenHead;
 
     bool result = true;
     while (current && result)
@@ -386,57 +392,57 @@ static bool FilterAllApply (void *context, const Log4JEvent event)
 
 #pragma region Any filter
 
-struct FilterAnyContext_
+typedef struct
 {
     FilterEntry_ *ChildrenHead;
-};
+} FilterAnyContext_;
 
 static void FilterAnyDestroy_ (void *context);
 static bool FilterAnyApply_ (void *context, const Log4JEvent event);
 
 void FilterInitAny (Filter **self)
 {
-    auto context = (FilterAnyContext_ *) malloc (sizeof (FilterAnyContext_));
-    *context = { nullptr };
+    FilterAnyContext_ *context = (FilterAnyContext_ *) malloc (sizeof (FilterAnyContext_));
+    *context = (FilterAnyContext_) { .ChildrenHead = NULL };
 
-    auto result = (Filter *) malloc (sizeof (Filter));
-    *result = { context, &FilterAnyApply_, &FilterAnyDestroy_ };
+    Filter *result = (Filter *) malloc (sizeof (Filter));
+    InitFilter_ (result, context, &FilterAnyDestroy_, &FilterAnyApply_);
 
     *self = result;
 }
 
 static void FilterAnyDestroy_ (void *context)
 {
-    auto contextA = (FilterAnyContext_ *) context;
+    FilterAnyContext_ *contextA = (FilterAnyContext_ *) context;
 
     if (contextA->ChildrenHead)
     {
         FilterListDestroy_ (contextA->ChildrenHead);
     }
-    contextA = { nullptr };
+    *contextA = (FilterAnyContext_) { .ChildrenHead = NULL };
 
     free (context);
 }
 
 void FilterAnyAdd (Filter *self, Filter *child)
 {
-    auto context = (FilterAnyContext_ *) self->Context;
+    FilterAnyContext_ *context = (FilterAnyContext_ *) self->Context;
 
     context->ChildrenHead = FilterListAdd_ (context->ChildrenHead, child);
 }
 
 void FilterAnyRemove (Filter *self, Filter *child)
 {
-    auto context = (FilterAnyContext_ *) self->Context;
+    FilterAnyContext_ *context = (FilterAnyContext_ *) self->Context;
 
     context->ChildrenHead = FilterListRemove_ (context->ChildrenHead, child);
 }
 
 static bool FilterAnyApply_ (void *context, const Log4JEvent event)
 {
-    auto contextA = (FilterAnyContext_ *) context;
+    FilterAnyContext_ *contextA = (FilterAnyContext_ *) context;
 
-    auto current = contextA->ChildrenHead;
+    FilterEntry_ *current = contextA->ChildrenHead;
 
     bool result = false;
     while (current && !result)
@@ -452,37 +458,37 @@ static bool FilterAnyApply_ (void *context, const Log4JEvent event)
 
 #pragma region Not filter
 
-struct FilterNotContext_
+typedef struct
 {
     Filter *ChildFilter;
-};
+} FilterNotContext_;
 
 static void FilterNotDestroy_ (void *context);
 static bool FilterNotApply_ (void *context, const Log4JEvent event);
 
 void FilterInitNot (Filter **self, Filter *child_filter)
 {
-    auto context = (FilterNotContext_ *) malloc (sizeof (FilterNotContext_));
-    *context = { child_filter };
+    FilterNotContext_ *context = (FilterNotContext_ *) malloc (sizeof (FilterNotContext_));
+    *context = (FilterNotContext_ ) { .ChildFilter = child_filter };
 
-    auto result = (Filter *) malloc (sizeof (Filter));
-    *result = { context, &FilterNotApply_, &FilterNotDestroy_ };
+    Filter *result = (Filter *) malloc (sizeof (Filter));
+    InitFilter_ (result, context, &FilterNotDestroy_, &FilterNotApply_);
 
     *self = result;
 }
 
 static void FilterNotDestroy_ (void *context)
 {
-    auto contextN = (FilterNotContext_ *) context;
+    FilterNotContext_ *contextN = (FilterNotContext_ *) context;
 
-    *contextN = { nullptr };
+    *contextN = (FilterNotContext_ ) { .ChildFilter = NULL };
 
     free (context);
 }
 
 static bool FilterNotApply_ (void *context, const Log4JEvent event)
 {
-    auto contextN = (FilterNotContext_ *) context;
+    FilterNotContext_ *contextN = (FilterNotContext_ *) context;
 
     return !FilterApply (contextN->ChildFilter, event);
 }
