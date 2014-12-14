@@ -2,136 +2,158 @@
 #include <memory.h>
 #include "Log4JIterator.h"
 
-typedef bool log4j_iterator_move_next_cb (void *context);
+typedef void Log4JIteratorDestroyCb (void *context);
 
-typedef const Log4JEvent log4j_iterator_current_cb (const void *context);
+typedef bool Log4JIteratorMoveNextCb (void *context);
 
-typedef void log4j_iterator_destroy_cb (void *context);
+typedef const Log4JEvent Log4JIteratorCurrentCb (const void *context);
 
-struct Log4JIterator_ {
-    void *context;
+struct Log4JIterator_
+{
+    void *Context;
 
-    log4j_iterator_destroy_cb *destroy;
-    log4j_iterator_move_next_cb *move_next;
-    log4j_iterator_current_cb *current;
+    Log4JIteratorDestroyCb *Destroy;
+    Log4JIteratorMoveNextCb *MoveNext;
+    Log4JIteratorCurrentCb *Current;
 };
 
-void log4j_iterator_destroy (Log4JIterator *self) {
-    self->destroy (self->context);
+void Log4JIteratorDestroy (Log4JIterator *self)
+{
+    self->Destroy (self->Context);
     free (self);
 }
 
-bool log4j_iterator_move_next (Log4JIterator *self) {
-    return self->move_next (self->context);
+bool Log4JIteratorMoveNext (Log4JIterator *self)
+{
+    return self->MoveNext (self->Context);
 }
 
-const Log4JEvent log4j_iterator_current (const Log4JIterator *self) {
-    return self->current (self->context);
+const Log4JEvent Log4JIteratorCurrent (const Log4JIterator *self)
+{
+    return self->Current (self->Context);
 }
 
-#pragma region Document log4j_iterator
+#pragma region XML string log4j_iterator
 
-struct _log4j_iterator_document_context {
-    const rapidxml::xml_document<> *doc;
-    bool start;
-    rapidxml::xml_node<> *node;
+struct Log4JIteratorEventSourceContext_
+{
+    const Log4JEventSource *Source;
+    bool Start;
+    Log4JEvent Current;
 };
 
-static void _log4j_iterator_document_destroy (void *context);
-static bool _log4j_iterator_document_move_next (void *context);
-static const Log4JEvent _log4j_iterator_document_current (const void *context);
+static void Log4JIteratorEventSourceDestroy (void *context);
+static bool Log4JIteratorEventSourceMoveNext (void *context);
+static const Log4JEvent Log4JIteratorEventSourceCurrent (const void *context);
 
-void log4j_iterator_init_document (Log4JIterator **self, const rapidxml::xml_document<> *doc) {
-    auto context = (_log4j_iterator_document_context *) malloc (sizeof (_log4j_iterator_document_context));
-    *context = { doc, true, nullptr };
+void Log4JIteratorInitEventSource (Log4JIterator **self, const Log4JEventSource *source)
+{
+    auto context = (Log4JIteratorEventSourceContext_ *) malloc (sizeof (Log4JIteratorEventSourceContext_));
+    *context = { source, true, nullptr };
 
     auto result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
-    *result = {
+    *result =
+    {
         context,
-        &_log4j_iterator_document_destroy,
-        &_log4j_iterator_document_move_next,
-        &_log4j_iterator_document_current
+        &Log4JIteratorEventSourceDestroy,
+        &Log4JIteratorEventSourceMoveNext,
+        &Log4JIteratorEventSourceCurrent
     };
 
     *self = result;
 }
 
-void _log4j_iterator_document_destroy (void *context) {
-    auto context_d = (_log4j_iterator_document_context *) context;
+void Log4JIteratorEventSourceDestroy (void *context)
+{
+    auto contextD = (Log4JIteratorEventSourceContext_ *) context;
 
-    *context_d = { nullptr, false, nullptr };
-    free (context_d);
+    *contextD = { nullptr, false, nullptr };
+    free (contextD);
 }
 
-bool _log4j_iterator_document_move_next (void *context) {
-    auto context_d = (_log4j_iterator_document_context *) context;
+bool Log4JIteratorEventSourceMoveNext (void *context)
+{
+    auto contextD = (Log4JIteratorEventSourceContext_ *) context;
 
-    if (!context_d->doc) {
+    if (!contextD->Source)
+    {
         return false;
     }
 
-    rapidxml::xml_node<> *next_node;
+    Log4JEvent nextEvent;
 
-    if (context_d->start) {
-        next_node = log4j_event<>::first_node (context_d->doc);
-        context_d->start = false;
-    } else if (context_d->node) {
-        next_node = log4j_event<>::next_sibling (context_d->node);
-    } else {
-        next_node = nullptr;
+    if (contextD->Start)
+    {
+        nextEvent = Log4JEventSourceFirst (contextD->Source);
+        contextD->Start = false;
+    }
+    else if (contextD->Current)
+    {
+        nextEvent = Log4JEventSourceNext (contextD->Source, contextD->Current);
+    }
+    else
+    {
+        nextEvent = nullptr;
     }
 
-    context_d->node = next_node;
-    return next_node != nullptr;
+    contextD->Current = nextEvent;
+    return nextEvent != nullptr;
 }
 
-const log4j_event<> _log4j_iterator_document_current (const void *context) {
-    auto context_d = (const _log4j_iterator_document_context *) context;
-    log4j_event<> event (context_d->node);
-    return event;
+const Log4JEvent Log4JIteratorEventSourceCurrent (const void *context)
+{
+    auto contextD = (const Log4JIteratorEventSourceContext_ *) context;
+    return contextD->Current;
 }
 
 #pragma endregion
 
-#pragma region Filter log4j_iterator
+#pragma region Filtering iterator
 
-struct _log4j_iterator_filter_context {
-    Log4JIterator *inner;
-    const Filter *filter;
+struct Log4JIteratorFilterContext
+{
+    Log4JIterator *Inner;
+    const Filter *Filter;
 };
 
-static void _log4j_iterator_filter_destroy (void *context);
-static bool _log4j_iterator_filter_move_next (void *context);
-static const Log4JEvent _log4j_iterator_filter_current (const void *context);
+static void Log4JIteratorFilterDestroy_ (void *context);
+static bool Log4JIteratorFilterMoveNext_ (void *context);
+static const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context);
 
-void log4j_iterator_init_filter (Log4JIterator **self, Log4JIterator *inner, const Filter *filter) {
-    auto context = (_log4j_iterator_filter_context *) malloc (sizeof (_log4j_iterator_filter_context));
+void log4j_iterator_init_filter (Log4JIterator **self, Log4JIterator *inner, const Filter *filter)
+{
+    auto context = (Log4JIteratorFilterContext *) malloc (sizeof (Log4JIteratorFilterContext));
     *context = { inner, filter };
 
     auto result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
-    *result = {
+    *result =
+    {
         context,
-        &_log4j_iterator_filter_destroy,
-        &_log4j_iterator_filter_move_next,
-        &_log4j_iterator_filter_current
+        &Log4JIteratorFilterDestroy_,
+        &Log4JIteratorFilterMoveNext_,
+        &Log4JIteratorFilterCurrent_
     };
 
     *self = result;
 }
 
-void _log4j_iterator_filter_destroy (void *context) {
-    auto context_f = (_log4j_iterator_filter_context *) context;
+void Log4JIteratorFilterDestroy_ (void *context)
+{
+    auto contextF = (Log4JIteratorFilterContext *) context;
 
-    *context_f = { nullptr, nullptr };
-    free (context_f);
+    *contextF = { nullptr, nullptr };
+    free (contextF);
 }
 
-bool _log4j_iterator_filter_move_next (void *context) {
-    auto context_f = (_log4j_iterator_filter_context *) context;
+bool Log4JIteratorFilterMoveNext_ (void *context)
+{
+    auto contextF = (Log4JIteratorFilterContext *) context;
 
-    while (log4j_iterator_move_next (context_f->inner)) {
-        auto event = log4j_iterator_current (context_f->inner);
-        if (filter_apply (context_f->filter, &event)) {
+    while (Log4JIteratorMoveNext (contextF->Inner))
+    {
+        auto event = Log4JIteratorCurrent (contextF->Inner);
+        if (FilterApply (contextF->Filter, &event))
+        {
             return true;
         }
     }
@@ -139,10 +161,11 @@ bool _log4j_iterator_filter_move_next (void *context) {
     return false;
 }
 
-const log4j_event<> _log4j_iterator_filter_current (const void *context) {
-    auto context_f = (_log4j_iterator_filter_context *) context;
+const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context)
+{
+    auto contextF = (Log4JIteratorFilterContext *) context;
 
-    return log4j_iterator_current (context_f->inner);
+    return Log4JIteratorCurrent (contextF->Inner);
 }
 
 #pragma endregion

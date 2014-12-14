@@ -103,17 +103,39 @@ int64_t ParseTimestamp_ (const char *value, const size_t valueSize)
     return result;
 }
 
-void Log4JEventInitFirst (Log4JEvent *event, const char *xmlString)
+typedef struct Log4JEventSource_
 {
+    const rapidxml::xml_document<char> *Doc;
+};
 
+void Log4JEventSourceInitXmlString (Log4JEventSource **self, char *xmlString)
+{
+    auto doc = new rapidxml::xml_document<char> ();
+    doc->parse<rapidxml::parse_fastest> (xmlString);
+
+    auto result = (Log4JEventSource *) malloc (sizeof (Log4JEventSource));
+    *result = { doc };
+
+    *self = result;
 }
 
-bool Log4JEventNext (Log4JEvent *event)
+void Log4JEventSourceDestroy (Log4JEventSource *self)
 {
+    delete self->Doc;
 
+    *self = { nullptr };
+    free (self);
 }
 
-void Log4JEventDestroy (Log4JEvent *event)
+Log4JEvent Log4JEventSourceFirst (const Log4JEventSource *self)
 {
+    auto node = self->Doc->first_node (TagEvent_, TagEventSize_);
+    return node;
+}
 
+Log4JEvent Log4JEventSourceNext (const Log4JEventSource *self, const Log4JEvent event)
+{
+    auto node = (rapidxml::xml_node<char> *) event;
+    auto nextNode = node->next_sibling (TagEvent_, TagEventSize_);
+    return nextNode;
 }
