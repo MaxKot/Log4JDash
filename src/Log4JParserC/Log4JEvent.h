@@ -23,12 +23,6 @@ FixedString Log4JEventMessage (const Log4JEvent log4JEvent);
 
 FixedString Log4JEventThrowable (const Log4JEvent log4JEvent);
 
-void Log4JEventInitFirst (Log4JEvent *event, const char *xmlString);
-
-bool Log4JEventNext (Log4JEvent *event);
-
-void Log4JEventDestroy (Log4JEvent *event);
-
 typedef struct Log4JEventSource_ Log4JEventSource;
 
 void Log4JEventSourceInitXmlString (Log4JEventSource **self, char *xmlString);
