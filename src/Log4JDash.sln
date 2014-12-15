@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Log4JDash", "Log4JDash\Log4
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Log4JParserC", "Log4JParserC\Log4JParserC.vcxproj", "{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Log4JParserCpp", "Log4JParserCpp\Log4JParserCpp.vcxproj", "{FEC73810-01A4-4258-ADB3-B9A5C2A30BFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +33,14 @@ Global
 		{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}.Release|Win32.Build.0 = Release|Win32
 		{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}.Release|x64.ActiveCfg = Release|x64
 		{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}.Release|x64.Build.0 = Release|x64
+		{FEC73810-01A4-4258-ADB3-B9A5C2A30BFC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FEC73810-01A4-4258-ADB3-B9A5C2A30BFC}.Debug|Win32.Build.0 = Debug|Win32
+		{FEC73810-01A4-4258-ADB3-B9A5C2A30BFC}.Debug|x64.ActiveCfg = Debug|x64
+		{FEC73810-01A4-4258-ADB3-B9A5C2A30BFC}.Debug|x64.Build.0 = Debug|x64
+		{FEC73810-01A4-4258-ADB3-B9A5C2A30BFC}.Release|Win32.ActiveCfg = Release|Win32
+		{FEC73810-01A4-4258-ADB3-B9A5C2A30BFC}.Release|Win32.Build.0 = Release|Win32
+		{FEC73810-01A4-4258-ADB3-B9A5C2A30BFC}.Release|x64.ActiveCfg = Release|x64
+		{FEC73810-01A4-4258-ADB3-B9A5C2A30BFC}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
