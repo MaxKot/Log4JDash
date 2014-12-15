@@ -114,14 +114,14 @@ const Log4JEvent Log4JIteratorEventSourceCurrent (const void *context)
 typedef struct
 {
     Log4JIterator *Inner;
-    const Filter *Filter;
+    const Log4JFilter *Filter;
 } Log4JIteratorFilterContext_;
 
 static void Log4JIteratorFilterDestroy_ (void *context);
 static bool Log4JIteratorFilterMoveNext_ (void *context);
 static const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context);
 
-void log4j_iterator_init_filter (Log4JIterator **self, Log4JIterator *inner, const Filter *filter)
+void log4j_iterator_init_filter (Log4JIterator **self, Log4JIterator *inner, const Log4JFilter *filter)
 {
     Log4JIteratorFilterContext_ *context = (Log4JIteratorFilterContext_ *) malloc (sizeof (Log4JIteratorFilterContext_));
     *context = (Log4JIteratorFilterContext_) { .Inner = inner, .Filter = filter };

@@ -11,15 +11,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Log4JEvent.h" />
-    <ClInclude Include="Filter.h" />
     <ClInclude Include="LevelParser.h" />
     <ClInclude Include="Log4JIterator.h" />
+    <ClInclude Include="Log4JFilter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Log4JEvent.cpp" />
-    <ClCompile Include="Filter.c" />
     <ClCompile Include="LevelParser.c" />
     <ClCompile Include="Log4JIterator.c" />
+    <ClCompile Include="Log4JFilter.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LevelParserLevels.py" />

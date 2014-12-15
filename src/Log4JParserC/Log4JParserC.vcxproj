@@ -139,13 +139,13 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Filter.h" />
+    <ClInclude Include="Log4JFilter.h" />
     <ClInclude Include="LevelParser.h" />
     <ClInclude Include="Log4JEvent.h" />
     <ClInclude Include="Log4JIterator.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Filter.c" />
+    <ClCompile Include="Log4JFilter.c" />
     <ClCompile Include="LevelParser.c" />
     <ClCompile Include="Log4JEvent.cpp" />
     <ClCompile Include="Log4JIterator.c" />
