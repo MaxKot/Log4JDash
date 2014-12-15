@@ -11,8 +11,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Filter.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="Iterator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Filter.cpp" />
+    <ClCompile Include="Event.cpp" />
+    <ClCompile Include="Iterator.cpp" />
   </ItemGroup>
 </Project>

@@ -11,6 +11,8 @@ namespace Log4JParser
 
     class FilterBase
     {
+        friend class IteratorFilter;
+
     protected:
         FilterBase (CApi::Log4JFilter *filter);
 
