@@ -2,28 +2,29 @@
 //
 
 #include "stdafx.h"
+#include <ctime>
+#include <Event.h>
+#include <Filter.h>
+#include <Iterator.h>
 #include "time_trace.h"
 #include "xml_file.h"
-#include "timestamp_filter.h"
-#include "level_filter.h"
-#include "logger_filter.h"
-#include "message_filter.h"
-#include "log4j_event.h"
-#include "filter.h"
-#include "log4j_iterator.h"
-#include <ctime>
 
 using namespace std;
 using namespace rapidxml;
 
-void print_event (const log4j_event<> &event) {
-    auto level = event.get_level ();
-    auto logger = event.get_logger ();
-    auto thread = event.get_thread ();
-    auto message = event.get_message ();
-    auto throwable = event.get_throwable ();
+std::basic_ostream<char, std::char_traits<char>> &operator << (std::basic_ostream<char, std::char_traits<char>> &stream, FixedString &str) {
+    stream.write (str.Value, str.Size);
+    return stream;
+}
 
-    auto time = event.get_time ();
+void print_event (const Log4JParser::Event &event) {
+    auto level = event.Level ();
+    auto logger = event.Logger ();
+    auto thread = event.Thread ();
+    auto message = event.Message ();
+    auto throwable = event.Throwable ();
+
+    auto time = event.Time ();
     time_t t = time / 1000UL;
     auto millis = time % 1000UL;
     auto tm = localtime (&t);
@@ -35,7 +36,7 @@ void print_event (const log4j_event<> &event) {
     cout.fill ('0');
     cout << millis;
     cout << " [" << level << "] " << logger << " (" << thread << ") " << message << endl;
-    if (throwable.size () > 0) {
+    if (throwable.Size > 0) {
         cout << throwable << endl;
     }
 }
@@ -43,7 +44,7 @@ void print_event (const log4j_event<> &event) {
 void parse_xml (const char *filename) {
     TIME_TRACE_BEGIN (total);
 
-    xml_file doc (filename);
+    file_string input (filename);
 
     TIME_TRACE_BEGIN (process);
 
@@ -57,59 +58,40 @@ void parse_xml (const char *filename) {
     //logger_filter<> logger_filter ("Root.ChildB");
     //message_filter<> message_filter ("#2");
 
-    filter *filter_ts;
-    filter_init_timestamp (&filter_ts, 1411231371536L, 1411231371556L);
-    filter *filter_lvl;
-    filter_init_level_c (&filter_lvl, "INFO", "ERROR");
-    filter *filter_lgr;
-    filter_init_logger_nt (&filter_lgr, "Root.ChildB");
-    filter *filter_msg1;
-    filter_init_message_nt (&filter_msg1, "#2");
-    filter *filter_msg2;
-    filter_init_message_nt (&filter_msg2, "#3");
+    {
+        Log4JParser::FilterTimestamp filter_ts (1411231371536L, 1411231371556L);
+        Log4JParser::FilterLevel filter_lvl ("INFO", "ERROR");
+        Log4JParser::FilterLogger filter_lgr ("Root.ChildB");
+        Log4JParser::FilterMessage filter_msg1 ("#2");
+        Log4JParser::FilterMessage filter_msg2 ("#3");
 
-    filter *filter_not;
-    filter_init_not (&filter_not, filter_lvl);
+        Log4JParser::FilterNot filter_not (&filter_lvl);
 
-    filter *filter_any;
-    filter_init_any (&filter_any);
-    filter_any_add (filter_any, filter_msg1);
-    filter_any_add (filter_any, filter_msg2);
+        Log4JParser::FilterAny filter_any;
+        filter_any.Add (&filter_msg1);
+        filter_any.Add (&filter_msg2);
 
-    filter *filter_all;
-    filter_init_all (&filter_all);
-    filter_all_add (filter_all, filter_ts);
-    filter_all_add (filter_all, filter_not);
-    filter_all_add (filter_all, filter_any);
-    filter_all_add (filter_all, filter_lgr);
+        Log4JParser::FilterAll filter_all;
+        filter_all.Add (&filter_ts);
+        filter_all.Add (&filter_not);
+        filter_all.Add (&filter_any);
+        filter_all.Add (&filter_lgr);
 
-    log4j_iterator *iterator_doc;
-    log4j_iterator_init_document (&iterator_doc, doc.document ());
+        Log4JParser::EventSource event_source (input.get ());
+        Log4JParser::IteratorEventSource iterator_es (&event_source);
 
-    log4j_iterator *iterator_filter;
-    log4j_iterator_init_filter (&iterator_filter, iterator_doc, filter_all);
+        Log4JParser::IteratorFilter iterator_filter (&iterator_es, &filter_all);
 
-    auto count = 0;
+        auto count = 0;
 
-    while (log4j_iterator_move_next (iterator_filter)) {
-        auto event = log4j_iterator_current (iterator_filter);
-        print_event (event);
-        ++count;
+        while (iterator_filter.MoveNext ()) {
+            auto event = iterator_filter.Current ();
+            print_event (event);
+            ++count;
+        }
+
+        cout << "Found events: " << count << endl;
     }
-
-    cout << "Found events: " << count << endl;
-
-    log4j_iterator_destroy (iterator_filter);
-    log4j_iterator_destroy (iterator_doc);
-
-    filter_destroy (filter_all);
-    filter_destroy (filter_any);
-    filter_destroy (filter_not);
-    filter_destroy (filter_ts);
-    filter_destroy (filter_msg1);
-    filter_destroy (filter_msg2);
-    filter_destroy (filter_lgr);
-    filter_destroy (filter_lvl);
 
     TIME_TRACE_END (process);
 
