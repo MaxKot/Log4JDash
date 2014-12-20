@@ -2,7 +2,7 @@
 
 namespace Log4JParser
 {
-    IteratorBase::IteratorBase (CApi::Log4JIterator *iterator)
+    IteratorBase::IteratorBase (Log4JIterator *iterator)
         : iterator_ (iterator)
     {
 
@@ -10,35 +10,35 @@ namespace Log4JParser
 
     IteratorBase::~IteratorBase ()
     {
-        CApi::Log4JIteratorDestroy (iterator_);
+        Log4JIteratorDestroy (iterator_);
     }
 
     bool IteratorBase::MoveNext ()
     {
-        auto result = CApi::Log4JIteratorMoveNext (iterator_);
+        auto result = Log4JIteratorMoveNext (iterator_);
         return result;
     }
 
     Event IteratorBase::Current () const
     {
-        auto event = CApi::Log4JIteratorCurrent (iterator_);
+        auto event = Log4JIteratorCurrent (iterator_);
         return Event (event);
     }
 
-    const CApi::Log4JIterator *IteratorBase::GetIterator (const IteratorBase *iterator)
+    const Log4JIterator *IteratorBase::GetIterator (const IteratorBase *iterator)
     {
         return iterator->iterator_;
     }
 
-    CApi::Log4JIterator *IteratorBase::GetIterator (IteratorBase *iterator)
+    Log4JIterator *IteratorBase::GetIterator (IteratorBase *iterator)
     {
         return iterator->iterator_;
     }
 
-    static CApi::Log4JIterator *Log4JIteratorInitEventSource_ (const CApi::Log4JEventSource *source)
+    static Log4JIterator *Log4JIteratorInitEventSource_ (const Log4JEventSource *source)
     {
-        CApi::Log4JIterator *iterator;
-        CApi::Log4JIteratorInitEventSource (&iterator, source);
+        Log4JIterator *iterator;
+        Log4JIteratorInitEventSource (&iterator, source);
 
         return iterator;
     }
@@ -49,10 +49,10 @@ namespace Log4JParser
 
     }
 
-    static CApi::Log4JIterator *Log4JIteratorInitFilter_ (CApi::Log4JIterator *inner, const CApi::Log4JFilter *filter)
+    static Log4JIterator *Log4JIteratorInitFilter_ (Log4JIterator *inner, const Log4JFilter *filter)
     {
-        CApi::Log4JIterator *iterator;
-        CApi::Log4JIteratorInitFilter (&iterator, inner, filter);
+        Log4JIterator *iterator;
+        Log4JIteratorInitFilter (&iterator, inner, filter);
 
         return iterator;
     }

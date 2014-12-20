@@ -2,18 +2,17 @@
 
 #include "Event.h"
 #include "Filter.h"
+extern "C"
+{
+#include <Log4JIterator.h>
+}
 
 namespace Log4JParser
 {
-    namespace CApi
-    {
-#include <Log4JIterator.h>
-    }
-
     class IteratorBase
     {
     protected:
-        IteratorBase (CApi::Log4JIterator *iterator);
+        IteratorBase (Log4JIterator *iterator);
 
     public:
         ~IteratorBase ();
@@ -24,11 +23,11 @@ namespace Log4JParser
         Event Current () const;
 
     protected:
-        static const CApi::Log4JIterator *GetIterator (const IteratorBase *iterator);
-        static CApi::Log4JIterator *GetIterator (IteratorBase *iterator);
+        static const Log4JIterator *GetIterator (const IteratorBase *iterator);
+        static Log4JIterator *GetIterator (IteratorBase *iterator);
 
     private:
-        CApi::Log4JIterator *iterator_;
+        Log4JIterator *iterator_;
     };
 
     class IteratorEventSource : public IteratorBase

@@ -1,33 +1,34 @@
 #pragma once
 
 #include <stdint.h>
+extern "C"
+{
+#include <Log4JFilter.h>
+}
+
+#include "Event.h"
 
 namespace Log4JParser
 {
-    namespace CApi
-    {
-#include <Log4JFilter.h>
-    }
-
     class FilterBase
     {
         friend class IteratorFilter;
 
     protected:
-        FilterBase (CApi::Log4JFilter *filter);
+        FilterBase (Log4JFilter *filter);
 
     public:
         ~FilterBase ();
 
     public:
-        bool Apply (const CApi::Log4JEvent event) const;
+        bool Apply (const Event event) const;
 
     protected:
-        static const CApi::Log4JFilter *GetFilter (const FilterBase *filter);
-        static CApi::Log4JFilter *GetFilter (FilterBase *filter);
+        static const Log4JFilter *GetFilter (const FilterBase *filter);
+        static Log4JFilter *GetFilter (FilterBase *filter);
 
     private:
-        CApi::Log4JFilter *filter_;
+        Log4JFilter *filter_;
     };
 
     class FilterLevel : public FilterBase

@@ -1,41 +1,41 @@
 #pragma once
 
 #include <stdint.h>
+extern "C"
+{
+#include <Log4JEvent.h>
+}
 
 namespace Log4JParser
 {
-    namespace CApi
-    {
-#include <Log4JEvent.h>
-    }
-
     class Event
     {
         friend class EventSource;
+        friend class FilterBase;
 
     public:
-        Event (CApi::Log4JEvent event);
+        Event (Log4JEvent event);
         ~Event ();
 
     public:
-        CApi::FixedString Level () const;
+        FixedString Level () const;
 
-        CApi::FixedString Logger () const;
+        FixedString Logger () const;
 
-        CApi::FixedString Thread () const;
+        FixedString Thread () const;
 
-        CApi::FixedString Timestamp () const;
+        FixedString Timestamp () const;
         int64_t Time () const;
 
-        CApi::FixedString Message () const;
+        FixedString Message () const;
 
-        CApi::FixedString Throwable () const;
-
-    private:
-        static CApi::Log4JEvent GetEvent (const Event event);
+        FixedString Throwable () const;
 
     private:
-        CApi::Log4JEvent event_;
+        static Log4JEvent GetEvent (const Event event);
+
+    private:
+        Log4JEvent event_;
     };
 
     class EventSource
@@ -52,10 +52,10 @@ namespace Log4JParser
         Event Next (Event event) const;
 
     private:
-        static const CApi::Log4JEventSource *GetEventSource (const EventSource *eventSource);
-        static CApi::Log4JEventSource *GetEventSource (EventSource *eventSource);
+        static const Log4JEventSource *GetEventSource (const EventSource *eventSource);
+        static Log4JEventSource *GetEventSource (EventSource *eventSource);
 
     private:
-        CApi::Log4JEventSource *eventSource_;
+        Log4JEventSource *eventSource_;
     };
 }

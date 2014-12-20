@@ -2,7 +2,7 @@
 
 namespace Log4JParser
 {
-    FilterBase::FilterBase (CApi::Log4JFilter *filter)
+    FilterBase::FilterBase (Log4JFilter *filter)
         : filter_ (filter)
     {
 
@@ -14,26 +14,26 @@ namespace Log4JParser
         filter_ = nullptr;
     }
 
-    bool FilterBase::Apply (const CApi::Log4JEvent event) const
+    bool FilterBase::Apply (const Event event) const
     {
-        auto result = Log4JFilterApply (filter_, event);
+        auto result = Log4JFilterApply (filter_, Event::GetEvent (event));
         return result;
     }
 
-    const CApi::Log4JFilter *FilterBase::GetFilter (const FilterBase *filter)
+    const Log4JFilter *FilterBase::GetFilter (const FilterBase *filter)
     {
         return filter->filter_;
     }
 
-    CApi::Log4JFilter *FilterBase::GetFilter (FilterBase *filter)
+    Log4JFilter *FilterBase::GetFilter (FilterBase *filter)
     {
         return filter->filter_;
     }
 
-    static CApi::Log4JFilter *Log4JFilterInitLevelI_ (int32_t min, int32_t max)
+    static Log4JFilter *Log4JFilterInitLevelI_ (int32_t min, int32_t max)
     {
-        CApi::Log4JFilter *filter;
-        CApi::Log4JFilterInitLevelI (&filter, min, max);
+        Log4JFilter *filter;
+        Log4JFilterInitLevelI (&filter, min, max);
 
         return filter;
     }
@@ -44,10 +44,10 @@ namespace Log4JParser
 
     }
 
-    static CApi::Log4JFilter *Log4JFilterInitLevelC_ (const char *min, const char *max)
+    static Log4JFilter *Log4JFilterInitLevelC_ (const char *min, const char *max)
     {
-        CApi::Log4JFilter *filter;
-        CApi::Log4JFilterInitLevelC (&filter, min, max);
+        Log4JFilter *filter;
+        Log4JFilterInitLevelC (&filter, min, max);
 
         return filter;
     }
@@ -58,10 +58,10 @@ namespace Log4JParser
 
     }
 
-    static CApi::Log4JFilter *Log4JFilterInitLoggerFs_ (const char *logger, const size_t loggerSize)
+    static Log4JFilter *Log4JFilterInitLoggerFs_ (const char *logger, const size_t loggerSize)
     {
-        CApi::Log4JFilter *filter;
-        CApi::Log4JFilterInitLoggerFs (&filter, logger, loggerSize);
+        Log4JFilter *filter;
+        Log4JFilterInitLoggerFs (&filter, logger, loggerSize);
 
         return filter;
     }
@@ -72,10 +72,10 @@ namespace Log4JParser
 
     }
 
-    static CApi::Log4JFilter *Log4JFilterInitLoggerNt_ (const char *logger)
+    static Log4JFilter *Log4JFilterInitLoggerNt_ (const char *logger)
     {
-        CApi::Log4JFilter *filter;
-        CApi::Log4JFilterInitLoggerNt (&filter, logger);
+        Log4JFilter *filter;
+        Log4JFilterInitLoggerNt (&filter, logger);
 
         return filter;
     }
@@ -86,10 +86,10 @@ namespace Log4JParser
 
     }
 
-    static CApi::Log4JFilter *Log4JFilterInitMessageFs_ (const char *message, const size_t messageSize)
+    static Log4JFilter *Log4JFilterInitMessageFs_ (const char *message, const size_t messageSize)
     {
-        CApi::Log4JFilter *filter;
-        CApi::Log4JFilterInitMessageFs (&filter, message, messageSize);
+        Log4JFilter *filter;
+        Log4JFilterInitMessageFs (&filter, message, messageSize);
 
         return filter;
     }
@@ -100,10 +100,10 @@ namespace Log4JParser
 
     }
 
-    static CApi::Log4JFilter *Log4JFilterInitMessageNt_ (const char *message)
+    static Log4JFilter *Log4JFilterInitMessageNt_ (const char *message)
     {
-        CApi::Log4JFilter *filter;
-        CApi::Log4JFilterInitMessageNt (&filter, message);
+        Log4JFilter *filter;
+        Log4JFilterInitMessageNt (&filter, message);
 
         return filter;
     }
@@ -114,10 +114,10 @@ namespace Log4JParser
 
     }
 
-    static CApi::Log4JFilter *Log4JFilterInitTimestamp_ (int64_t min, int64_t max)
+    static Log4JFilter *Log4JFilterInitTimestamp_ (int64_t min, int64_t max)
     {
-        CApi::Log4JFilter *filter;
-        CApi::Log4JFilterInitTimestamp (&filter, min, max);
+        Log4JFilter *filter;
+        Log4JFilterInitTimestamp (&filter, min, max);
 
         return filter;
     }
@@ -128,10 +128,10 @@ namespace Log4JParser
 
     }
 
-    static CApi::Log4JFilter *Log4JFilterInitAll_ ()
+    static Log4JFilter *Log4JFilterInitAll_ ()
     {
-        CApi::Log4JFilter *filter;
-        CApi::Log4JFilterInitAll (&filter);
+        Log4JFilter *filter;
+        Log4JFilterInitAll (&filter);
 
         return filter;
     }
@@ -144,7 +144,7 @@ namespace Log4JParser
 
     void FilterAll::Add (const FilterBase *childFilter)
     {
-        CApi::Log4JFilterAllAdd (GetFilter (this), GetFilter (childFilter));
+        Log4JFilterAllAdd (GetFilter (this), GetFilter (childFilter));
     }
 
     void FilterAll::Remove (const FilterBase *childFilter)
@@ -152,10 +152,10 @@ namespace Log4JParser
         Log4JFilterAllRemove (GetFilter (this), GetFilter (childFilter));
     }
 
-    static CApi::Log4JFilter *Log4JFilterInitAny_ ()
+    static Log4JFilter *Log4JFilterInitAny_ ()
     {
-        CApi::Log4JFilter *filter;
-        CApi::Log4JFilterInitAny (&filter);
+        Log4JFilter *filter;
+        Log4JFilterInitAny (&filter);
 
         return filter;
     }
@@ -168,7 +168,7 @@ namespace Log4JParser
 
     void FilterAny::Add (const FilterBase *childFilter)
     {
-        CApi::Log4JFilterAnyAdd (GetFilter (this), GetFilter (childFilter));
+        Log4JFilterAnyAdd (GetFilter (this), GetFilter (childFilter));
     }
 
     void FilterAny::Remove (const FilterBase *childFilter)
@@ -176,10 +176,10 @@ namespace Log4JParser
         Log4JFilterAnyRemove (GetFilter (this), GetFilter (childFilter));
     }
 
-    static CApi::Log4JFilter *Log4JFilterInitNot_ (const CApi::Log4JFilter *childFilter)
+    static Log4JFilter *Log4JFilterInitNot_ (const Log4JFilter *childFilter)
     {
-        CApi::Log4JFilter *filter;
-        CApi::Log4JFilterInitNot (&filter, childFilter);
+        Log4JFilter *filter;
+        Log4JFilterInitNot (&filter, childFilter);
 
         return filter;
     }
