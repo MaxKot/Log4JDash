@@ -103,7 +103,7 @@ bool Log4JIteratorEventSourceMoveNext (void *context)
 
 const Log4JEvent Log4JIteratorEventSourceCurrent (const void *context)
 {
-    Log4JIteratorEventSourceContext_ *contextD = (const Log4JIteratorEventSourceContext_ *) context;
+    const Log4JIteratorEventSourceContext_ *contextD = (const Log4JIteratorEventSourceContext_ *) context;
     return contextD->Current;
 }
 
@@ -121,7 +121,7 @@ static void Log4JIteratorFilterDestroy_ (void *context);
 static bool Log4JIteratorFilterMoveNext_ (void *context);
 static const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context);
 
-void log4j_iterator_init_filter (Log4JIterator **self, Log4JIterator *inner, const Log4JFilter *filter)
+void Log4JIteratorInitFilter (Log4JIterator **self, Log4JIterator *inner, const Log4JFilter *filter)
 {
     Log4JIteratorFilterContext_ *context = (Log4JIteratorFilterContext_ *) malloc (sizeof (Log4JIteratorFilterContext_));
     *context = (Log4JIteratorFilterContext_) { .Inner = inner, .Filter = filter };
@@ -153,7 +153,7 @@ bool Log4JIteratorFilterMoveNext_ (void *context)
     while (Log4JIteratorMoveNext (contextF->Inner))
     {
         Log4JEvent event = Log4JIteratorCurrent (contextF->Inner);
-        if (FilterApply (contextF->Filter, &event))
+        if (Log4JFilterApply (contextF->Filter, event))
         {
             return true;
         }

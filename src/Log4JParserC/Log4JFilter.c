@@ -118,7 +118,7 @@ void Log4JFilterInitLoggerFs (Log4JFilter **self, const char *logger, const size
     *self = result;
 }
 
-void filterInitLoggerNt (Log4JFilter **self, const char *logger)
+void Log4JFilterInitLoggerNt (Log4JFilter **self, const char *logger)
 {
     size_t loggerSize = strlen (logger);
     Log4JFilterInitLoggerFs (self, logger, loggerSize);
@@ -334,7 +334,7 @@ typedef struct
 static void Log4JFilterAllDestroy_ (void *context);
 static bool Log4JFilterAllApply (void *context, const Log4JEvent event);
 
-void filter_init_all (Log4JFilter **self)
+void Log4JFilterInitAll (Log4JFilter **self)
 {
     Log4JFilterAllContext_ *context = (Log4JFilterAllContext_ *) malloc (sizeof (Log4JFilterAllContext_));
     *context = (Log4JFilterAllContext_ ) { .ChildrenHead = NULL };
@@ -365,7 +365,7 @@ void Log4JFilterAllAdd (Log4JFilter *self, const Log4JFilter *child)
     context->ChildrenHead = Log4JFilterListAdd_ (context->ChildrenHead, child);
 }
 
-void filterAllRemove (Log4JFilter *self, const Log4JFilter *child)
+void Log4JFilterAllRemove (Log4JFilter *self, const Log4JFilter *child)
 {
     Log4JFilterAllContext_ *context = (Log4JFilterAllContext_ *) self->Context;
 
