@@ -1,5 +1,8 @@
 #include <rapidxml\rapidxml.hpp>
+extern "C"
+{
 #include "Log4JEvent.h"
+}
 
 const char TagEvent_[] = "log4j:event";
 const size_t TagEventSize_ = sizeof (TagEvent_) - 1U;
@@ -25,35 +28,35 @@ const size_t TagThrowableSize_ = sizeof (TagThrowable_) - 1U;
 static FixedString GetValue_ (const rapidxml::xml_base<char> *source);
 static int64_t ParseTimestamp_ (const char *value, const size_t valueSize);
 
-FixedString Log4JEventLevel (const Log4JEvent log4JEvent)
+FixedString __cdecl Log4JEventLevel (const Log4JEvent log4JEvent)
 {
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_attribute (AttrLevel_, AttrLevelSize_);
     return GetValue_ (xml);
 }
 
-FixedString Log4JEventLogger (const Log4JEvent log4JEvent)
+FixedString __cdecl Log4JEventLogger (const Log4JEvent log4JEvent)
 {
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_attribute (AttrLogger_, AttrLoggerSize_);
     return GetValue_ (xml);
 }
 
-FixedString Log4JEventThread (const Log4JEvent log4JEvent)
+FixedString __cdecl Log4JEventThread (const Log4JEvent log4JEvent)
 {
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_attribute (AttrThread_, AttrThreadSize_);
     return GetValue_ (xml);
 }
 
-FixedString Log4JEventTimestamp (const Log4JEvent log4JEvent)
+FixedString __cdecl Log4JEventTimestamp (const Log4JEvent log4JEvent)
 {
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_attribute (AttrTimestamp_, AttrTimestampSize_);
     return GetValue_ (xml);
 }
 
-int64_t Log4JEventTime (const Log4JEvent log4JEvent)
+int64_t __cdecl Log4JEventTime (const Log4JEvent log4JEvent)
 {
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_attribute (AttrTimestamp_, AttrTimestampSize_);
@@ -62,14 +65,14 @@ int64_t Log4JEventTime (const Log4JEvent log4JEvent)
     return result;
 }
 
-FixedString Log4JEventMessage (const Log4JEvent log4JEvent)
+FixedString __cdecl Log4JEventMessage (const Log4JEvent log4JEvent)
 {
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_node (TagMessage_, TagMessageSize_);
     return GetValue_ (xml);
 }
 
-FixedString Log4JEventThrowable (const Log4JEvent log4JEvent)
+FixedString __cdecl Log4JEventThrowable (const Log4JEvent log4JEvent)
 {
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_node (TagThrowable_, TagThrowableSize_);
@@ -108,7 +111,7 @@ typedef struct Log4JEventSource_
     const rapidxml::xml_document<char> *Doc;
 };
 
-void Log4JEventSourceInitXmlString (Log4JEventSource **self, char *xmlString)
+void __cdecl Log4JEventSourceInitXmlString (Log4JEventSource **self, char *xmlString)
 {
     auto doc = new rapidxml::xml_document<char> ();
     doc->parse<rapidxml::parse_fastest> (xmlString);
@@ -119,7 +122,7 @@ void Log4JEventSourceInitXmlString (Log4JEventSource **self, char *xmlString)
     *self = result;
 }
 
-void Log4JEventSourceDestroy (Log4JEventSource *self)
+void __cdecl Log4JEventSourceDestroy (Log4JEventSource *self)
 {
     delete self->Doc;
 
@@ -127,13 +130,13 @@ void Log4JEventSourceDestroy (Log4JEventSource *self)
     free (self);
 }
 
-Log4JEvent Log4JEventSourceFirst (const Log4JEventSource *self)
+Log4JEvent __cdecl Log4JEventSourceFirst (const Log4JEventSource *self)
 {
     auto node = self->Doc->first_node (TagEvent_, TagEventSize_);
     return node;
 }
 
-Log4JEvent Log4JEventSourceNext (const Log4JEventSource *self, const Log4JEvent event)
+Log4JEvent __cdecl Log4JEventSourceNext (const Log4JEventSource *self, const Log4JEvent event)
 {
     auto node = (rapidxml::xml_node<char> *) event;
     auto nextNode = node->next_sibling (TagEvent_, TagEventSize_);
