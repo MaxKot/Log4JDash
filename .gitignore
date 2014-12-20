@@ -30,3 +30,4 @@ _ReSharper*/
 src/ipch/
 *.opensdf
 *.sdf
+src/*.ide/
