@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include <iostream>
 extern "C"
 {
 #include <Log4JEvent.h>
@@ -8,6 +8,21 @@ extern "C"
 
 namespace Log4JParser
 {
+    class FixedString
+    {
+    public:
+        FixedString (const char *value, const size_t size);
+
+        const char *Value ();
+        size_t Size ();
+
+    private:
+        const char *value_;
+        const size_t size_;
+    };
+
+    std::basic_ostream<char, std::char_traits<char>> &operator << (std::basic_ostream<char, std::char_traits<char>> &stream, FixedString &str);
+
     class Event
     {
         friend class EventSource;

@@ -2,6 +2,28 @@
 
 namespace Log4JParser
 {
+    FixedString::FixedString (const char * value, const size_t size)
+        : value_ (value), size_ (size)
+    {
+
+    }
+
+    const char * FixedString::Value ()
+    {
+        return value_;
+    }
+
+    size_t FixedString::Size ()
+    {
+        return size_;
+    }
+
+    std::basic_ostream<char, std::char_traits<char>> &operator << (std::basic_ostream<char, std::char_traits<char>> &stream, FixedString &str)
+    {
+        stream.write (str.Value (), str.Size ());
+        return stream;
+    }
+
     Event::Event (Log4JEvent event)
         : event_ (event)
     {
@@ -15,22 +37,38 @@ namespace Log4JParser
 
     FixedString Event::Level () const
     {
-        return Log4JEventLevel (event_);
+        const char *level;
+        size_t levelSize;
+        Log4JEventLevel (event_, &level, &levelSize);
+
+        return FixedString (level, levelSize);
     }
 
     FixedString Event::Logger () const
     {
-        return Log4JEventLogger (event_);
+        const char *logger;
+        size_t loggerSize;
+        Log4JEventLogger (event_, &logger, &loggerSize);
+
+        return FixedString (logger, loggerSize);
     }
 
     FixedString Event::Thread () const
     {
-        return Log4JEventThread (event_);
+        const char *thread;
+        size_t threadSize;
+        Log4JEventThread (event_, &thread, &threadSize);
+
+        return FixedString (thread, threadSize);
     }
 
     FixedString Event::Timestamp () const
     {
-        return Log4JEventTimestamp (event_);
+        const char *timestamp;
+        size_t timestampSize;
+        Log4JEventTimestamp (event_, &timestamp, &timestampSize);
+
+        return FixedString (timestamp, timestampSize);
     }
 
     int64_t Event::Time () const
@@ -40,12 +78,20 @@ namespace Log4JParser
 
     FixedString Event::Message () const
     {
-        return Log4JEventMessage (event_);
+        const char *message;
+        size_t messageSize;
+        Log4JEventMessage (event_, &message, &messageSize);
+
+        return FixedString (message, messageSize);
     }
 
     FixedString Event::Throwable () const
     {
-        return Log4JEventThrowable (event_);
+        const char *throwable;
+        size_t throwableSize;
+        Log4JEventThrowable (event_, &throwable, &throwableSize);
+
+        return FixedString (throwable, throwableSize);
     }
 
     Log4JEvent Event::GetEvent (const Event event)

@@ -84,8 +84,10 @@ static bool Log4JFilterLevelApply_ (void *context, const Log4JEvent event)
 {
     Log4JFilterLevelContext_ *contextL = (Log4JFilterLevelContext_ *) context;
 
-    FixedString valString = Log4JEventLevel (event);
-    int32_t value = GetLevelValue (valString.Value, valString.Size);
+    const char *level;
+    size_t levelSize;
+    Log4JEventLevel (event, &level, &levelSize);
+    int32_t value = GetLevelValue (level, levelSize);
 
     return contextL->Min <= value && value <= contextL->Max;
 }
@@ -138,13 +140,12 @@ static bool Log4JFilterLoggerApply_ (void *context, const Log4JEvent event)
 {
     Log4JFilterLoggerContext_ *contextL = (Log4JFilterLoggerContext_ *) context;
 
-    FixedString value = Log4JEventLogger (event);
+    const char *logger;
+    size_t loggerSize;
+    Log4JEventLogger (event, &logger, &loggerSize);
 
-    char *logger = contextL->Logger;
-    size_t loggerSize = contextL->LoggerSize;
-
-    return value.Size >= loggerSize &&
-           _strnicmp (value.Value, logger, loggerSize) == 0;
+    return loggerSize >= contextL->LoggerSize &&
+           _strnicmp (logger, contextL->Logger, contextL->LoggerSize) == 0;
 }
 
 #pragma endregion
@@ -200,15 +201,15 @@ static bool Log4JFilterMessageApply_ (void *context, const Log4JEvent event)
         return true;
     }
 
-    FixedString message = Log4JEventMessage (event);
-    size_t valueSize = message.Size;
+    const char *value;
+    size_t valueSize;
+    Log4JEventMessage (event, &value, &valueSize);
 
     if (valueSize < contextM->MessageSize)
     {
         return false;
     }
 
-    const char *value = message.Value;
     const char messageHead = *contextM->Message;
     const char *messageTail = contextM->Message + 1;
     const size_t messageTailSize = contextM->MessageSize - 1;

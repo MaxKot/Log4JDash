@@ -2,26 +2,20 @@
 
 #include <stdint.h>
 
-typedef struct
-{
-    const char *Value;
-    const size_t Size;
-} FixedString;
-
 typedef void *Log4JEvent;
 
-FixedString Log4JEventLevel (const Log4JEvent log4JEvent);
+void Log4JEventLevel (const Log4JEvent log4JEvent, const char **value, size_t *size);
 
-FixedString Log4JEventLogger (const Log4JEvent log4JEvent);
+void Log4JEventLogger (const Log4JEvent log4JEvent, const char **value, size_t *size);
 
-FixedString Log4JEventThread (const Log4JEvent log4JEvent);
+void Log4JEventThread (const Log4JEvent log4JEvent, const char **value, size_t *size);
 
-FixedString Log4JEventTimestamp (const Log4JEvent log4JEvent);
+void Log4JEventTimestamp (const Log4JEvent log4JEvent, const char **value, size_t *size);
 int64_t Log4JEventTime (const Log4JEvent log4JEvent);
 
-FixedString Log4JEventMessage (const Log4JEvent log4JEvent);
+void Log4JEventMessage (const Log4JEvent log4JEvent, const char **value, size_t *size);
 
-FixedString Log4JEventThrowable (const Log4JEvent log4JEvent);
+void Log4JEventThrowable (const Log4JEvent log4JEvent, const char **value, size_t *size);
 
 typedef struct Log4JEventSource_ Log4JEventSource;
 

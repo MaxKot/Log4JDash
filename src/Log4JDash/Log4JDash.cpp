@@ -12,11 +12,6 @@
 using namespace std;
 using namespace rapidxml;
 
-std::basic_ostream<char, std::char_traits<char>> &operator << (std::basic_ostream<char, std::char_traits<char>> &stream, FixedString &str) {
-    stream.write (str.Value, str.Size);
-    return stream;
-}
-
 void print_event (const Log4JParser::Event &event) {
     auto level = event.Level ();
     auto logger = event.Logger ();
@@ -36,7 +31,7 @@ void print_event (const Log4JParser::Event &event) {
     cout.fill ('0');
     cout << millis;
     cout << " [" << level << "] " << logger << " (" << thread << ") " << message << endl;
-    if (throwable.Size > 0) {
+    if (throwable.Size () > 0) {
         cout << throwable << endl;
     }
 }
