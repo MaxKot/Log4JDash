@@ -44,56 +44,58 @@ void print_event (const Log4JParser::Event &event) {
 void parse_xml (const char *filename) {
     TIME_TRACE_BEGIN (total);
 
-    file_string input (filename);
-
-    TIME_TRACE_BEGIN (process);
-
-    //timestamp_filter<> ts_filter (1407784678030L, 1407784678050L);
-    //level_filter<> lvl_filter ("INFO", "ERROR");
-    //logger_filter<> logger_filter ("Root.ChildB");
-    //message_filter<> message_filter ("#4");
-
-    //timestamp_filter<> ts_filter (1411231371536L, 1411231371556L);
-    //level_filter<> lvl_filter ("INFO", "ERROR");
-    //logger_filter<> logger_filter ("Root.ChildB");
-    //message_filter<> message_filter ("#2");
-
     {
-        Log4JParser::FilterTimestamp filter_ts (1411231371536L, 1411231371556L);
-        Log4JParser::FilterLevel filter_lvl ("INFO", "ERROR");
-        Log4JParser::FilterLogger filter_lgr ("Root.ChildB");
-        Log4JParser::FilterMessage filter_msg1 ("#2");
-        Log4JParser::FilterMessage filter_msg2 ("#3");
+        file_string input (filename);
 
-        Log4JParser::FilterNot filter_not (&filter_lvl);
+        TIME_TRACE_BEGIN (process);
 
-        Log4JParser::FilterAny filter_any;
-        filter_any.Add (&filter_msg1);
-        filter_any.Add (&filter_msg2);
+        //timestamp_filter<> ts_filter (1407784678030L, 1407784678050L);
+        //level_filter<> lvl_filter ("INFO", "ERROR");
+        //logger_filter<> logger_filter ("Root.ChildB");
+        //message_filter<> message_filter ("#4");
 
-        Log4JParser::FilterAll filter_all;
-        filter_all.Add (&filter_ts);
-        filter_all.Add (&filter_not);
-        filter_all.Add (&filter_any);
-        filter_all.Add (&filter_lgr);
+        //timestamp_filter<> ts_filter (1411231371536L, 1411231371556L);
+        //level_filter<> lvl_filter ("INFO", "ERROR");
+        //logger_filter<> logger_filter ("Root.ChildB");
+        //message_filter<> message_filter ("#2");
 
-        Log4JParser::EventSource event_source (input.get ());
-        Log4JParser::IteratorEventSource iterator_es (&event_source);
+        {
+            Log4JParser::FilterTimestamp filter_ts (1411231371536L, 1411231371556L);
+            Log4JParser::FilterLevel filter_lvl ("INFO", "ERROR");
+            Log4JParser::FilterLogger filter_lgr ("Root.ChildB");
+            Log4JParser::FilterMessage filter_msg1 ("#2");
+            Log4JParser::FilterMessage filter_msg2 ("#3");
 
-        Log4JParser::IteratorFilter iterator_filter (&iterator_es, &filter_all);
+            Log4JParser::FilterNot filter_not (&filter_lvl);
 
-        auto count = 0;
+            Log4JParser::FilterAny filter_any;
+            filter_any.Add (&filter_msg1);
+            filter_any.Add (&filter_msg2);
 
-        while (iterator_filter.MoveNext ()) {
-            auto event = iterator_filter.Current ();
-            print_event (event);
-            ++count;
+            Log4JParser::FilterAll filter_all;
+            filter_all.Add (&filter_ts);
+            filter_all.Add (&filter_not);
+            filter_all.Add (&filter_any);
+            filter_all.Add (&filter_lgr);
+
+            Log4JParser::EventSource event_source (input.get ());
+            Log4JParser::IteratorEventSource iterator_es (&event_source);
+
+            Log4JParser::IteratorFilter iterator_filter (&iterator_es, &filter_all);
+
+            auto count = 0;
+
+            while (iterator_filter.MoveNext ()) {
+                auto event = iterator_filter.Current ();
+                print_event (event);
+                ++count;
+            }
+
+            cout << "Found events: " << count << endl;
         }
 
-        cout << "Found events: " << count << endl;
+        TIME_TRACE_END (process);
     }
-
-    TIME_TRACE_END (process);
 
     TIME_TRACE_END (total);
 }
@@ -102,7 +104,7 @@ int main (int argc, char **argv)
 {
     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-    char buffer_in[10 * 1204];
+    //char buffer_in[10 * 1204];
 
     //fgets (buffer_in, sizeof (buffer_in), stdin);
 
