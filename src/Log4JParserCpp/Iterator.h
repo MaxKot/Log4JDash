@@ -4,7 +4,7 @@
 #include "Filter.h"
 extern "C"
 {
-#include <Log4JIterator.h>
+#include <Log4JParserC.h>
 }
 
 namespace Log4JParser

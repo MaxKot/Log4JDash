@@ -3,7 +3,7 @@
 #include <iostream>
 extern "C"
 {
-#include <Log4JEvent.h>
+#include <Log4JParserC.h>
 }
 
 namespace Log4JParser

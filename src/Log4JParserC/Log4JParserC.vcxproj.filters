@@ -10,10 +10,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Log4JEvent.h" />
     <ClInclude Include="LevelParser.h" />
-    <ClInclude Include="Log4JIterator.h" />
-    <ClInclude Include="Log4JFilter.h" />
+    <ClInclude Include="Log4JParserC.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Log4JEvent.cpp" />

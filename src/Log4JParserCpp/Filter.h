@@ -3,7 +3,7 @@
 #include <stdint.h>
 extern "C"
 {
-#include <Log4JFilter.h>
+#include <Log4JParserC.h>
 }
 
 #include "Event.h"
