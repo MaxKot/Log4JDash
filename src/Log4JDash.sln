@@ -9,6 +9,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Log4JParserC", "Log4JParser
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Log4JParserCpp", "Log4JParserCpp\Log4JParserCpp.vcxproj", "{FEC73810-01A4-4258-ADB3-B9A5C2A30BFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4JParserNet", "Log4JParserNet\Log4JParserNet.csproj", "{476B4B6D-4713-45F2-945A-90751E81DE71}"
+	ProjectSection(ProjectDependencies) = postProject
+		{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B} = {621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -41,6 +46,14 @@ Global
 		{FEC73810-01A4-4258-ADB3-B9A5C2A30BFC}.Release|Win32.Build.0 = Release|Win32
 		{FEC73810-01A4-4258-ADB3-B9A5C2A30BFC}.Release|x64.ActiveCfg = Release|x64
 		{FEC73810-01A4-4258-ADB3-B9A5C2A30BFC}.Release|x64.Build.0 = Release|x64
+		{476B4B6D-4713-45F2-945A-90751E81DE71}.Debug|Win32.ActiveCfg = Debug|x86
+		{476B4B6D-4713-45F2-945A-90751E81DE71}.Debug|Win32.Build.0 = Debug|x86
+		{476B4B6D-4713-45F2-945A-90751E81DE71}.Debug|x64.ActiveCfg = Debug|x64
+		{476B4B6D-4713-45F2-945A-90751E81DE71}.Debug|x64.Build.0 = Debug|x64
+		{476B4B6D-4713-45F2-945A-90751E81DE71}.Release|Win32.ActiveCfg = Release|x86
+		{476B4B6D-4713-45F2-945A-90751E81DE71}.Release|Win32.Build.0 = Release|x86
+		{476B4B6D-4713-45F2-945A-90751E81DE71}.Release|x64.ActiveCfg = Release|x64
+		{476B4B6D-4713-45F2-945A-90751E81DE71}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
