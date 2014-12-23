@@ -5,8 +5,14 @@ namespace Log4JParserNet
 {
     internal sealed class FilterHandle : SafeHandle
     {
-        public FilterHandle (bool ownsHandle)
+        private FilterHandle (bool ownsHandle)
             : base (IntPtr.Zero, ownsHandle)
+        {
+
+        }
+
+        public FilterHandle ()
+            : this (true)
         {
 
         }

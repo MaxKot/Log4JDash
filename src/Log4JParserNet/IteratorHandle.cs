@@ -5,8 +5,14 @@ namespace Log4JParserNet
 {
     internal sealed class IteratorHandle : SafeHandle
     {
-        public IteratorHandle (bool ownsHandle)
+        private IteratorHandle (bool ownsHandle)
             : base (IntPtr.Zero, ownsHandle)
+        {
+
+        }
+
+        public IteratorHandle ()
+            : this (true)
         {
 
         }

@@ -5,8 +5,14 @@ namespace Log4JParserNet
 {
     internal sealed class EventHandle : SafeHandle
     {
-        public EventHandle (bool ownsHandle)
+        private EventHandle (bool ownsHandle)
             : base (IntPtr.Zero, ownsHandle)
+        {
+
+        }
+
+        public EventHandle ()
+            : this (false)
         {
 
         }
