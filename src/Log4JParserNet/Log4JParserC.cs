@@ -7,59 +7,29 @@ namespace Log4JParserNet
     {
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventLevel
-            (
-            EventHandle log4JEvent,
-            [MarshalAs (UnmanagedType.LPArray, SizeParamIndex = 2)]
-            out IntPtr value,
-            out UIntPtr size
-            );
+            (EventHandle log4JEvent, out IntPtr value, out UIntPtr size);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventLogger
-            (
-            EventHandle log4JEvent,
-            [MarshalAs (UnmanagedType.LPArray, SizeParamIndex = 2)]
-            out IntPtr value,
-            out UIntPtr size
-            );
+            (EventHandle log4JEvent, out IntPtr value, out UIntPtr size);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventThread
-            (
-            EventHandle log4JEvent,
-            [MarshalAs (UnmanagedType.LPArray, SizeParamIndex = 2)]
-            out IntPtr value,
-            out UIntPtr size
-            );
+            (EventHandle log4JEvent, out IntPtr value, out UIntPtr size);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventTimestamp
-            (
-            EventHandle log4JEvent,
-            [MarshalAs (UnmanagedType.LPArray, SizeParamIndex = 2)]
-            out IntPtr value,
-            out UIntPtr size
-            );
+            (EventHandle log4JEvent, out IntPtr value, out UIntPtr size);
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static Int64 Log4JEventTime (EventHandle log4JEvent);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventMessage
-            (
-            EventHandle log4JEvent,
-            [MarshalAs (UnmanagedType.LPArray, SizeParamIndex = 2)]
-            out IntPtr value,
-            out UIntPtr size
-            );
+            (EventHandle log4JEvent, out IntPtr value, out UIntPtr size);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventThrowable
-            (
-            EventHandle log4JEvent,
-            [MarshalAs (UnmanagedType.LPArray, SizeParamIndex = 2)]
-            out IntPtr value,
-            out UIntPtr size
-            );
+            (EventHandle log4JEvent, out IntPtr value, out UIntPtr size);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventSourceInitXmlString
