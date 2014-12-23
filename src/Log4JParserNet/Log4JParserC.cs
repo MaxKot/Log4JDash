@@ -66,7 +66,7 @@ namespace Log4JParserNet
             (out EventSourceHandle self, string xmlString);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JEventSourceDestroy (EventSourceHandle self);
+        extern public static void Log4JEventSourceDestroy (IntPtr self);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static EventHandle Log4JEventSourceFirst (EventSourceHandle self);
@@ -76,7 +76,7 @@ namespace Log4JParserNet
             (EventSourceHandle self, EventHandle @event);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JFilterDestroy (FilterHandle self);
+        extern public static void Log4JFilterDestroy (IntPtr self);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static bool Log4JFilterApply (FilterHandle self, EventHandle @event);
@@ -132,7 +132,7 @@ namespace Log4JParserNet
             (out FilterHandle self, FilterHandle childFilter);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JIteratorDestroy (IteratorHandle self);
+        extern public static void Log4JIteratorDestroy (IntPtr self);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static bool Log4JIteratorMoveNext (IteratorHandle self);

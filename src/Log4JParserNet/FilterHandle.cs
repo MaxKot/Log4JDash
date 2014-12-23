@@ -26,7 +26,7 @@ namespace Log4JParserNet
         /// <inheritdoc />
         protected override bool ReleaseHandle ()
         {
-            Log4JParserC.Log4JFilterDestroy (this);
+            Log4JParserC.Log4JFilterDestroy (handle);
             handle = IntPtr.Zero;
             return true;
         }

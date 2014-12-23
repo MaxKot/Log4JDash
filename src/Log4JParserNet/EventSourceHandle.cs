@@ -32,7 +32,7 @@ namespace Log4JParserNet
             }
             finally
             {
-                Log4JParserC.Log4JEventSourceDestroy (this);
+                Log4JParserC.Log4JEventSourceDestroy (handle);
                 handle = IntPtr.Zero;
             }
             return true;
