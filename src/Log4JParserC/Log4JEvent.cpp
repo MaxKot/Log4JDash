@@ -1,4 +1,7 @@
+#include <string.h>
+#include <stdio.h>
 #include <rapidxml\rapidxml.hpp>
+#include <Windows.h>
 extern "C"
 {
 #include "Log4JParserC.h"
@@ -109,24 +112,73 @@ int64_t ParseTimestamp_ (const char *value, const size_t valueSize)
 struct Log4JEventSource_
 {
     const rapidxml::xml_document<char> *Doc;
+    char *OwnXmlString;
 };
 
-LOG4JPARSERC_API void __cdecl Log4JEventSourceInitXmlString (Log4JEventSource **self, char *xmlString)
+static void Log4JEventSourceInitXmlStringImpl (Log4JEventSource **self, char *xmlString, bool ownString)
 {
+    auto ownedStringPtr = ownString ? xmlString : nullptr;
+
     auto doc = new rapidxml::xml_document<char> ();
     doc->parse<rapidxml::parse_fastest> (xmlString);
 
     auto result = (Log4JEventSource *) malloc (sizeof (Log4JEventSource));
-    *result = { doc };
+    *result = { doc, ownedStringPtr };
 
     *self = result;
+}
+
+LOG4JPARSERC_API void __cdecl Log4JEventSourceInitXmlString (Log4JEventSource **self, char *xmlString)
+{
+    Log4JEventSourceInitXmlStringImpl (self, xmlString, false);
+}
+
+LOG4JPARSERC_API void Log4JEventSourceInitXmlFile (Log4JEventSource **self, const char *filePath)
+{
+    char *buffer = nullptr;
+    long length = 0L;
+    FILE *f = nullptr;
+
+    auto h = LoadLibrary(L"api-ms-win-core-fibers-l1-1-1.dll");
+    printf ("%p\n", h);
+
+    auto openResult = fopen_s (&f, filePath, "rb");
+
+    if (!openResult && f)
+    {
+        fseek (f, 0, SEEK_END);
+        length = ftell (f);
+
+        printf ("File length: '%d'...\n", length);
+
+        fseek (f, 0, SEEK_SET);
+        buffer = (char *) malloc (length + 1);
+
+        if (buffer)
+        {
+            fread (buffer, 1, length, f);
+            buffer[length] = '\0';
+        }
+
+        fclose (f);
+
+        Log4JEventSourceInitXmlStringImpl (self, buffer, true);
+    }
+    else
+    {
+        *self = nullptr;
+    }
 }
 
 LOG4JPARSERC_API void __cdecl Log4JEventSourceDestroy (Log4JEventSource *self)
 {
     delete self->Doc;
+    if (self->OwnXmlString)
+    {
+        free (self->OwnXmlString);
+    }
 
-    *self = { nullptr };
+    *self = { nullptr, nullptr };
     free (self);
 }
 
