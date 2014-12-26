@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4JParserNet", "Log4JPars
 		{621ED5FF-C1D3-402D-9FF0-40B2E7B7237B} = {621ED5FF-C1D3-402D-9FF0-40B2E7B7237B}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4JParserDashNet", "Log4JParserDashNet\Log4JParserDashNet.csproj", "{779CADC5-90E3-40F5-979F-DD761F357B4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -54,6 +56,14 @@ Global
 		{476B4B6D-4713-45F2-945A-90751E81DE71}.Release|Win32.Build.0 = Release|x86
 		{476B4B6D-4713-45F2-945A-90751E81DE71}.Release|x64.ActiveCfg = Release|x64
 		{476B4B6D-4713-45F2-945A-90751E81DE71}.Release|x64.Build.0 = Release|x64
+		{779CADC5-90E3-40F5-979F-DD761F357B4A}.Debug|Win32.ActiveCfg = Debug|x86
+		{779CADC5-90E3-40F5-979F-DD761F357B4A}.Debug|Win32.Build.0 = Debug|x86
+		{779CADC5-90E3-40F5-979F-DD761F357B4A}.Debug|x64.ActiveCfg = Debug|x64
+		{779CADC5-90E3-40F5-979F-DD761F357B4A}.Debug|x64.Build.0 = Debug|x64
+		{779CADC5-90E3-40F5-979F-DD761F357B4A}.Release|Win32.ActiveCfg = Release|x86
+		{779CADC5-90E3-40F5-979F-DD761F357B4A}.Release|Win32.Build.0 = Release|x86
+		{779CADC5-90E3-40F5-979F-DD761F357B4A}.Release|x64.ActiveCfg = Release|x64
+		{779CADC5-90E3-40F5-979F-DD761F357B4A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
