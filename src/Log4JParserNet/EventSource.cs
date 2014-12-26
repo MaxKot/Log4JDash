@@ -18,9 +18,9 @@ namespace Log4JParserNet
             }
         }
 
-        public EventSource (string xmlString)
+        public EventSource (string filePath)
         {
-            Log4JParserC.Log4JEventSourceInitXmlString (out impl_, xmlString);
+            Log4JParserC.Log4JEventSourceInitXmlFile (out impl_, filePath);
         }
 
         public Event First ()
