@@ -37,7 +37,7 @@ namespace Log4JParserNet
 
         [DllImport("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventSourceInitXmlString
-            (out EventSourceHandle self, string xmlString);
+            (out EventSourceHandle self, IntPtr xmlString);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventSourceDestroy (IntPtr self);
