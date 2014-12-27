@@ -1,9 +1,12 @@
 ﻿using System;
+using System.IO;
 
 namespace Log4JParserNet
 {
     public sealed class EventSource : IDisposable
     {
+        private readonly UnmanagedMemoryHandle buffer_;
+
         private readonly EventSourceHandle impl_;
 
         internal EventSourceHandle Handle
@@ -18,9 +21,25 @@ namespace Log4JParserNet
             }
         }
 
-        public EventSource (string filePath)
+        public EventSource (string fileName)
         {
-            Log4JParserC.Log4JEventSourceInitXmlFile (out impl_, filePath);
+            using (var file = File.Open (fileName, FileMode.Open))
+            {
+                var size = file.Seek (0, SeekOrigin.End) + 1L;
+                file.Seek (0, SeekOrigin.Begin);
+
+                buffer_ = new UnmanagedMemoryHandle (size);
+
+                unsafe
+                {
+                    using (var memory = new UnmanagedMemoryStream ((byte*) buffer_.DangerousGetHandle (), size, size, FileAccess.Write))
+                    {
+                        file.CopyTo (memory);
+                    }
+                }
+            }
+
+            Log4JParserC.Log4JEventSourceInitXmlString (out impl_, buffer_.DangerousGetHandle ());
         }
 
         public Event First ()
@@ -54,6 +73,10 @@ namespace Log4JParserNet
                 if (disposing)
                 {
                     impl_.Dispose ();
+                    if (buffer_ != null)
+                    {
+                        buffer_.Dispose ();
+                    }
                 }
 
                 disposedValue_ = true;
