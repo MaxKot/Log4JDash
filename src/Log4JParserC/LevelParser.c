@@ -1,4 +1,4 @@
-#include "LevelParser.h"
+﻿#include "LevelParser.h"
 #include <limits.h>
 
 #define LTN_CHILD_COUNT 26
