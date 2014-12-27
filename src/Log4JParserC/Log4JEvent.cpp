@@ -133,38 +133,6 @@ LOG4JPARSERC_API void __cdecl Log4JEventSourceInitXmlString (Log4JEventSource **
     Log4JEventSourceInitXmlStringImpl (self, xmlString, false);
 }
 
-LOG4JPARSERC_API void Log4JEventSourceInitXmlFile (Log4JEventSource **self, const char *filePath)
-{
-    char *buffer = nullptr;
-    long length = 0L;
-    FILE *f = nullptr;
-
-    auto openResult = fopen_s (&f, filePath, "rb");
-
-    if (!openResult && f)
-    {
-        fseek (f, 0, SEEK_END);
-        length = ftell (f);
-
-        fseek (f, 0, SEEK_SET);
-        buffer = (char *) malloc (length + 1);
-
-        if (buffer)
-        {
-            fread (buffer, 1, length, f);
-            buffer[length] = '\0';
-        }
-
-        fclose (f);
-
-        Log4JEventSourceInitXmlStringImpl (self, buffer, true);
-    }
-    else
-    {
-        *self = nullptr;
-    }
-}
-
 LOG4JPARSERC_API void __cdecl Log4JEventSourceDestroy (Log4JEventSource *self)
 {
     delete self->Doc;

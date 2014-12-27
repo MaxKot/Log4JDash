@@ -31,8 +31,6 @@ typedef struct Log4JEventSource_ Log4JEventSource;
 
 LOG4JPARSERC_API void Log4JEventSourceInitXmlString (Log4JEventSource **self, char *xmlString);
 
-LOG4JPARSERC_API void Log4JEventSourceInitXmlFile (Log4JEventSource **self, const char *filePath);
-
 LOG4JPARSERC_API void Log4JEventSourceDestroy (Log4JEventSource *self);
 
 LOG4JPARSERC_API Log4JEvent Log4JEventSourceFirst (const Log4JEventSource *self);
