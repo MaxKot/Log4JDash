@@ -139,17 +139,12 @@ LOG4JPARSERC_API void Log4JEventSourceInitXmlFile (Log4JEventSource **self, cons
     long length = 0L;
     FILE *f = nullptr;
 
-    auto h = LoadLibrary(L"api-ms-win-core-fibers-l1-1-1.dll");
-    printf ("%p\n", h);
-
     auto openResult = fopen_s (&f, filePath, "rb");
 
     if (!openResult && f)
     {
         fseek (f, 0, SEEK_END);
         length = ftell (f);
-
-        printf ("File length: '%d'...\n", length);
 
         fseek (f, 0, SEEK_SET);
         buffer = (char *) malloc (length + 1);
