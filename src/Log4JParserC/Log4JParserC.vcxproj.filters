@@ -10,14 +10,15 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LevelParser.h" />
     <ClInclude Include="Log4JParserC.h" />
+    <ClInclude Include="LevelParser.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Log4JEvent.cpp" />
-    <ClCompile Include="LevelParser.c" />
-    <ClCompile Include="Log4JIterator.c" />
     <ClCompile Include="Log4JFilter.c" />
+    <ClCompile Include="Log4JIterator.c" />
+    <ClCompile Include="LevelParser.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LevelParserLevels.py" />

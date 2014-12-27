@@ -143,16 +143,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Log4JParserC\Log4JParserC.vcxproj">
-      <Project>{621ed5ff-c1d3-402d-9ff0-40b2e7b7237b}</Project>
-      <Private>false</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Event.h" />
     <ClInclude Include="Filter.h" />
     <ClInclude Include="Iterator.h" />
@@ -161,6 +151,16 @@
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="Filter.cpp" />
     <ClCompile Include="Iterator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Log4JParserC\Log4JParserC.vcxproj">
+      <Project>{fe1ec943-203c-481d-9d23-652cf021e821}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
