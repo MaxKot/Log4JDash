@@ -18,10 +18,7 @@ namespace Log4JParserNet
             (EventHandle log4JEvent, out IntPtr value, out UIntPtr size);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JEventTimestamp
-            (EventHandle log4JEvent, out IntPtr value, out UIntPtr size);
-        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static Int64 Log4JEventTime (EventHandle log4JEvent);
+        extern public static Int64 Log4JEventTimestamp (EventHandle log4JEvent);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventMessage

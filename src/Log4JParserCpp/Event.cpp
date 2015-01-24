@@ -62,18 +62,9 @@ namespace Log4JParser
         return FixedString (thread, threadSize);
     }
 
-    FixedString Event::Timestamp () const
+    int64_t Event::Timestamp () const
     {
-        const char *timestamp;
-        size_t timestampSize;
-        Log4JEventTimestamp (event_, &timestamp, &timestampSize);
-
-        return FixedString (timestamp, timestampSize);
-    }
-
-    int64_t Event::Time () const
-    {
-        return Log4JEventTime (event_);
+        return Log4JEventTimestamp (event_);
     }
 
     FixedString Event::Message () const

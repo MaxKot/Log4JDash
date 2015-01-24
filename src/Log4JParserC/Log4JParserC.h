@@ -18,8 +18,7 @@ LOG4JPARSERC_API void Log4JEventLogger (const Log4JEvent log4JEvent, const char 
 
 LOG4JPARSERC_API void Log4JEventThread (const Log4JEvent log4JEvent, const char **value, size_t *size);
 
-LOG4JPARSERC_API void Log4JEventTimestamp (const Log4JEvent log4JEvent, const char **value, size_t *size);
-LOG4JPARSERC_API int64_t Log4JEventTime (const Log4JEvent log4JEvent);
+LOG4JPARSERC_API int64_t Log4JEventTimestamp (const Log4JEvent log4JEvent);
 
 LOG4JPARSERC_API void Log4JEventMessage (const Log4JEvent log4JEvent, const char **value, size_t *size);
 

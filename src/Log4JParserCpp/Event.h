@@ -39,8 +39,7 @@ namespace Log4JParser
 
         FixedString Thread () const;
 
-        FixedString Timestamp () const;
-        int64_t Time () const;
+        int64_t Timestamp () const;
 
         FixedString Message () const;
 

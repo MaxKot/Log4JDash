@@ -5,6 +5,8 @@ namespace Log4JParserNet
 {
     public sealed class Event
     {
+        private static readonly DateTime TimestampZero = new DateTime (1970, 01, 01, 0, 0, 0, DateTimeKind.Utc);
+
         private readonly EventHandle impl_;
 
         internal EventHandle Handle
@@ -59,23 +61,14 @@ namespace Log4JParserNet
             }
         }
 
-        public string Timestamp
+        public Int64 Timestamp
         {
-            get
-            {
-                IntPtr value;
-                UIntPtr size;
-                Log4JParserC.Log4JEventTimestamp (impl_, out value, out size);
-
-                return value != IntPtr.Zero
-                    ? Marshal.PtrToStringAnsi (value, checked ((int) size.ToUInt32 ()))
-                    : null;
-            }
+            get { return Log4JParserC.Log4JEventTimestamp (impl_); }
         }
 
-        public Int64 Time
+        public DateTime Time
         {
-            get { return Log4JParserC.Log4JEventTime (impl_); }
+            get { return TimestampZero.AddMilliseconds (Timestamp); }
         }
 
         public string Message

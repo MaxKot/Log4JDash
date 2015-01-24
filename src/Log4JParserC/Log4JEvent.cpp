@@ -52,14 +52,7 @@ LOG4JPARSERC_API void __cdecl Log4JEventThread (const Log4JEvent log4JEvent, con
     GetValue_ (xml, value, size);
 }
 
-LOG4JPARSERC_API void __cdecl Log4JEventTimestamp (const Log4JEvent log4JEvent, const char **value, size_t *size)
-{
-    auto node = (rapidxml::xml_node<char> *) log4JEvent;
-    auto xml = node->first_attribute (AttrTimestamp_, AttrTimestampSize_);
-    GetValue_ (xml, value, size);
-}
-
-LOG4JPARSERC_API int64_t __cdecl Log4JEventTime (const Log4JEvent log4JEvent)
+LOG4JPARSERC_API int64_t __cdecl Log4JEventTimestamp (const Log4JEvent log4JEvent)
 {
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_attribute (AttrTimestamp_, AttrTimestampSize_);

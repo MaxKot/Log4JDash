@@ -19,7 +19,7 @@ void print_event (const Log4JParser::Event &event) {
     auto message = event.Message ();
     auto throwable = event.Throwable ();
 
-    auto time = event.Time ();
+    auto time = event.Timestamp ();
     time_t t = time / 1000UL;
     auto millis = time % 1000UL;
     auto tm = localtime (&t);

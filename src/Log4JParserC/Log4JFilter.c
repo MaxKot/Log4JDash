@@ -269,7 +269,7 @@ static bool Log4JFilterTimestampApply_ (void *context, const Log4JEvent event)
 {
     Log4JFilterTimestampContext_ *contextT = (Log4JFilterTimestampContext_ *) context;
 
-    int64_t value = Log4JEventTime (event);
+    int64_t value = Log4JEventTimestamp (event);
 
     return contextT->Min <= value && value <= contextT->Max;
 }
