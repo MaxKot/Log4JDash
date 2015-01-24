@@ -46,6 +46,7 @@ namespace Log4JParserNet
         extern public static void Log4JFilterDestroy (IntPtr self);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.U1)]
         extern public static bool Log4JFilterApply (FilterHandle self, EventHandle @event);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -102,6 +103,7 @@ namespace Log4JParserNet
         extern public static void Log4JIteratorDestroy (IntPtr self);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.U1)]
         extern public static bool Log4JIteratorMoveNext (IteratorHandle self);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]

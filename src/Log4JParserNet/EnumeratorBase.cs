@@ -31,7 +31,8 @@ namespace Log4JParserNet
             {
                 throw new ObjectDisposedException ("IteratorBase");
             }
-            return Log4JParserC.Log4JIteratorMoveNext (impl_);
+            var result = Log4JParserC.Log4JIteratorMoveNext (impl_);
+            return result;
         }
 
         public void Reset ()

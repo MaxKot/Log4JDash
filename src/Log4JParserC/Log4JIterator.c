@@ -26,7 +26,8 @@ LOG4JPARSERC_API void Log4JIteratorDestroy (Log4JIterator *self)
 
 LOG4JPARSERC_API bool Log4JIteratorMoveNext (Log4JIterator *self)
 {
-    return self->MoveNext (self->Context);
+    bool result = self->MoveNext(self->Context);
+    return result;
 }
 
 LOG4JPARSERC_API const Log4JEvent Log4JIteratorCurrent (const Log4JIterator *self)
