@@ -23,18 +23,20 @@ namespace Log4JParserNet
 
         public EventSource (string fileName)
         {
-            using (var file = File.Open (fileName, FileMode.Open))
+            using (var file = File.Open (fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                var size = file.Seek (0, SeekOrigin.End) + 1L;
+                var fileSize = file.Seek (0, SeekOrigin.End);
+                var bufferSize = fileSize + 1L;
                 file.Seek (0, SeekOrigin.Begin);
 
-                buffer_ = new UnmanagedMemoryHandle (size);
+                buffer_ = new UnmanagedMemoryHandle (bufferSize);
 
                 unsafe
                 {
-                    using (var memory = new UnmanagedMemoryStream ((byte*) buffer_.DangerousGetHandle (), size, size, FileAccess.Write))
+                    using (var memory = new UnmanagedMemoryStream ((byte*) buffer_.DangerousGetHandle (), bufferSize, bufferSize, FileAccess.Write))
                     {
                         file.CopyTo (memory);
+                        memory.WriteByte (0);
                     }
                 }
             }
