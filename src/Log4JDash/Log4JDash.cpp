@@ -90,6 +90,24 @@ void parse_xml (const char *filename) {
         }
 
         TIME_TRACE_END (process);
+
+        TIME_TRACE_BEGIN(count_all);
+
+        {
+            Log4JParser::EventSource event_source(input.get());
+            Log4JParser::IteratorEventSource iterator_es(&event_source);
+
+            auto count = 0;
+
+            while (iterator_es.MoveNext()) {
+                auto event = iterator_es.Current();
+                ++count;
+            }
+
+            cout << "Total number of events: " << count << endl;
+        }
+
+        TIME_TRACE_END(count_all);
     }
 
     TIME_TRACE_END (total);

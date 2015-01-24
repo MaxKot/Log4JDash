@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
-using System.IO.File;
 using Log4JParserNet;
 
 namespace Log4JParserDashNet
@@ -80,6 +75,23 @@ namespace Log4JParserDashNet
                         }
                     }
                 }
+
+                using (new TimeTrace ("count all events"))
+                {
+                    using (var eventSource = new EventSource (filename))
+                    using (var enumeratorEs = new EnumeratorEventSource (eventSource))
+                    {
+                        var count = 0;
+
+                        while (enumeratorEs.MoveNext ())
+                        {
+                            var @event = enumeratorEs.Current;
+                            ++count;
+                        }
+
+                        Console.WriteLine ("Found events: {0}", count);
+                    }
+                }
             }
         }
 
@@ -90,10 +102,7 @@ namespace Log4JParserDashNet
             var thread = @event.Thread;
             var message = @event.Message;
             var throwable = @event.Throwable;
-
-            var timestamp = @event.Time;
-            var timestampStart = new DateTime (1970, 01, 01, 0, 0, 0, DateTimeKind.Utc);
-            var time = timestampStart.AddMilliseconds (timestamp);
+            var time = @event.Time;
 
             const string format = "{0:yyyy-MM-dd hh:mm:ss.fff} [{1}] {2} ({3}) {4}";
             Console.WriteLine (format, time, level, logger, thread, message);
