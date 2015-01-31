@@ -1,0 +1,56 @@
+﻿@model Log4JDash.Web.Controllers.LogIndexViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>List</title>
+</head>
+<body>
+    @{
+        var any = false;
+        var start = Model.Form.Offset + 1;
+    }
+    <ol start="@start" class="log-list">
+        @foreach (var @e in Model.Events)
+        {
+            any = true;
+
+            var levelClass = e.Level.ToLowerInvariant ();
+            var time = e.Time.ToLocalTime ().ToString ("F");
+
+            <li class="log-item log-item-@levelClass">
+                <div class="log-item-timestamp">
+                    <label>Timestamp:</label>
+                    <span>@time</span>
+                </div>
+                <div class="log-item-thread">
+                    <label>Thread:</label>
+                    <span>@e.Thread</span>
+                </div>
+                <div class="log-item-logger">
+                    <label>Logger:</label>
+                    <span>@e.Logger</span>
+                </div>
+                <div class="log-item-level">
+                    <label>Level:</label>
+                    <span>@e.Level</span>
+                </div>
+                <div class="log-item-message">
+                    <label>Message:</label>
+                    <span>@e.Message</span>
+                </div>
+            </li>
+        }
+    </ol>
+    @if (!any)
+    {
+        <div>Empty!</div>
+    }
+</body>
+</html>

@@ -11,10 +11,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Log4JParserCpp", "Log4JPars
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4JParserNet", "Log4JParserNet\Log4JParserNet.csproj", "{476B4B6D-4713-45F2-945A-90751E81DE71}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FE1EC943-203C-481D-9D23-652CF021E821} = {FE1EC943-203C-481D-9D23-652CF021E821}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4JParserDashNet", "Log4JParserDashNet\Log4JParserDashNet.csproj", "{779CADC5-90E3-40F5-979F-DD761F357B4A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Log4JParserC", "Log4JParserC\Log4JParserC.vcxproj", "{FE1EC943-203C-481D-9D23-652CF021E821}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4JDash.Web", "Log4JDash.Web\Log4JDash.Web.csproj", "{B60B7826-889B-454D-B58F-C68DD1EC0E91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +69,14 @@ Global
 		{FE1EC943-203C-481D-9D23-652CF021E821}.Release|Win32.Build.0 = Release|Win32
 		{FE1EC943-203C-481D-9D23-652CF021E821}.Release|x64.ActiveCfg = Release|x64
 		{FE1EC943-203C-481D-9D23-652CF021E821}.Release|x64.Build.0 = Release|x64
+		{B60B7826-889B-454D-B58F-C68DD1EC0E91}.Debug|Win32.ActiveCfg = Debug|x86
+		{B60B7826-889B-454D-B58F-C68DD1EC0E91}.Debug|Win32.Build.0 = Debug|x86
+		{B60B7826-889B-454D-B58F-C68DD1EC0E91}.Debug|x64.ActiveCfg = Debug|x64
+		{B60B7826-889B-454D-B58F-C68DD1EC0E91}.Debug|x64.Build.0 = Debug|x64
+		{B60B7826-889B-454D-B58F-C68DD1EC0E91}.Release|Win32.ActiveCfg = Release|x86
+		{B60B7826-889B-454D-B58F-C68DD1EC0E91}.Release|Win32.Build.0 = Release|x86
+		{B60B7826-889B-454D-B58F-C68DD1EC0E91}.Release|x64.ActiveCfg = Release|x64
+		{B60B7826-889B-454D-B58F-C68DD1EC0E91}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
