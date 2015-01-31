@@ -53,7 +53,7 @@ namespace Log4JParserNet
                     throw new ObjectDisposedException ("IteratorBase");
                 }
                 var handle = Log4JParserC.Log4JIteratorCurrent (impl_);
-                return new Event (handle);
+                return new Event (handle, impl_);
             }
         }
 
