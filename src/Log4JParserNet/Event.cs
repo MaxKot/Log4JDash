@@ -10,6 +10,8 @@ namespace Log4JParserNet
 
         private readonly EventHandle impl_;
 
+        private readonly int id_;
+
         private readonly SafeHandle owner_;
 
         internal EventHandle Handle
@@ -17,12 +19,13 @@ namespace Log4JParserNet
             get { return impl_; }
         }
 
-        internal Event (EventHandle impl, SafeHandle owner)
+        internal Event (EventHandle impl, int id, SafeHandle owner)
         {
             Debug.Assert (impl != null, "Event.ctor: impl is null.");
             Debug.Assert (owner != null, "Event.ctor: owner is null.");
 
             impl_ = impl;
+            id_ = id;
             owner_ = owner;
         }
 
@@ -119,6 +122,11 @@ namespace Log4JParserNet
                     ? Marshal.PtrToStringAnsi (value, checked ((int) size.ToUInt32 ()))
                     : null;
             }
+        }
+
+        public int Id
+        {
+            get { return id_; }
         }
 
         private void GuardState ()

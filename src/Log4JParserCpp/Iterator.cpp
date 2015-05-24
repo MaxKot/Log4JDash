@@ -19,9 +19,9 @@ namespace Log4JParser
         return result;
     }
 
-    Event IteratorBase::Current () const
+    Event IteratorBase::Current (int32_t *id) const
     {
-        auto event = Log4JIteratorCurrent (iterator_);
+        auto event = Log4JIteratorCurrent (iterator_, id);
         return Event (event);
     }
 

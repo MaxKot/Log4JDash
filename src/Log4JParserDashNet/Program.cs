@@ -92,9 +92,10 @@ namespace Log4JParserDashNet
             var message = @event.Message;
             var throwable = @event.Throwable;
             var time = @event.Time;
+            var id = @event.Id;
 
-            const string format = "{0:yyyy-MM-dd hh:mm:ss.fff} [{1}] {2} ({3}) {4}";
-            Console.WriteLine (format, time, level, logger, thread, message);
+            const string format = "{5}. {0:yyyy-MM-dd hh:mm:ss.fff} [{1}] {2} ({3}) {4}";
+            Console.WriteLine (format, time, level, logger, thread, message, id);
             if (!String.IsNullOrWhiteSpace (throwable))
             {
                 Console.WriteLine (throwable);

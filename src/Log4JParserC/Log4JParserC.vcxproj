@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="LevelParser.h" />
     <ClInclude Include="Log4JParserC.h" />
+    <ClInclude Include="Private.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

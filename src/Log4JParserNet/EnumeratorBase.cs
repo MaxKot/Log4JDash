@@ -70,8 +70,9 @@ namespace Log4JParserNet
                 {
                     throw new ObjectDisposedException ("IteratorBase");
                 }
-                var handle = Log4JParserC.Log4JIteratorCurrent (impl_);
-                return new Event (handle, owner_);
+                int id;
+                var handle = Log4JParserC.Log4JIteratorCurrent (impl_, out id);
+                return new Event (handle, id, owner_);
             }
         }
 

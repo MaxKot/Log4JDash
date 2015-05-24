@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Log4JParserNet;
 
@@ -96,6 +94,7 @@ namespace Log4JDash.Web.Controllers
                 throw new ArgumentNullException ("e");
             }
 
+            Id = e.Id;
             Level = e.Level;
             Logger = e.Logger;
             Thread = e.Thread;
@@ -103,6 +102,8 @@ namespace Log4JDash.Web.Controllers
             Message = e.Message;
             Throwable = e.Throwable;
         }
+
+        public int Id { get; set; }
 
         public string Level { get; set; }
 

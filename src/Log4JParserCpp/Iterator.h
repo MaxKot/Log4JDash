@@ -20,7 +20,7 @@ namespace Log4JParser
     public:
         bool MoveNext ();
 
-        Event Current () const;
+        Event Current (int32_t *id = nullptr) const;
 
     protected:
         static const Log4JIterator *GetIterator (const IteratorBase *iterator);

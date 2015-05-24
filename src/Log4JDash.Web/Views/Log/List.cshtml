@@ -16,18 +16,23 @@
         var any = false;
         var start = Model.Form.Offset + 1;
     }
-    <ol start="@start" class="log-list">
+    <ol class="log-list">
         @foreach (var @e in Model.Events)
         {
             any = true;
 
+            var id = e.Id;
             var levelClass = e.Level.ToLowerInvariant ();
-            var time = e.Time.ToLocalTime ().ToString ("F");
+            var timestamp = e.Time.ToLocalTime ();
+            var date = timestamp.ToString ("yyyy-MM-dd");
+            var time = timestamp.ToString ("HH:mm:ss.fff");
 
-            <li class="log-item log-item-@levelClass">
+            <li class="log-item log-item-@levelClass" value="@id">
                 <div class="log-item-timestamp">
                     <label>Timestamp:</label>
-                    <span>@time</span>
+                    <span>
+                        <span class="log-item-timestamp-date">@date</span>T<span class="log-item-timestamp-time">@time</span>
+                    </span>
                 </div>
                 <div class="log-item-thread">
                     <label>Thread:</label>
