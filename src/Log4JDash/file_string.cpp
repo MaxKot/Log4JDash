@@ -6,12 +6,12 @@ file_string::file_string (const char * filename) {
     TIME_TRACE_BEGIN (load_file);
 
     _buffer = nullptr;
-    long length;
-    auto f = fopen (filename, "rb");
+    FILE *f = nullptr;
+    auto open_error = fopen_s (&f, filename, "rb");
 
-    if (f) {
+    if (!open_error && f) {
         fseek (f, 0, SEEK_END);
-        length = ftell (f);
+        auto length = ftell (f);
         fseek (f, 0, SEEK_SET);
         _buffer = malloc (length + 1);
 

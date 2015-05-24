@@ -22,14 +22,20 @@ void print_event (const Log4JParser::Event &event) {
     auto time = event.Timestamp ();
     time_t t = time / 1000UL;
     auto millis = time % 1000UL;
-    auto tm = localtime (&t);
-    char tbuf[1024];
-    strftime (tbuf, sizeof (tbuf), "%Y-%m-%d %H:%M:%S", tm);
+    tm tm;
+    auto isTmValid = false;
+    if (!localtime_s (&tm, &t)) {
+        char tbuf[1024];
+        strftime (tbuf, sizeof (tbuf), "%Y-%m-%d %H:%M:%S", &tm);
 
-    cout << tbuf << ".";
-    cout.width (3);
-    cout.fill ('0');
-    cout << millis;
+        cout << tbuf << ".";
+        cout.width(3);
+        cout.fill('0');
+        cout << millis;
+    } else {
+        cout << "!!unknown";
+    }
+
     cout << " [" << level << "] " << logger << " (" << thread << ") " << message << endl;
     if (throwable.Size () > 0) {
         cout << throwable << endl;
