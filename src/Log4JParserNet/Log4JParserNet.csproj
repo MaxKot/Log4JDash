@@ -62,12 +62,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EnumeratorFilter.cs" />
+    <Compile Include="FilteredEventSource.cs" />
     <Compile Include="EnumeratorBase.cs" />
-    <Compile Include="EnumeratorEventSource.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="EventHandle.cs" />
-    <Compile Include="EventSource.cs" />
+    <Compile Include="FileEventSource.cs" />
     <Compile Include="EventSourceHandle.cs" />
     <Compile Include="FilterAll.cs" />
     <Compile Include="FilterAny.cs" />
@@ -78,6 +77,7 @@
     <Compile Include="FilterMessage.cs" />
     <Compile Include="FilterNot.cs" />
     <Compile Include="FilterTimestamp.cs" />
+    <Compile Include="IEventSource.cs" />
     <Compile Include="IteratorHandle.cs" />
     <Compile Include="Log4JParserC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

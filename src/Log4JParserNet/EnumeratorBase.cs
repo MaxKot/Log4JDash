@@ -1,12 +1,21 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Log4JParserNet
 {
-    public abstract class EnumeratorBase : IEnumerator<Event>
+    internal abstract class EnumeratorBase : IEnumerator<Event>
     {
         private readonly IteratorHandle impl_;
+
+        private readonly SafeHandle owner_;
+
+        internal SafeHandle Owner
+        {
+            get { return owner_; }
+        }
 
         internal IteratorHandle Handle
         {
@@ -20,9 +29,18 @@ namespace Log4JParserNet
             }
         }
 
-        internal EnumeratorBase (IteratorHandle impl)
+        internal EnumeratorBase (IteratorHandle impl, SafeHandle owner)
         {
+            Debug.Assert (impl != null, "EnumeratorBase.ctor: impl is null.");
+            Debug.Assert (!impl.IsInvalid, "EnumeratorBase.ctor: impl is invalid.");
+            Debug.Assert (!impl.IsClosed, "EnumeratorBase.ctor: impl is closed.");
+
+            Debug.Assert (owner != null, "EnumeratorBase.ctor: owner is null.");
+            Debug.Assert (!owner.IsInvalid, "EnumeratorBase.ctor: owner is invalid.");
+            Debug.Assert (!owner.IsClosed, "EnumeratorBase.ctor: owner is closed.");
+
             impl_ = impl;
+            owner_ = owner;
         }
 
         public bool MoveNext ()
@@ -53,7 +71,7 @@ namespace Log4JParserNet
                     throw new ObjectDisposedException ("IteratorBase");
                 }
                 var handle = Log4JParserC.Log4JIteratorCurrent (impl_);
-                return new Event (handle, impl_);
+                return new Event (handle, owner_);
             }
         }
 

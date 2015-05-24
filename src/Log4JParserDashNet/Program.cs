@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using Log4JParserNet;
 
 namespace Log4JParserDashNet
@@ -40,8 +41,7 @@ namespace Log4JParserDashNet
             {
                 using (new TimeTrace ("process with E/S init"))
                 {
-                    using (var eventSource = new EventSource (filename))
-                    using (var enumeratorEs = new EnumeratorEventSource (eventSource))
+                    using (var eventSource = new FileEventSource (filename))
                     using (new TimeTrace ("process inner"))
                     using (var filterTs = new FilterTimestamp (1411231371536L, 1411231371556L))
                     using (var filterLvl = new FilterLevel ("INFO", "ERROR"))
@@ -60,37 +60,26 @@ namespace Log4JParserDashNet
                         filterAll.Add (filterAny);
                         filterAll.Add (filterLgr);
 
-                        using (var enumeratorFilter = new EnumeratorFilter (enumeratorEs, filterAll))
+                        var matchingEvents = eventSource
+                            .Where (filterAll)
+                            .Take (20)
+                            .ToList ();
+
+                        foreach (var @event in matchingEvents)
                         {
-                            var count = 0;
-
-                            while (enumeratorFilter.MoveNext () && count < 20)
-                            {
-                                var @event = enumeratorFilter.Current;
-                                PrintEvent (@event);
-                                ++count;
-                            }
-
-                            Console.WriteLine ("Found events: {0}", count);
+                            PrintEvent (@event);
                         }
+
+                        Console.WriteLine ("Found events: {0}", matchingEvents.Count);
                     }
                 }
 
                 using (new TimeTrace ("count all events"))
+                using (var eventSource = new FileEventSource (filename))
                 {
-                    using (var eventSource = new EventSource (filename))
-                    using (var enumeratorEs = new EnumeratorEventSource (eventSource))
-                    {
-                        var count = 0;
+                    var count = eventSource.Count ();
 
-                        while (enumeratorEs.MoveNext ())
-                        {
-                            var @event = enumeratorEs.Current;
-                            ++count;
-                        }
-
-                        Console.WriteLine ("Found events: {0}", count);
-                    }
+                    Console.WriteLine ("Found events: {0}", count);
                 }
             }
         }

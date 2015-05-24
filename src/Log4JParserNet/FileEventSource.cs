@@ -1,27 +1,43 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Log4JParserNet
 {
-    public sealed class EventSource : IDisposable
+    public sealed class FileEventSource
+        : IDisposable
+        , IEnumerable<Event>
+        , IEventSource
     {
+        private sealed class Enumerator : EnumeratorBase
+        {
+            public Enumerator (FileEventSource source)
+                : base (Init (source.impl_), source.impl_)
+            {
+
+            }
+
+            private static IteratorHandle Init (EventSourceHandle source)
+            {
+                IteratorHandle result;
+                Log4JParserC.Log4JIteratorInitEventSource (out result, source);
+
+                return result;
+            }
+        }
+
         private readonly UnmanagedMemoryHandle buffer_;
 
         private readonly EventSourceHandle impl_;
 
-        internal EventSourceHandle Handle
+        SafeHandle IEventSource.Owner
         {
-            get
-            {
-                if (disposedValue_)
-                {
-                    throw new ObjectDisposedException ("EventSource");
-                }
-                return impl_;
-            }
+            get { return impl_; }
         }
 
-        public EventSource (string fileName)
+        public FileEventSource (string fileName)
         {
             using (var file = File.Open (fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
@@ -44,25 +60,44 @@ namespace Log4JParserNet
             Log4JParserC.Log4JEventSourceInitXmlString (out impl_, buffer_.DangerousGetHandle ());
         }
 
-        public Event First ()
+        public IEnumerable<Event> Where (FilterBase filter)
         {
             if (disposedValue_)
             {
-                throw new ObjectDisposedException ("EventSource");
+                throw new ObjectDisposedException ("FileEventSource");
             }
-            var eventHandle = Log4JParserC.Log4JEventSourceFirst (impl_);
-            return !eventHandle.IsInvalid ? new Event (eventHandle) : null;
+
+            return new FilteredEventSource (this, filter);
         }
 
-        public Event Next (Event @event)
+        #region IEnumerable Support
+
+        internal EnumeratorBase GetEnumerator ()
         {
             if (disposedValue_)
             {
-                throw new ObjectDisposedException ("EventSource");
+                throw new ObjectDisposedException ("FileEventSource");
             }
-            var eventHandle = Log4JParserC.Log4JEventSourceNext (impl_, @event.Handle);
-            return !eventHandle.IsInvalid ? new Event (eventHandle) : null;
+
+            return new Enumerator (this);
         }
+
+        EnumeratorBase IEventSource.GetEnumerator()
+        {
+            return GetEnumerator ();
+        }
+
+        IEnumerator<Event> IEnumerable<Event>.GetEnumerator ()
+        {
+            return GetEnumerator ();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator ()
+        {
+            return GetEnumerator ();
+        }
+
+        #endregion
 
         #region IDisposable Support
 
