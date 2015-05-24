@@ -41,8 +41,8 @@ LOG4JPARSERC_API const Log4JEvent Log4JIteratorCurrent (const Log4JIterator *sel
 typedef struct
 {
     const Log4JEventSource *Source;
-    bool Start;
     Log4JEvent Current;
+    int32_t Count;
 } Log4JIteratorEventSourceContext_;
 
 static void Log4JIteratorEventSourceDestroy (void *context);
@@ -52,7 +52,12 @@ static const Log4JEvent Log4JIteratorEventSourceCurrent (const void *context, in
 LOG4JPARSERC_API void Log4JIteratorInitEventSource (Log4JIterator **self, const Log4JEventSource *source)
 {
     Log4JIteratorEventSourceContext_ *context = (Log4JIteratorEventSourceContext_ *) malloc (sizeof (Log4JIteratorEventSourceContext_));
-    *context = (Log4JIteratorEventSourceContext_ ) { .Source = source, .Start = true, .Current = NULL };
+    *context = (Log4JIteratorEventSourceContext_ )
+    {
+        .Source = source,
+        .Current = NULL,
+        .Count = 0
+    };
 
     Log4JIterator *result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
     *result = (Log4JIterator)
@@ -70,7 +75,12 @@ void Log4JIteratorEventSourceDestroy (void *context)
 {
     Log4JIteratorEventSourceContext_ *contextD = (Log4JIteratorEventSourceContext_ *) context;
 
-    *contextD = (Log4JIteratorEventSourceContext_) { .Source = NULL, .Start = false, .Current = NULL };
+    *contextD = (Log4JIteratorEventSourceContext_)
+    {
+        .Source = NULL,
+        .Current = NULL,
+        .Count = 0
+    };
     free (contextD);
 }
 
@@ -85,14 +95,15 @@ bool Log4JIteratorEventSourceMoveNext (void *context)
 
     Log4JEvent nextEvent;
 
-    if (contextD->Start)
+    if (contextD->Count == 0)
     {
         nextEvent = Log4JEventSourceFirst (contextD->Source);
-        contextD->Start = false;
+        contextD->Count = 1;
     }
     else if (contextD->Current)
     {
         nextEvent = Log4JEventSourceNext (contextD->Source, contextD->Current);
+        ++contextD->Count;
     }
     else
     {
@@ -108,8 +119,7 @@ const Log4JEvent Log4JIteratorEventSourceCurrent (const void *context, int32_t *
     const Log4JIteratorEventSourceContext_ *contextD = (const Log4JIteratorEventSourceContext_ *) context;
     if (id != NULL)
     {
-#pragma message (__TODO__ "Assign event ID.")
-        *id = -1;
+        *id = contextD->Count;
     }
 
     return contextD->Current;
