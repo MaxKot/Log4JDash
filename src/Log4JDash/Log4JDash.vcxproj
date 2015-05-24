@@ -151,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="file_string.h" />
+    <ClInclude Include="log4j_timestamp.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="time_trace.h" />
@@ -159,6 +160,7 @@
   <ItemGroup>
     <ClCompile Include="file_string.cpp" />
     <ClCompile Include="Log4JDash.cpp" />
+    <ClCompile Include="log4j_timestamp.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

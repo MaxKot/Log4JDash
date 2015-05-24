@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <tchar.h>
 #include <malloc.h>
+#include <ctime>
 #include <fstream>
 #include <string>
 #include <sstream>

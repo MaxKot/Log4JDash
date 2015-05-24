@@ -2,10 +2,10 @@
 //
 
 #include "stdafx.h"
-#include <ctime>
 #include <Event.h>
 #include <Filter.h>
 #include <Iterator.h>
+#include "log4j_timestamp.h"
 #include "time_trace.h"
 #include "xml_file.h"
 
@@ -18,25 +18,15 @@ void print_event (const Log4JParser::Event &event) {
     auto thread = event.Thread ();
     auto message = event.Message ();
     auto throwable = event.Throwable ();
+    log4j_timestamp time (event.Timestamp ());
 
-    auto time = event.Timestamp ();
-    time_t t = time / 1000UL;
-    auto millis = time % 1000UL;
-    tm tm;
-    auto isTmValid = false;
-    if (!localtime_s (&tm, &t)) {
-        char tbuf[1024];
-        strftime (tbuf, sizeof (tbuf), "%Y-%m-%d %H:%M:%S", &tm);
-
-        cout << tbuf << ".";
-        cout.width(3);
-        cout.fill('0');
-        cout << millis;
-    } else {
-        cout << "!!unknown";
-    }
-
-    cout << " [" << level << "] " << logger << " (" << thread << ") " << message << endl;
+    cout
+        << time
+        << " [" << level << "] "
+        << logger
+        << " (" << thread << ") "
+        << message
+        << endl;
     if (throwable.Size () > 0) {
         cout << throwable << endl;
     }
