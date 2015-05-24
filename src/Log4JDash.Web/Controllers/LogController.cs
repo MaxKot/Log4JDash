@@ -81,68 +81,9 @@ namespace Log4JDash.Web.Controllers
 
     public sealed class LogSourceModel
     {
-        private sealed class EventsEnumerable : IEnumerable<Event>
+        public FileEventSource GetEvents (string fileName)
         {
-            private sealed class Enumerator : IEnumerator<Event>
-            {
-                EventSource eventSource_;
-
-                EnumeratorEventSource impl_;
-
-                public Enumerator (string fileName)
-                {
-                    eventSource_ = new EventSource (fileName);
-                    impl_ = new EnumeratorEventSource (eventSource_);
-                }
-
-                public Event Current
-                {
-                    get { return impl_.Current; }
-                }
-
-                object IEnumerator.Current
-                {
-                    get { return Current; }
-                }
-
-                public void Dispose ()
-                {
-                    impl_.Dispose ();
-                    eventSource_.Dispose ();
-                }
-
-                public bool MoveNext ()
-                {
-                    return impl_.MoveNext ();
-                }
-
-                public void Reset ()
-                {
-                    impl_.Reset ();
-                }
-            }
-
-            private readonly string fileName_;
-
-            public EventsEnumerable (string fileName)
-            {
-                fileName_ = fileName;
-            }
-
-            public IEnumerator<Event> GetEnumerator ()
-            {
-                return new Enumerator (fileName_);
-            }
-
-            IEnumerator IEnumerable.GetEnumerator ()
-            {
-                return GetEnumerator ();
-            }
-        }
-
-        public IEnumerable<Event> GetEvents (string fileName)
-        {
-            return new EventsEnumerable (fileName);
+            return new FileEventSource (fileName);
         }
     }
 
@@ -201,37 +142,37 @@ namespace Log4JDash.Web.Controllers
                 ? formModel.Quantity
                 : 20;
 
-            var events = logSourceModel_
-                .GetEvents (fileName);
-
-            IEnumerable<Event> eventsWindow;
-            if (formModel.Offset == null)
+            using (var events = logSourceModel_.GetEvents (fileName))
             {
-                eventsWindow = logSourceModel_
-                    .GetEvents (fileName)
-                    .TakeLast (quantity);
-            }
-            else
-            {
-                var offset = (int) formModel.Offset;
-                if (offset < 0)
+                IEnumerable<Event> eventsWindow;
+                if (formModel.Offset == null)
                 {
-                    offset = 0;
+                    eventsWindow = logSourceModel_
+                        .GetEvents (fileName)
+                        .TakeLast (quantity);
+                }
+                else
+                {
+                    var offset = (int) formModel.Offset;
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+
+                    eventsWindow = logSourceModel_
+                        .GetEvents (fileName)
+                        .Skip (offset)
+                        .Take (quantity);
                 }
 
-                eventsWindow = logSourceModel_
-                    .GetEvents (fileName)
-                    .Skip (offset)
-                    .Take (quantity);
+                var viewModel = new LogIndexViewModel
+                {
+                    Form = formModel,
+                    Events = eventsWindow.Select (x => new EventModel (x))
+                };
+
+                return View (viewModel);
             }
-
-            var viewModel = new LogIndexViewModel
-            {
-                Form = formModel,
-                Events = eventsWindow.Select (x => new EventModel (x))
-            };
-
-            return View (viewModel);
         }
     }
 }
