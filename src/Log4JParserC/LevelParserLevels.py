@@ -84,7 +84,26 @@ def print_tree(tree_node, node_name = ''):
     
     print('};')
 
+for (name, _) in log4JLevels:
+    print('LOG4JPARSERC_API int GetLevel{} (char *buffer, size_t bufferSize);'.format(name.title()))
+print()
+ 
 print('#pragma region Levels definition')
+print()
+
+for (name, _) in log4JLevels:
+    print('LOG4JPARSERC_API int GetLevel{} (char *buffer, size_t bufferSize)'.format(name.title()))
+    print('{')
+    print('    const char value[] = "{}";'.format(name.upper()))
+    print('    if (buffer != NULL)')
+    print('    {')
+    print('        if (!strcpy_s (buffer, bufferSize, value))')
+    print('        {');
+    print('            return -1;')
+    print('        }')
+    print('    }')
+    print('    return sizeof (value);');
+    print('}')
 print()
 
 print_tree(root)

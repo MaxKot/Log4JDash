@@ -94,3 +94,23 @@ LOG4JPARSERC_API const Log4JEvent Log4JIteratorCurrent (const Log4JIterator *sel
 LOG4JPARSERC_API void Log4JIteratorInitEventSource (Log4JIterator **self, const Log4JEventSource *source);
 
 LOG4JPARSERC_API void Log4JIteratorInitFilter (Log4JIterator **self, Log4JIterator *inner, const Log4JFilter *filter);
+
+// Constants
+
+LOG4JPARSERC_API int GetLevelAlert (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelAll (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelCritical (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelDebug (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelEmergency (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelError (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelFatal (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelFine (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelFiner (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelFinest (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelInfo (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelNotice (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelOff (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelSevere (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelTrace (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelVerbose (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API int GetLevelWarn (char *buffer, size_t bufferSize);

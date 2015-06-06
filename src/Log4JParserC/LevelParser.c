@@ -1,5 +1,6 @@
-﻿#include "LevelParser.h"
-#include <limits.h>
+﻿#include <limits.h>
+#include "Log4JParserC.h"
+#include "LevelParser.h"
 
 #define LTN_CHILD_COUNT 26
 
@@ -47,6 +48,211 @@ static int LtnGet_ (const LevelTreeNode_ *root, const char *value, size_t valueS
 }
 
 #pragma region Levels definition
+
+LOG4JPARSERC_API int GetLevelAlert (char *buffer, size_t bufferSize)
+{
+    const char value[] = "ALERT";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelAll (char *buffer, size_t bufferSize)
+{
+    const char value[] = "ALL";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelCritical (char *buffer, size_t bufferSize)
+{
+    const char value[] = "CRITICAL";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelDebug (char *buffer, size_t bufferSize)
+{
+    const char value[] = "DEBUG";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelEmergency (char *buffer, size_t bufferSize)
+{
+    const char value[] = "EMERGENCY";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelError (char *buffer, size_t bufferSize)
+{
+    const char value[] = "ERROR";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelFatal (char *buffer, size_t bufferSize)
+{
+    const char value[] = "FATAL";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelFine (char *buffer, size_t bufferSize)
+{
+    const char value[] = "FINE";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelFiner (char *buffer, size_t bufferSize)
+{
+    const char value[] = "FINER";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelFinest (char *buffer, size_t bufferSize)
+{
+    const char value[] = "FINEST";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelInfo (char *buffer, size_t bufferSize)
+{
+    const char value[] = "INFO";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelNotice (char *buffer, size_t bufferSize)
+{
+    const char value[] = "NOTICE";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelOff (char *buffer, size_t bufferSize)
+{
+    const char value[] = "OFF";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelSevere (char *buffer, size_t bufferSize)
+{
+    const char value[] = "SEVERE";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelTrace (char *buffer, size_t bufferSize)
+{
+    const char value[] = "TRACE";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelVerbose (char *buffer, size_t bufferSize)
+{
+    const char value[] = "VERBOSE";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
+LOG4JPARSERC_API int GetLevelWarn (char *buffer, size_t bufferSize)
+{
+    const char value[] = "WARN";
+    if (buffer != NULL)
+    {
+        if (!strcpy_s (buffer, bufferSize, value))
+        {
+            return -1;
+        }
+    }
+    return sizeof (value);
+}
 
 static const LevelTreeNode_ LevelAll_ =
 {
