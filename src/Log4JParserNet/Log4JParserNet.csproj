@@ -79,6 +79,7 @@
     <Compile Include="FilterTimestamp.cs" />
     <Compile Include="IEventSource.cs" />
     <Compile Include="IteratorHandle.cs" />
+    <Compile Include="Level.cs" />
     <Compile Include="Log4JParserC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnmanagedMemoryHandle.cs" />

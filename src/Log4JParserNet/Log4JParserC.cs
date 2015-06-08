@@ -116,5 +116,26 @@ namespace Log4JParserNet
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JIteratorInitFilter
             (out IteratorHandle self, IteratorHandle inner, FilterHandle filter);
+
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static void Log4JLevelAll (out IntPtr value);
+
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static void Log4JLevelDebug (out IntPtr value);
+
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static void Log4JLevelError (out IntPtr value);
+
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static void Log4JLevelFatal (out IntPtr value);
+
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static void Log4JLevelInfo (out IntPtr value);
+
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static void Log4JLevelOff (out IntPtr value);
+
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static void Log4JLevelWarn (out IntPtr value);
     }
 }
