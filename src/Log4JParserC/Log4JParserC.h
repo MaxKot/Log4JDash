@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #ifdef LOG4JPARSERC_EXPORTS
@@ -97,20 +98,20 @@ LOG4JPARSERC_API void Log4JIteratorInitFilter (Log4JIterator **self, Log4JIterat
 
 // Constants
 
-LOG4JPARSERC_API int GetLevelAlert (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelAll (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelCritical (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelDebug (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelEmergency (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelError (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelFatal (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelFine (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelFiner (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelFinest (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelInfo (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelNotice (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelOff (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelSevere (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelTrace (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelVerbose (char *buffer, size_t bufferSize);
-LOG4JPARSERC_API int GetLevelWarn (char *buffer, size_t bufferSize);
+LOG4JPARSERC_API void Log4JLevelAlert (const char **value);
+LOG4JPARSERC_API void Log4JLevelAll (const char **value);
+LOG4JPARSERC_API void Log4JLevelCritical (const char **value);
+LOG4JPARSERC_API void Log4JLevelDebug (const char **value);
+LOG4JPARSERC_API void Log4JLevelEmergency (const char **value);
+LOG4JPARSERC_API void Log4JLevelError (const char **value);
+LOG4JPARSERC_API void Log4JLevelFatal (const char **value);
+LOG4JPARSERC_API void Log4JLevelFine (const char **value);
+LOG4JPARSERC_API void Log4JLevelFiner (const char **value);
+LOG4JPARSERC_API void Log4JLevelFinest (const char **value);
+LOG4JPARSERC_API void Log4JLevelInfo (const char **value);
+LOG4JPARSERC_API void Log4JLevelNotice (const char **value);
+LOG4JPARSERC_API void Log4JLevelOff (const char **value);
+LOG4JPARSERC_API void Log4JLevelSevere (const char **value);
+LOG4JPARSERC_API void Log4JLevelTrace (const char **value);
+LOG4JPARSERC_API void Log4JLevelVerbose (const char **value);
+LOG4JPARSERC_API void Log4JLevelWarn (const char **value);

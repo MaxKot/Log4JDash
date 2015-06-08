@@ -49,209 +49,106 @@ static int LtnGet_ (const LevelTreeNode_ *root, const char *value, size_t valueS
 
 #pragma region Levels definition
 
-LOG4JPARSERC_API int GetLevelAlert (char *buffer, size_t bufferSize)
+static const char Log4JLevelAlertValue_[] = "ALERT";
+LOG4JPARSERC_API void Log4JLevelAlert (const char **value)
 {
-    const char value[] = "ALERT";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelAlertValue_;
 }
-LOG4JPARSERC_API int GetLevelAll (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelAllValue_[] = "ALL";
+LOG4JPARSERC_API void Log4JLevelAll (const char **value)
 {
-    const char value[] = "ALL";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelAllValue_;
 }
-LOG4JPARSERC_API int GetLevelCritical (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelCriticalValue_[] = "CRITICAL";
+LOG4JPARSERC_API void Log4JLevelCritical (const char **value)
 {
-    const char value[] = "CRITICAL";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelCriticalValue_;
 }
-LOG4JPARSERC_API int GetLevelDebug (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelDebugValue_[] = "DEBUG";
+LOG4JPARSERC_API void Log4JLevelDebug (const char **value)
 {
-    const char value[] = "DEBUG";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelDebugValue_;
 }
-LOG4JPARSERC_API int GetLevelEmergency (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelEmergencyValue_[] = "EMERGENCY";
+LOG4JPARSERC_API void Log4JLevelEmergency (const char **value)
 {
-    const char value[] = "EMERGENCY";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelEmergencyValue_;
 }
-LOG4JPARSERC_API int GetLevelError (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelErrorValue_[] = "ERROR";
+LOG4JPARSERC_API void Log4JLevelError (const char **value)
 {
-    const char value[] = "ERROR";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelErrorValue_;
 }
-LOG4JPARSERC_API int GetLevelFatal (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelFatalValue_[] = "FATAL";
+LOG4JPARSERC_API void Log4JLevelFatal (const char **value)
 {
-    const char value[] = "FATAL";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelFatalValue_;
 }
-LOG4JPARSERC_API int GetLevelFine (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelFineValue_[] = "FINE";
+LOG4JPARSERC_API void Log4JLevelFine (const char **value)
 {
-    const char value[] = "FINE";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelFineValue_;
 }
-LOG4JPARSERC_API int GetLevelFiner (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelFinerValue_[] = "FINER";
+LOG4JPARSERC_API void Log4JLevelFiner (const char **value)
 {
-    const char value[] = "FINER";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelFinerValue_;
 }
-LOG4JPARSERC_API int GetLevelFinest (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelFinestValue_[] = "FINEST";
+LOG4JPARSERC_API void Log4JLevelFinest (const char **value)
 {
-    const char value[] = "FINEST";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelFinestValue_;
 }
-LOG4JPARSERC_API int GetLevelInfo (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelInfoValue_[] = "INFO";
+LOG4JPARSERC_API void Log4JLevelInfo (const char **value)
 {
-    const char value[] = "INFO";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelInfoValue_;
 }
-LOG4JPARSERC_API int GetLevelNotice (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelNoticeValue_[] = "NOTICE";
+LOG4JPARSERC_API void Log4JLevelNotice (const char **value)
 {
-    const char value[] = "NOTICE";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelNoticeValue_;
 }
-LOG4JPARSERC_API int GetLevelOff (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelOffValue_[] = "OFF";
+LOG4JPARSERC_API void Log4JLevelOff (const char **value)
 {
-    const char value[] = "OFF";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelOffValue_;
 }
-LOG4JPARSERC_API int GetLevelSevere (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelSevereValue_[] = "SEVERE";
+LOG4JPARSERC_API void Log4JLevelSevere (const char **value)
 {
-    const char value[] = "SEVERE";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelSevereValue_;
 }
-LOG4JPARSERC_API int GetLevelTrace (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelTraceValue_[] = "TRACE";
+LOG4JPARSERC_API void Log4JLevelTrace (const char **value)
 {
-    const char value[] = "TRACE";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelTraceValue_;
 }
-LOG4JPARSERC_API int GetLevelVerbose (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelVerboseValue_[] = "VERBOSE";
+LOG4JPARSERC_API void Log4JLevelVerbose (const char **value)
 {
-    const char value[] = "VERBOSE";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelVerboseValue_;
 }
-LOG4JPARSERC_API int GetLevelWarn (char *buffer, size_t bufferSize)
+
+static const char Log4JLevelWarnValue_[] = "WARN";
+LOG4JPARSERC_API void Log4JLevelWarn (const char **value)
 {
-    const char value[] = "WARN";
-    if (buffer != NULL)
-    {
-        if (!strcpy_s (buffer, bufferSize, value))
-        {
-            return -1;
-        }
-    }
-    return sizeof (value);
+    *value = Log4JLevelWarnValue_;
 }
 
 static const LevelTreeNode_ LevelAll_ =
