@@ -12,7 +12,7 @@ namespace Log4JDash.Web.Controllers
     {
         private struct CycleBuffer<T> : IEnumerable<T>
         {
-            private T[] impl_;
+            private readonly T[] impl_;
 
             private int nextWriteIndex_;
 
@@ -36,11 +36,11 @@ namespace Log4JDash.Web.Controllers
 
             public IEnumerator<T> GetEnumerator ()
             {
-                var startIndex = isFull_ ? (nextWriteIndex_ + 1) % impl_.Length : 0;
-                for (var i = 0; i < impl_.Length; ++i)
-                {
-                    yield return impl_[(i + startIndex) % impl_.Length];
-                }
+                return impl_
+                    .Concat (impl_)
+                    .Skip (isFull_ ? nextWriteIndex_ : 0)
+                    .Take (impl_.Length)
+                    .GetEnumerator ();
             }
 
             IEnumerator IEnumerable.GetEnumerator ()
