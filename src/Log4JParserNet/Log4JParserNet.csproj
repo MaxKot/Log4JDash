@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisposableCollection.cs" />
     <Compile Include="FilteredEventSource.cs" />
     <Compile Include="EnumeratorBase.cs" />
     <Compile Include="Event.cs" />

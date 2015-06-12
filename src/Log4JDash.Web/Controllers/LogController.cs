@@ -143,29 +143,40 @@ namespace Log4JDash.Web.Controllers
             }
 
             using (var source = new FileEventSource (sourceFile))
+            using (var filters = new List<FilterBase> ().ToDisposable ())
             {
-                var filters = new List<FilterBase> ();
                 if (query.MinLevel.Value != Level.Debug)
                 {
-                    filters.Add (new FilterLevel (query.MinLevel.Value, Level.Off));
+                    filters.Elements.Add (new FilterLevel (query.MinLevel.Value, Level.Off));
                 }
 
                 IEnumerable<Event> filteredEvents;
-                switch (filters.Count)
+                switch (filters.Elements.Count)
                 {
                     case 0:
                         filteredEvents = source;
                         break;
 
                     case 1:
-                        filteredEvents = source.Where (filters.Single ());
+                        filteredEvents = source.Where (filters.Elements.Single ());
                         break;
 
                     default:
-                        var rootFilter = new FilterAll ();
-                        foreach (var filter in filters)
+                        FilterAll rootFilter = null;
+                        try
                         {
-                            rootFilter.Add (filter);
+                            rootFilter = new FilterAll ();
+                            foreach (var filter in filters.Elements)
+                            {
+                                rootFilter.Add (filter);
+                            }
+                        }
+                        finally
+                        {
+                            if (rootFilter != null)
+                            {
+                                filters.Elements.Add (rootFilter);
+                            }
                         }
                         filteredEvents = source.Where (rootFilter);
                         break;
