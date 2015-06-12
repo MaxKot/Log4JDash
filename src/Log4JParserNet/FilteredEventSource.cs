@@ -11,10 +11,12 @@ namespace Log4JParserNet
     {
         private sealed class Enumerator : EnumeratorBase
         {
+            private readonly EnumeratorBase inner_;
+
             public Enumerator (EnumeratorBase inner, FilterBase filter)
                 : base (Init (inner.Handle, filter.Handle), inner.Owner)
             {
-
+                inner_ = inner;
             }
 
             private static IteratorHandle Init (IteratorHandle inner, FilterHandle filter)
@@ -23,6 +25,15 @@ namespace Log4JParserNet
                 Log4JParserC.Log4JIteratorInitFilter (out result, inner, filter);
 
                 return result;
+            }
+
+            protected override void Dispose (bool disposing)
+            {
+                if (disposing)
+                {
+                    inner_.Dispose ();
+                }
+                base.Dispose (disposing);
             }
         }
 
