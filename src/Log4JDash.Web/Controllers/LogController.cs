@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web.Hosting;
 using System.Web.Mvc;
+using Log4JDash.Web.Models;
 using Log4JParserNet;
 
 namespace Log4JDash.Web.Controllers
@@ -120,60 +122,96 @@ namespace Log4JDash.Web.Controllers
 
     public sealed class LogIndexViewModel
     {
-        public LogIndexFormModel Form { get; set; }
+        public LogQuery Query { get; set; }
 
         public IEnumerable<EventModel> Events { get; set; }
     }
 
-    public sealed class LogController : Controller
+    public sealed class LogRepository
     {
-        private readonly LogSourceModel logSourceModel_;
-
-        public LogController ()
+        public IEnumerable<EventModel> GetEvents (LogQuery query)
         {
-            logSourceModel_ = new LogSourceModel ();
-        }
-
-        // GET: Log
-        public ActionResult List (LogIndexFormModel formModel)
-        {
-            var fileName = Path.Combine (Server.MapPath ("~"), @"..\Log4JDash\test-log.cyr.xml");
-
-            var quantity = formModel.Quantity > 0
-                ? formModel.Quantity
-                : 20;
-
-            using (var events = logSourceModel_.GetEvents (fileName))
+            string sourceFile;
+            switch (query.SourceId)
             {
-                IEnumerable<Event> eventsWindow;
-                if (formModel.Offset == null)
+                case 1:
+                    sourceFile = Path.Combine (HostingEnvironment.MapPath ("~"), @"..\Log4JDash\test-log.cyr.xml");
+                    break;
+
+                default:
+                    throw new ArgumentException ("Unrecognized log source identifier.", nameof (query));
+            }
+
+            using (var source = new FileEventSource (sourceFile))
+            {
+                var filters = new List<FilterBase> ();
+                if (query.MinLevel.Value != Level.Debug)
                 {
-                    eventsWindow = logSourceModel_
-                        .GetEvents (fileName)
-                        .TakeLast (quantity);
+                    filters.Add (new FilterLevel (query.MinLevel.Value, Level.Off));
+                }
+
+                IEnumerable<Event> filteredEvents;
+                switch (filters.Count)
+                {
+                    case 0:
+                        filteredEvents = source;
+                        break;
+
+                    case 1:
+                        filteredEvents = source.Where (filters.Single ());
+                        break;
+
+                    default:
+                        var rootFilter = new FilterAll ();
+                        foreach (var filter in filters)
+                        {
+                            rootFilter.Add (filter);
+                        }
+                        filteredEvents = source.Where (rootFilter);
+                        break;
+                }
+
+                IEnumerable<Event> eventsWindow;
+                if (query.MinId == null)
+                {
+                    eventsWindow = filteredEvents
+                        .TakeLast (query.Quantity);
                 }
                 else
                 {
-                    var offset = (int) formModel.Offset;
-                    if (offset < 0)
-                    {
-                        offset = 0;
-                    }
-
-                    eventsWindow = logSourceModel_
-                        .GetEvents (fileName)
-                        .Skip (offset)
-                        .Take (quantity);
+                    eventsWindow = filteredEvents
+                        .Skip ((int) query.MinId)
+                        .Take (query.Quantity);
                 }
 
-                var viewModel = new LogIndexViewModel
-                {
-                    Form = formModel,
-                    Events = eventsWindow.Select (x => new EventModel (x))
-                };
-
-                return View (viewModel);
+                return eventsWindow
+                    .Select (x => new EventModel (x))
+                    .ToList ();
             }
+        }
+    }
+
+    public sealed class LogController : Controller
+    {
+        private readonly LogRepository repository_;
+
+        public LogController ()
+        {
+            repository_ = new LogRepository ();
+        }
+
+        // GET: Log
+        public ActionResult List (LogQuery formModel)
+        {
+            var events = repository_.GetEvents (formModel);
+
+            var viewModel = new LogIndexViewModel
+            {
+                Query = formModel,
+                Events = events
+            };
+
+            return View (viewModel);
         }
     }
 }

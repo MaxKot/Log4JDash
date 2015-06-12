@@ -1,0 +1,33 @@
+﻿@model Log4JDash.Web.Models.EventsQuantity
+@functions
+{
+    private SelectListItem Convert (int value, int currentValue)
+    {
+        var valueString = value.ToString ();
+        var result = new SelectListItem
+        {
+            Value = valueString,
+            Text = valueString,
+            Selected = value == currentValue
+        };
+
+        return result;
+    }
+}
+@{
+    var value = Model.Value > 0
+        ? Model.Value
+        : 20;
+
+    var options = new SortedSet<int>
+    {
+        5,
+        10,
+        20,
+        50,
+        100,
+        value
+    };
+    var selectListItems = options.Select (v => Convert (v, value));
+}
+@Html.DropDownListFor(model => model.Value, selectListItems)

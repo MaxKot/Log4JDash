@@ -1,4 +1,5 @@
-﻿@model Log4JDash.Web.Controllers.LogIndexViewModel
+﻿@using Log4JDash.Web.Models
+@model Log4JDash.Web.Controllers.LogIndexViewModel
 
 @{
     Layout = null;
@@ -7,55 +8,62 @@
 <!DOCTYPE html>
 
 <html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>List</title>
-</head>
-<body>
-    @{
-        var any = false;
-        var start = Model.Form.Offset + 1;
-    }
-    <ol class="log-list">
-        @foreach (var @e in Model.Events)
-        {
-            any = true;
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>List</title>
+        <style type="text/css">
+            .log-query {
+                position: fixed;
+            }
 
-            var id = e.Id;
-            var levelClass = e.Level.ToLowerInvariant ();
-            var timestamp = e.Time.ToLocalTime ();
-            var date = timestamp.ToString ("yyyy-MM-dd");
-            var time = timestamp.ToString ("HH:mm:ss.fff");
+            .log-list {
+                padding-top: 3.5em;
+            }
 
-            <li class="log-item log-item-@levelClass" value="@id">
-                <div class="log-item-timestamp">
-                    <label>Timestamp:</label>
-                    <span>
-                        <span class="log-item-timestamp-date">@date</span>T<span class="log-item-timestamp-time">@time</span>
-                    </span>
-                </div>
-                <div class="log-item-thread">
-                    <label>Thread:</label>
-                    <span>@e.Thread</span>
-                </div>
-                <div class="log-item-logger">
-                    <label>Logger:</label>
-                    <span>@e.Logger</span>
-                </div>
-                <div class="log-item-level">
-                    <label>Level:</label>
-                    <span>@e.Level</span>
-                </div>
-                <div class="log-item-message">
-                    <label>Message:</label>
-                    <span>@e.Message</span>
-                </div>
-            </li>
+            .log-item-debug {
+                background-color: #dddddd;
+            }
+            .log-item-info {
+                background-color: #bbffbb;
+            }
+            .log-item-warn {
+                background-color: #ffffbb;
+            }
+            .log-item-error {
+                background-color: #ffbbbb;
+            }
+            .log-item-fatal {
+                background-color: #000;
+            }
+            .log-item-fatal * {
+                color: #fff;
+            }
+        </style>
+    </head>
+    <body>
+        @{
+            var query = new LogQuery ();
+            var any = false;
         }
-    </ol>
-    @if (!any)
-    {
-        <div>Empty!</div>
-    }
-</body>
+        @using (Html.BeginForm (null, null, FormMethod.Get, new { @class = "log-query" }))
+        {
+            <div>
+                @Html.EditorFor(_ => query, null, String.Empty)
+            </div>
+            <div>
+                <input type="submit" value="Искать" />
+            </div>
+        }
+        <ol class="log-list">
+            @foreach (var @event in Model.Events)
+            {
+                any = true;
+                @Html.DisplayFor(_ => @event)
+            }
+        </ol>
+        @if (!any)
+        {
+            <div>Empty!</div>
+        }
+    </body>
 </html>

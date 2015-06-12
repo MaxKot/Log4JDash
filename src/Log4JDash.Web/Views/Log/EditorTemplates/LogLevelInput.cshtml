@@ -1,0 +1,10 @@
+﻿@model Log4JDash.Web.Models.LogLevelInput
+
+@{
+    var options = Model.Levels.Select (l => new SelectListItem
+    {
+        Value = l,
+        Text = l
+    });
+}
+@Html.DropDownListFor(model => model.Value, options)

@@ -1,0 +1,33 @@
+﻿@model Log4JDash.Web.Controllers.EventModel
+@{
+    var id = Model.Id;
+    var levelClass = Model.Level.ToLowerInvariant ();
+    var timestamp = Model.Time.ToLocalTime ();
+    var date = timestamp.ToString ("yyyy-MM-dd");
+    var time = timestamp.ToString ("HH:mm:ss.fff");
+}
+
+<li class="log-item log-item-@levelClass" value="@id">
+    <div class="log-item-timestamp">
+        <label>Timestamp:</label>
+        <span>
+            <span class="log-item-timestamp-date">@date</span>T<span class="log-item-timestamp-time">@time</span>
+        </span>
+    </div>
+    <div class="log-item-thread">
+        <label>Thread:</label>
+        <span>@Model.Thread</span>
+    </div>
+    <div class="log-item-logger">
+        <label>Logger:</label>
+        <span>@Model.Logger</span>
+    </div>
+    <div class="log-item-level">
+        <label>Level:</label>
+        <span>@Model.Level</span>
+    </div>
+    <div class="log-item-message">
+        <label>Message:</label>
+        <span>@Model.Message</span>
+    </div>
+</li>
