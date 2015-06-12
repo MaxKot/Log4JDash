@@ -45,7 +45,7 @@ namespace Log4JParserNet
 
         public bool MoveNext ()
         {
-            if (disposedValue_)
+            if (disposedValue_ || impl_.IsInvalid || impl_.IsClosed)
             {
                 throw new ObjectDisposedException ("IteratorBase");
             }
@@ -55,7 +55,7 @@ namespace Log4JParserNet
 
         public void Reset ()
         {
-            if (disposedValue_)
+            if (disposedValue_ || impl_.IsInvalid || impl_.IsClosed)
             {
                 throw new ObjectDisposedException ("IteratorBase");
             }
@@ -66,7 +66,7 @@ namespace Log4JParserNet
         {
             get
             {
-                if (disposedValue_)
+                if (disposedValue_ || impl_.IsInvalid || impl_.IsClosed)
                 {
                     throw new ObjectDisposedException ("IteratorBase");
                 }
