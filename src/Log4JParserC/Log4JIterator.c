@@ -1,4 +1,4 @@
-﻿#include <stdlib.h>
+﻿#include <assert.h>
 #include <memory.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -27,8 +27,37 @@ struct Log4JIterator_
     Log4JIteratorCurrentCb *Current;
 };
 
+static void Log4JIteratorEventSourceDestroy_ (void *context);
+static bool Log4JIteratorEventSourceMoveNext_ (void *context);
+static const Log4JEvent Log4JIteratorEventSourceCurrent_ (const void *context, int32_t *id);
+
+static void Log4JIteratorFilterDestroy_ (void *context);
+static bool Log4JIteratorFilterMoveNext_ (void *context);
+static const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context, int32_t *id);
+
+#ifdef _DEBUG
+    static void AssertLog4JIteratorSanityImpl_ (Log4JIterator *self)
+    {
+        assert (self != NULL);
+        assert (self->Context != NULL);
+        assert (self->Type == EventSource || self->Type == Filter);
+        assert (self->Type != EventSource || self->Current == Log4JIteratorEventSourceCurrent_);
+        assert (self->Type != Filter || self->Current == Log4JIteratorFilterCurrent_);
+        assert (self->Type != EventSource || self->MoveNext == Log4JIteratorEventSourceMoveNext_);
+        assert (self->Type != Filter || self->MoveNext == Log4JIteratorFilterMoveNext_);
+        assert (self->Type != EventSource || self->Destroy == Log4JIteratorEventSourceDestroy_);
+        assert (self->Type != Filter || self->Destroy == Log4JIteratorFilterDestroy_);
+    }
+
+    #define AssertLog4JIteratorSanity_(v) AssertLog4JIteratorSanityImpl_ (v)
+#else
+    #define AssertLog4JIteratorSanity_(v)
+#endif
+
 LOG4JPARSERC_API void Log4JIteratorDestroy (Log4JIterator *self)
 {
+    AssertLog4JIteratorSanity_ (self);
+
     self->Destroy (self->Context);
 
     *self = (Log4JIterator)
@@ -46,13 +75,22 @@ LOG4JPARSERC_API void Log4JIteratorDestroy (Log4JIterator *self)
 
 LOG4JPARSERC_API bool Log4JIteratorMoveNext (Log4JIterator *self)
 {
+    AssertLog4JIteratorSanity_ (self);
+
     bool result = self->MoveNext(self->Context);
+
+    AssertLog4JIteratorSanity_ (self);
     return result;
 }
 
 LOG4JPARSERC_API const Log4JEvent Log4JIteratorCurrent (const Log4JIterator *self, int32_t *id)
 {
-    return self->Current (self->Context, id);
+    AssertLog4JIteratorSanity_ (self);
+
+    Log4JEvent result = self->Current (self->Context, id);
+
+    AssertLog4JIteratorSanity_ (self);
+    return result;
 }
 
 #pragma region XML string log4j_iterator
@@ -63,10 +101,6 @@ typedef struct
     Log4JEvent Current;
     int32_t Count;
 } Log4JIteratorEventSourceContext_;
-
-static void Log4JIteratorEventSourceDestroy (void *context);
-static bool Log4JIteratorEventSourceMoveNext (void *context);
-static const Log4JEvent Log4JIteratorEventSourceCurrent (const void *context, int32_t *id);
 
 LOG4JPARSERC_API void Log4JIteratorInitEventSource (Log4JIterator **self, const Log4JEventSource *source)
 {
@@ -85,15 +119,15 @@ LOG4JPARSERC_API void Log4JIteratorInitEventSource (Log4JIterator **self, const 
             .Type = EventSource,
         #endif
         .Context = context,
-        .Destroy = &Log4JIteratorEventSourceDestroy,
-        .MoveNext = &Log4JIteratorEventSourceMoveNext,
-        .Current = &Log4JIteratorEventSourceCurrent
+        .Destroy = &Log4JIteratorEventSourceDestroy_,
+        .MoveNext = &Log4JIteratorEventSourceMoveNext_,
+        .Current = &Log4JIteratorEventSourceCurrent_
     };
 
     *self = result;
 }
 
-void Log4JIteratorEventSourceDestroy (void *context)
+void Log4JIteratorEventSourceDestroy_ (void *context)
 {
     Log4JIteratorEventSourceContext_ *contextD = (Log4JIteratorEventSourceContext_ *) context;
 
@@ -106,7 +140,7 @@ void Log4JIteratorEventSourceDestroy (void *context)
     free (contextD);
 }
 
-bool Log4JIteratorEventSourceMoveNext (void *context)
+bool Log4JIteratorEventSourceMoveNext_ (void *context)
 {
     Log4JIteratorEventSourceContext_ *contextD = (Log4JIteratorEventSourceContext_ *) context;
 
@@ -136,7 +170,7 @@ bool Log4JIteratorEventSourceMoveNext (void *context)
     return nextEvent != NULL;
 }
 
-const Log4JEvent Log4JIteratorEventSourceCurrent (const void *context, int32_t *id)
+const Log4JEvent Log4JIteratorEventSourceCurrent_ (const void *context, int32_t *id)
 {
     const Log4JIteratorEventSourceContext_ *contextD = (const Log4JIteratorEventSourceContext_ *) context;
     if (id != NULL)
@@ -156,10 +190,6 @@ typedef struct
     Log4JIterator *Inner;
     const Log4JFilter *Filter;
 } Log4JIteratorFilterContext_;
-
-static void Log4JIteratorFilterDestroy_ (void *context);
-static bool Log4JIteratorFilterMoveNext_ (void *context);
-static const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context, int32_t *id);
 
 LOG4JPARSERC_API void Log4JIteratorInitFilter (Log4JIterator **self, Log4JIterator *inner, const Log4JFilter *filter)
 {
