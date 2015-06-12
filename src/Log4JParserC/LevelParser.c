@@ -151,6 +151,24 @@ LOG4JPARSERC_API void Log4JLevelWarn (const char **value)
     *value = Log4JLevelWarnValue_;
 }
 
+static const LevelTreeNode_ LevelAlert_ =
+{
+    100000,
+    //   A     B     C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+static const LevelTreeNode_ LevelAler_ =
+{
+    -1,
+    //   A     B     C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q     R     S             T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelAlert_, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+static const LevelTreeNode_ LevelAle_ =
+{
+    -1,
+    //   A     B     C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q            R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelAler_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
 static const LevelTreeNode_ LevelAll_ =
 {
     INT_MIN,
@@ -160,8 +178,8 @@ static const LevelTreeNode_ LevelAll_ =
 static const LevelTreeNode_ LevelAl_ =
 {
     -1,
-    //   A     B     C     D     E     F     G     H     I     J     K           L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
-    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelAll_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+    //   A     B     C     D           E     F     G     H     I     J     K           L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, &LevelAle_, NULL, NULL, NULL, NULL, NULL, NULL, &LevelAll_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 static const LevelTreeNode_ LevelA_ =
 {
@@ -247,6 +265,54 @@ static const LevelTreeNode_ LevelD_ =
     //   A     B     C     D          E     F     G     H     I     J     K     L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
     { NULL, NULL, NULL, NULL, &LevelDe_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
+static const LevelTreeNode_ LevelEmergency_ =
+{
+    120000,
+    //   A     B     C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+static const LevelTreeNode_ LevelEmergenc_ =
+{
+    -1,
+    //   A     B     C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q     R     S     T     U     V     W     X                 Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelEmergency_, NULL }
+};
+static const LevelTreeNode_ LevelEmergen_ =
+{
+    -1,
+    //   A     B                C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, &LevelEmergenc_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+static const LevelTreeNode_ LevelEmerge_ =
+{
+    -1,
+    //   A     B     C     D     E     F     G     H     I     J     K     L     M               N     O     P     Q     R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelEmergen_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+static const LevelTreeNode_ LevelEmerg_ =
+{
+    -1,
+    //   A     B     C     D              E     F     G     H     I     J     K     L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, &LevelEmerge_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+static const LevelTreeNode_ LevelEmer_ =
+{
+    -1,
+    //   A     B     C     D     E     F             G     H     I     J     K     L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, &LevelEmerg_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+static const LevelTreeNode_ LevelEme_ =
+{
+    -1,
+    //   A     B     C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q            R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelEmer_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+static const LevelTreeNode_ LevelEm_ =
+{
+    -1,
+    //   A     B     C     D           E     F     G     H     I     J     K     L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, &LevelEme_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
 static const LevelTreeNode_ LevelError_ =
 {
     70000,
@@ -274,8 +340,38 @@ static const LevelTreeNode_ LevelEr_ =
 static const LevelTreeNode_ LevelE_ =
 {
     -1,
-    //   A     B     C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q          R     S     T     U     V     W     X     Y     Z
-    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelEr_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+    //   A     B     C     D     E     F     G     H     I     J     K     L          M     N     O     P     Q          R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelEm_, NULL, NULL, NULL, NULL, &LevelEr_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+static const LevelTreeNode_ LevelFatal_ =
+{
+    110000,
+    //   A     B     C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+static const LevelTreeNode_ LevelFata_ =
+{
+    -1,
+    //   A     B     C     D     E     F     G     H     I     J     K             L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelFatal_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+static const LevelTreeNode_ LevelFat_ =
+{
+    -1,
+    //          A     B     C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
+    { &LevelFata_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+static const LevelTreeNode_ LevelFa_ =
+{
+    -1,
+    //   A     B     C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q     R     S           T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelFat_, NULL, NULL, NULL, NULL, NULL, NULL }
+};
+static const LevelTreeNode_ LevelFiner_ =
+{
+    20000,
+    //   A     B     C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 static const LevelTreeNode_ LevelFinest_ =
 {
@@ -291,9 +387,9 @@ static const LevelTreeNode_ LevelFines_ =
 };
 static const LevelTreeNode_ LevelFine_ =
 {
-    -1,
-    //   A     B     C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q     R             S     T     U     V     W     X     Y     Z
-    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelFines_, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+    30000,
+    //   A     B     C     D     E     F     G     H     I     J     K     L     M     N     O     P     Q             R             S     T     U     V     W     X     Y     Z
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelFiner_, &LevelFines_, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 static const LevelTreeNode_ LevelFin_ =
 {
@@ -310,8 +406,8 @@ static const LevelTreeNode_ LevelFi_ =
 static const LevelTreeNode_ LevelF_ =
 {
     -1,
-    //   A     B     C     D     E     F     G     H          I     J     K     L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
-    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelFi_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+    //        A     B     C     D     E     F     G     H          I     J     K     L     M     N     O     P     Q     R     S     T     U     V     W     X     Y     Z
+    { &LevelFa_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &LevelFi_, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 static const LevelTreeNode_ LevelInfo_ =
 {
