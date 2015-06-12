@@ -1,6 +1,7 @@
 ﻿#include <stdlib.h>
 #include <memory.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "Log4JParserC.h"
 #include "Private.h"
 
@@ -10,8 +11,15 @@ typedef bool Log4JIteratorMoveNextCb (void *context);
 
 typedef const Log4JEvent Log4JIteratorCurrentCb (const void *context, int32_t *id);
 
+#ifdef _DEBUG
+    typedef enum { EventSource, Filter } IteratorType;
+#endif
+
 struct Log4JIterator_
 {
+#ifdef _DEBUG
+    IteratorType Type;
+#endif
     void *Context;
 
     Log4JIteratorDestroyCb *Destroy;
@@ -25,6 +33,9 @@ LOG4JPARSERC_API void Log4JIteratorDestroy (Log4JIterator *self)
 
     *self = (Log4JIterator)
     {
+        #ifdef _DEBUG
+            .Type = -1,
+        #endif
         .Context = NULL,
         .Destroy = NULL,
         .MoveNext = NULL,
@@ -70,6 +81,9 @@ LOG4JPARSERC_API void Log4JIteratorInitEventSource (Log4JIterator **self, const 
     Log4JIterator *result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
     *result = (Log4JIterator)
     {
+        #ifdef _DEBUG
+            .Type = EventSource,
+        #endif
         .Context = context,
         .Destroy = &Log4JIteratorEventSourceDestroy,
         .MoveNext = &Log4JIteratorEventSourceMoveNext,
@@ -155,6 +169,9 @@ LOG4JPARSERC_API void Log4JIteratorInitFilter (Log4JIterator **self, Log4JIterat
     Log4JIterator *result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
     *result = (Log4JIterator)
     {
+        #ifdef _DEBUG
+            .Type = Filter,
+        #endif
         .Context = context,
         .Destroy = &Log4JIteratorFilterDestroy_,
         .MoveNext = &Log4JIteratorFilterMoveNext_,
