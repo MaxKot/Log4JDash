@@ -22,6 +22,14 @@ struct Log4JIterator_
 LOG4JPARSERC_API void Log4JIteratorDestroy (Log4JIterator *self)
 {
     self->Destroy (self->Context);
+
+    *self = (Log4JIterator)
+    {
+        .Context = NULL,
+        .Destroy = NULL,
+        .MoveNext = NULL,
+        .Current = NULL
+    };
     free (self);
 }
 
