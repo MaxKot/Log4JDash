@@ -27,6 +27,12 @@ static void InitLog4JFilter_ (Log4JFilter *self, void *context, Log4JFilterDestr
 LOG4JPARSERC_API void Log4JFilterDestroy (Log4JFilter *self)
 {
     self->Destroy (self->Context);
+    *self = (Log4JFilter)
+    {
+        .Context = NULL,
+        .Destroy = NULL,
+        .Apply = NULL
+    };
     free (self);
 }
 
