@@ -23,15 +23,7 @@ namespace Log4JParserNet
         /// <inheritdoc />
         protected override bool ReleaseHandle ()
         {
-            try
-            {
-
-            }
-            finally
-            {
-                Log4JParserC.Log4JEventSourceDestroy (handle);
-                handle = IntPtr.Zero;
-            }
+            Log4JParserC.Log4JEventSourceDestroy (handle);
             return true;
         }
     }

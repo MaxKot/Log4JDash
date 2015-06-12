@@ -24,7 +24,6 @@ namespace Log4JParserNet
         protected override bool ReleaseHandle ()
         {
             Log4JParserC.Log4JIteratorDestroy (handle);
-            handle = IntPtr.Zero;
             return true;
         }
     }
