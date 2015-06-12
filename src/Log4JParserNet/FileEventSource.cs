@@ -32,10 +32,7 @@ namespace Log4JParserNet
 
         private readonly EventSourceHandle impl_;
 
-        SafeHandle IEventSource.Owner
-        {
-            get { return impl_; }
-        }
+        SafeHandle IEventSource.Owner => impl_;
 
         public FileEventSource (string fileName)
         {
