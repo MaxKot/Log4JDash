@@ -6,8 +6,6 @@ namespace Log4JParserNet
 {
     public sealed class Event
     {
-        private static readonly DateTime TimestampZero = new DateTime (1970, 01, 01, 0, 0, 0, DateTimeKind.Utc);
-
         private readonly EventHandle impl_;
 
         private readonly int id_;
@@ -89,7 +87,7 @@ namespace Log4JParserNet
 
         public DateTime Time
         {
-            get { return TimestampZero.AddMilliseconds (Timestamp); }
+            get { return Log4JParserNet.Timestamp.ToDateTime (Timestamp); }
         }
 
         public string Message
