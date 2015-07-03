@@ -1,6 +1,8 @@
 ﻿@model Log4JDash.Web.Models.LogLevelInput
 
 @{
+    Layout = "_Editor.cshtml";
+
     var options = Model.Levels.Select (l => new SelectListItem
     {
         Value = l,

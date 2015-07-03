@@ -94,6 +94,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="EnumerableExt.cs" />
+    <Compile Include="Models\LogRepository.cs" />
+    <Compile Include="Models\LogIndexViewModel.cs" />
+    <Compile Include="Models\EventModel.cs" />
     <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -112,6 +116,9 @@
     <Content Include="Views\Log\EditorTemplates\EventsQuantity.cshtml" />
     <Content Include="Views\Log\DisplayTemplates\EventModel.cshtml" />
     <Content Include="Views\Log\EditorTemplates\LogLevelInput.cshtml" />
+    <Content Include="Views\Log\EditorTemplates\String.cshtml" />
+    <Content Include="Views\Log\EditorTemplates\_Editor.cshtml" />
+    <Content Include="Views\Log\EditorTemplates\DateTime.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

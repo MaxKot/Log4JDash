@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Log4JDash.Web.Models
 {
@@ -24,6 +25,7 @@ namespace Log4JDash.Web.Models
 
         public string Throwable { get; set; }
 
+        [Display (Name = "")]
         public EventsQuantity Quantity { get; set; }
 
         public LogQuery ()
@@ -31,6 +33,7 @@ namespace Log4JDash.Web.Models
             SourceId = 1;
             MaxId = Int32.MaxValue;
             MinLevel = new LogLevelInput ();
+            MinTime = DateTime.MinValue;
             MaxTime = DateTime.MaxValue;
             Quantity = new EventsQuantity ();
         }
