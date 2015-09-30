@@ -27,6 +27,30 @@ namespace Log4JParserNet
             owner_ = owner;
         }
 
+        private unsafe string PtrToString (IntPtr value, UIntPtr size)
+        {
+            var intSize = (int) size.ToUInt32 ();
+            string result = null;
+
+            if (value != IntPtr.Zero)
+            {
+                var buffer = (byte*) value.ToPointer ();
+
+                var encoding = System.Text.Encoding.UTF8;
+                var charCount = encoding.GetCharCount (buffer, intSize);
+
+                var decodeBuffer = new char[charCount];
+                fixed (char *decodeBufferPtr = &decodeBuffer[0])
+                {
+                    encoding.GetChars (buffer, intSize, decodeBufferPtr, decodeBuffer.Length);
+                }
+
+                result = new String (decodeBuffer);
+            }
+
+            return result;
+        }
+
         public string Level
         {
             get
@@ -37,9 +61,7 @@ namespace Log4JParserNet
                 UIntPtr size;
                 Log4JParserC.Log4JEventLevel (impl_, out value, out size);
 
-                return value != IntPtr.Zero
-                    ? Marshal.PtrToStringAnsi (value, checked ((int) size.ToUInt32 ()))
-                    : null;
+                return PtrToString (value, size);
             }
         }
 
@@ -53,9 +75,7 @@ namespace Log4JParserNet
                 UIntPtr size;
                 Log4JParserC.Log4JEventLogger (impl_, out value, out size);
 
-                return value != IntPtr.Zero
-                    ? Marshal.PtrToStringAnsi (value, checked ((int) size.ToUInt32 ()))
-                    : null;
+                return PtrToString (value, size);
             }
         }
 
@@ -69,9 +89,7 @@ namespace Log4JParserNet
                 UIntPtr size;
                 Log4JParserC.Log4JEventThread (impl_, out value, out size);
 
-                return value != IntPtr.Zero
-                    ? Marshal.PtrToStringAnsi (value, checked ((int) size.ToUInt32 ()))
-                    : null;
+                return PtrToString (value, size);
             }
         }
 
@@ -100,9 +118,7 @@ namespace Log4JParserNet
                 UIntPtr size;
                 Log4JParserC.Log4JEventMessage (impl_, out value, out size);
 
-                return value != IntPtr.Zero
-                    ? Marshal.PtrToStringAnsi (value, checked ((int) size.ToUInt32 ()))
-                    : null;
+                return PtrToString (value, size);
             }
         }
 
@@ -116,9 +132,7 @@ namespace Log4JParserNet
                 UIntPtr size;
                 Log4JParserC.Log4JEventThrowable (impl_, out value, out size);
 
-                return value != IntPtr.Zero
-                    ? Marshal.PtrToStringAnsi (value, checked ((int) size.ToUInt32 ()))
-                    : null;
+                return PtrToString (value, size);
             }
         }
 
