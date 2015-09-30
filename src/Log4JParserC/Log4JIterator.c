@@ -31,12 +31,16 @@ static void Log4JIteratorEventSourceDestroy_ (void *context);
 static bool Log4JIteratorEventSourceMoveNext_ (void *context);
 static const Log4JEvent Log4JIteratorEventSourceCurrent_ (const void *context, size_t *id);
 
+static void Log4JIteratorEventSourceReverseDestroy_ (void *context);
+static bool Log4JIteratorEventSourceReverseMoveNext_ (void *context);
+static const Log4JEvent Log4JIteratorEventSourceReverseCurrent_ (const void *context, size_t *id);
+
 static void Log4JIteratorFilterDestroy_ (void *context);
 static bool Log4JIteratorFilterMoveNext_ (void *context);
 static const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context, size_t *id);
 
 #ifdef _DEBUG
-    static void AssertLog4JIteratorSanityImpl_ (Log4JIterator *self)
+    static void AssertLog4JIteratorSanityImpl_ (const Log4JIterator *self)
     {
         assert (self != NULL);
         assert (self->Context != NULL);
@@ -181,6 +185,103 @@ const Log4JEvent Log4JIteratorEventSourceCurrent_ (const void *context, size_t *
 
         const char *firstMessage;
         Log4JEventMessage(contextD->First, &firstMessage, &sizeDump);
+
+        *id = currentMessage - firstMessage;
+    }
+
+    return contextD->Current;
+}
+
+#pragma endregion
+
+#pragma region Reverse event source log4j_iterator
+
+typedef struct
+{
+    const Log4JEventSource *Source;
+    Log4JEvent Current;
+    Log4JEvent First;
+} Log4JIteratorEventSourceReverseContext_;
+
+LOG4JPARSERC_API void Log4JIteratorInitEventSourceReverse (Log4JIterator **self, const Log4JEventSource *source)
+{
+    Log4JIteratorEventSourceContext_ *context = (Log4JIteratorEventSourceContext_ *) malloc (sizeof (Log4JIteratorEventSourceContext_));
+    *context = (Log4JIteratorEventSourceContext_)
+    {
+        .Source = source,
+        .Current = NULL,
+        .First = NULL
+    };
+
+    Log4JIterator *result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
+    *result = (Log4JIterator)
+    {
+    #ifdef _DEBUG
+        .Type = EventSource,
+    #endif
+        .Context = context,
+        .Destroy = &Log4JIteratorEventSourceReverseDestroy_,
+        .MoveNext = &Log4JIteratorEventSourceReverseMoveNext_,
+        .Current = &Log4JIteratorEventSourceReverseCurrent_
+    };
+
+    *self = result;
+}
+
+void Log4JIteratorEventSourceReverseDestroy_ (void *context)
+{
+    Log4JIteratorEventSourceReverseContext_ *contextD = (Log4JIteratorEventSourceReverseContext_ *) context;
+
+    *contextD = (Log4JIteratorEventSourceReverseContext_)
+    {
+        .Source = NULL,
+        .Current = NULL,
+        .First = NULL
+    };
+    free (contextD);
+}
+
+bool Log4JIteratorEventSourceReverseMoveNext_ (void *context)
+{
+    Log4JIteratorEventSourceReverseContext_ *contextD = (Log4JIteratorEventSourceReverseContext_ *) context;
+
+    if (!contextD->Source)
+    {
+        return false;
+    }
+
+    Log4JEvent nextEvent;
+
+    if (contextD->First == NULL)
+    {
+        nextEvent = Log4JEventSourceFirst (contextD->Source);
+        contextD->First = Log4JEventSourceLast (contextD->Source);
+    }
+    else if (contextD->Current)
+    {
+        nextEvent = Log4JEventSourcePrev (contextD->Source, contextD->Current);
+    }
+    else
+    {
+        nextEvent = NULL;
+    }
+
+    contextD->Current = nextEvent;
+    return nextEvent != NULL;
+}
+
+const Log4JEvent Log4JIteratorEventSourceReverseCurrent_ (const void *context, size_t *id)
+{
+    const Log4JIteratorEventSourceReverseContext_ *contextD = (const Log4JIteratorEventSourceReverseContext_ *) context;
+    if (id != NULL && contextD->Current && contextD->First)
+    {
+        size_t sizeDump;
+
+        const char *currentMessage;
+        Log4JEventMessage (contextD->Current, &currentMessage, &sizeDump);
+
+        const char *firstMessage;
+        Log4JEventMessage (contextD->First, &firstMessage, &sizeDump);
 
         *id = currentMessage - firstMessage;
     }

@@ -150,3 +150,16 @@ LOG4JPARSERC_API Log4JEvent __cdecl Log4JEventSourceNext (const Log4JEventSource
     auto nextNode = node->next_sibling (TagEvent_, TagEventSize_);
     return nextNode;
 }
+
+LOG4JPARSERC_API Log4JEvent __cdecl Log4JEventSourceLast (const Log4JEventSource *self)
+{
+    auto node = self->Doc->last_node (TagEvent_, TagEventSize_);
+    return node;
+}
+
+LOG4JPARSERC_API Log4JEvent __cdecl Log4JEventSourcePrev (const Log4JEventSource *self, const Log4JEvent event)
+{
+    auto node = (rapidxml::xml_node<char> *) event;
+    auto prevNode = node->previous_sibling (TagEvent_, TagEventSize_);
+    return prevNode;
+}

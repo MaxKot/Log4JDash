@@ -37,6 +37,10 @@ LOG4JPARSERC_API Log4JEvent Log4JEventSourceFirst (const Log4JEventSource *self)
 
 LOG4JPARSERC_API Log4JEvent Log4JEventSourceNext (const Log4JEventSource *self, Log4JEvent event);
 
+LOG4JPARSERC_API Log4JEvent Log4JEventSourceLast (const Log4JEventSource *self);
+
+LOG4JPARSERC_API Log4JEvent Log4JEventSourcePrev (const Log4JEventSource *self, const Log4JEvent event);
+
 // Filter base
 
 typedef struct Log4JFilter_ Log4JFilter;
@@ -93,6 +97,8 @@ LOG4JPARSERC_API bool Log4JIteratorMoveNext (Log4JIterator *self);
 LOG4JPARSERC_API const Log4JEvent Log4JIteratorCurrent (const Log4JIterator *self, size_t *id);
 
 LOG4JPARSERC_API void Log4JIteratorInitEventSource (Log4JIterator **self, const Log4JEventSource *source);
+
+LOG4JPARSERC_API void Log4JIteratorInitEventSourceReverse (Log4JIterator **self, const Log4JEventSource *source);
 
 LOG4JPARSERC_API void Log4JIteratorInitFilter (Log4JIterator **self, Log4JIterator *inner, const Log4JFilter *filter);
 
