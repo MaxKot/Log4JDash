@@ -41,7 +41,7 @@ namespace Log4JDash.Web.Models
                     throw new ArgumentException ("Unrecognized log source identifier.", nameof (query));
             }
 
-            using (var source = new FileEventSource (sourceFile))
+            using (var source = new Log4JFile (sourceFile))
             using (var filters = new List<FilterBase> ().ToDisposable ())
             {
                 if (query.MinLevel.Value != Level.Debug)
@@ -68,11 +68,13 @@ namespace Log4JDash.Web.Models
                 switch (filters.Elements.Count)
                 {
                     case 0:
-                        filteredEvents = source;
+                        filteredEvents = source.GetEventsReverse ();
                         break;
 
                     case 1:
-                        filteredEvents = source.Where (filters.Elements.Single ());
+                        filteredEvents = source
+                            .GetEventsReverse ()
+                            .Where (filters.Elements.Single ());
                         break;
 
                     default:
@@ -92,7 +94,9 @@ namespace Log4JDash.Web.Models
                                 filters.Elements.Add (rootFilter);
                             }
                         }
-                        filteredEvents = source.Where (rootFilter);
+                        filteredEvents = source
+                            .GetEventsReverse ()
+                            .Where (rootFilter);
                         break;
                 }
 
@@ -100,7 +104,7 @@ namespace Log4JDash.Web.Models
                 if (query.MinId == null)
                 {
                     eventsWindow = filteredEvents
-                        .TakeLast (query.Quantity);
+                        .Take (query.Quantity);
                 }
                 else
                 {
@@ -109,9 +113,11 @@ namespace Log4JDash.Web.Models
                         .Take (query.Quantity);
                 }
 
-                return eventsWindow
+                var result = eventsWindow
                     .Select (x => new EventModel (x))
                     .ToList ();
+                result.Reverse ();
+                return result;
             }
         }
     }

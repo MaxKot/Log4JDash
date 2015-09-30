@@ -95,7 +95,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="EnumerableExt.cs" />
     <Compile Include="Models\LogRepository.cs" />
     <Compile Include="Models\LogIndexViewModel.cs" />
     <Compile Include="Models\EventModel.cs" />
