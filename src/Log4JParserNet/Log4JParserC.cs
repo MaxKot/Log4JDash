@@ -107,7 +107,7 @@ namespace Log4JParserNet
         extern public static bool Log4JIteratorMoveNext (IteratorHandle self);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static EventHandle Log4JIteratorCurrent (IteratorHandle self, out Int32 id);
+        extern public static EventHandle Log4JIteratorCurrent (IteratorHandle self, out UIntPtr id);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JIteratorInitEventSource

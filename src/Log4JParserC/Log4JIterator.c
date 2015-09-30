@@ -9,7 +9,7 @@ typedef void Log4JIteratorDestroyCb (void *context);
 
 typedef bool Log4JIteratorMoveNextCb (void *context);
 
-typedef const Log4JEvent Log4JIteratorCurrentCb (const void *context, int32_t *id);
+typedef const Log4JEvent Log4JIteratorCurrentCb (const void *context, size_t *id);
 
 #ifdef _DEBUG
     typedef enum { EventSource, Filter } IteratorType;
@@ -29,11 +29,11 @@ struct Log4JIterator_
 
 static void Log4JIteratorEventSourceDestroy_ (void *context);
 static bool Log4JIteratorEventSourceMoveNext_ (void *context);
-static const Log4JEvent Log4JIteratorEventSourceCurrent_ (const void *context, int32_t *id);
+static const Log4JEvent Log4JIteratorEventSourceCurrent_ (const void *context, size_t *id);
 
 static void Log4JIteratorFilterDestroy_ (void *context);
 static bool Log4JIteratorFilterMoveNext_ (void *context);
-static const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context, int32_t *id);
+static const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context, size_t *id);
 
 #ifdef _DEBUG
     static void AssertLog4JIteratorSanityImpl_ (Log4JIterator *self)
@@ -83,7 +83,7 @@ LOG4JPARSERC_API bool Log4JIteratorMoveNext (Log4JIterator *self)
     return result;
 }
 
-LOG4JPARSERC_API const Log4JEvent Log4JIteratorCurrent (const Log4JIterator *self, int32_t *id)
+LOG4JPARSERC_API const Log4JEvent Log4JIteratorCurrent (const Log4JIterator *self, size_t *id)
 {
     AssertLog4JIteratorSanity_ (self);
 
@@ -93,13 +93,13 @@ LOG4JPARSERC_API const Log4JEvent Log4JIteratorCurrent (const Log4JIterator *sel
     return result;
 }
 
-#pragma region XML string log4j_iterator
+#pragma region Event source log4j_iterator
 
 typedef struct
 {
     const Log4JEventSource *Source;
     Log4JEvent Current;
-    int32_t Count;
+    Log4JEvent First;
 } Log4JIteratorEventSourceContext_;
 
 LOG4JPARSERC_API void Log4JIteratorInitEventSource (Log4JIterator **self, const Log4JEventSource *source)
@@ -109,7 +109,7 @@ LOG4JPARSERC_API void Log4JIteratorInitEventSource (Log4JIterator **self, const 
     {
         .Source = source,
         .Current = NULL,
-        .Count = 0
+        .First = NULL
     };
 
     Log4JIterator *result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
@@ -135,7 +135,7 @@ void Log4JIteratorEventSourceDestroy_ (void *context)
     {
         .Source = NULL,
         .Current = NULL,
-        .Count = 0
+        .First = NULL
     };
     free (contextD);
 }
@@ -151,15 +151,14 @@ bool Log4JIteratorEventSourceMoveNext_ (void *context)
 
     Log4JEvent nextEvent;
 
-    if (contextD->Count == 0)
+    if (contextD->First == NULL)
     {
         nextEvent = Log4JEventSourceFirst (contextD->Source);
-        contextD->Count = 1;
+        contextD->First = nextEvent;
     }
     else if (contextD->Current)
     {
         nextEvent = Log4JEventSourceNext (contextD->Source, contextD->Current);
-        ++contextD->Count;
     }
     else
     {
@@ -170,12 +169,20 @@ bool Log4JIteratorEventSourceMoveNext_ (void *context)
     return nextEvent != NULL;
 }
 
-const Log4JEvent Log4JIteratorEventSourceCurrent_ (const void *context, int32_t *id)
+const Log4JEvent Log4JIteratorEventSourceCurrent_ (const void *context, size_t *id)
 {
     const Log4JIteratorEventSourceContext_ *contextD = (const Log4JIteratorEventSourceContext_ *) context;
-    if (id != NULL)
+    if (id != NULL && contextD->Current && contextD->First)
     {
-        *id = contextD->Count;
+        size_t sizeDump;
+
+        const char *currentMessage;
+        Log4JEventMessage (contextD->Current, &currentMessage, &sizeDump);
+
+        const char *firstMessage;
+        Log4JEventMessage(contextD->First, &firstMessage, &sizeDump);
+
+        *id = currentMessage - firstMessage;
     }
 
     return contextD->Current;
@@ -235,7 +242,7 @@ bool Log4JIteratorFilterMoveNext_ (void *context)
     return false;
 }
 
-const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context, int32_t *id)
+const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context, size_t *id)
 {
     Log4JIteratorFilterContext_ *contextF = (Log4JIteratorFilterContext_ *) context;
 

@@ -21,7 +21,7 @@ namespace Log4JDash.Web.Models
             Throwable = e.Throwable;
         }
 
-        public int Id { get; set; }
+        public ulong Id { get; set; }
 
         public string Level { get; set; }
 

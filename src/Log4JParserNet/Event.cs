@@ -8,7 +8,7 @@ namespace Log4JParserNet
     {
         private readonly EventHandle impl_;
 
-        private readonly int id_;
+        private readonly ulong id_;
 
         private readonly SafeHandle owner_;
 
@@ -17,7 +17,7 @@ namespace Log4JParserNet
             get { return impl_; }
         }
 
-        internal Event (EventHandle impl, int id, SafeHandle owner)
+        internal Event (EventHandle impl, ulong id, SafeHandle owner)
         {
             Debug.Assert (impl != null, "Event.ctor: impl is null.");
             Debug.Assert (owner != null, "Event.ctor: owner is null.");
@@ -122,7 +122,7 @@ namespace Log4JParserNet
             }
         }
 
-        public int Id
+        public ulong Id
         {
             get { return id_; }
         }

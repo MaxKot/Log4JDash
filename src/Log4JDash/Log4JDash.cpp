@@ -12,7 +12,7 @@
 using namespace std;
 using namespace rapidxml;
 
-void print_event (const Log4JParser::Event &event, int32_t id) {
+void print_event (const Log4JParser::Event &event, size_t id) {
     auto level = event.Level ();
     auto logger = event.Logger ();
     auto thread = event.Thread ();
@@ -78,7 +78,7 @@ void parse_xml (const char *filename) {
             auto count = 0;
 
             while (iterator_filter.MoveNext ()) {
-                int32_t id;
+                size_t id;
                 auto event = iterator_filter.Current (&id);
                 print_event (event, id);
                 ++count;

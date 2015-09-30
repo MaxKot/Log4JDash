@@ -90,7 +90,7 @@ LOG4JPARSERC_API void Log4JIteratorDestroy (Log4JIterator *self);
 
 LOG4JPARSERC_API bool Log4JIteratorMoveNext (Log4JIterator *self);
 
-LOG4JPARSERC_API const Log4JEvent Log4JIteratorCurrent (const Log4JIterator *self, int32_t *id);
+LOG4JPARSERC_API const Log4JEvent Log4JIteratorCurrent (const Log4JIterator *self, size_t *id);
 
 LOG4JPARSERC_API void Log4JIteratorInitEventSource (Log4JIterator **self, const Log4JEventSource *source);
 
