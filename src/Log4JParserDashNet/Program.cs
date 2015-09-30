@@ -41,7 +41,7 @@ namespace Log4JParserDashNet
             {
                 using (new TimeTrace ("process with E/S init"))
                 {
-                    using (var eventSource = new FileEventSource (filename))
+                    using (var eventSource = new Log4JFile (filename))
                     using (new TimeTrace ("process inner"))
                     using (var filterTs = new FilterTimestamp (1411231371536L, 1411231371556L))
                     using (var filterLvl = new FilterLevel ("INFO", "ERROR"))
@@ -61,6 +61,7 @@ namespace Log4JParserDashNet
                         filterAll.Add (filterLgr);
 
                         var matchingEvents = eventSource
+                            .GetEvents ()
                             .Where (filterAll)
                             .Take (20)
                             .ToList ();
@@ -75,9 +76,9 @@ namespace Log4JParserDashNet
                 }
 
                 using (new TimeTrace ("count all events"))
-                using (var eventSource = new FileEventSource (filename))
+                using (var eventSource = new Log4JFile (filename))
                 {
-                    var count = eventSource.Count ();
+                    var count = eventSource.GetEvents ().Count ();
 
                     Console.WriteLine ("Found events: {0}", count);
                 }

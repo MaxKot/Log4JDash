@@ -114,6 +114,10 @@ namespace Log4JParserNet
             (out IteratorHandle self, EventSourceHandle source);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static void Log4JIteratorInitEventSourceReverse
+            (out IteratorHandle self, EventSourceHandle source);
+
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JIteratorInitFilter
             (out IteratorHandle self, IteratorHandle inner, FilterHandle filter);
 

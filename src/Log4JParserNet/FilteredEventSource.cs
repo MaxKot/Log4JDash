@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 namespace Log4JParserNet
 {
     internal sealed class FilteredEventSource
-        : IEnumerable<Event>
+        : IEnumerableOfEvents
         , IEventSource
     {
         private sealed class Enumerator : EnumeratorBase
@@ -73,6 +73,11 @@ namespace Log4JParserNet
         IEnumerator<Event> IEnumerable<Event>.GetEnumerator ()
         {
             return GetEnumerator ();
+        }
+
+        public IEnumerableOfEvents Where (FilterBase filter)
+        {
+            return new FilteredEventSource (this, filter);
         }
     }
 }
