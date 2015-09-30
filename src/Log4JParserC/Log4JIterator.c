@@ -12,7 +12,7 @@ typedef bool Log4JIteratorMoveNextCb (void *context);
 typedef const Log4JEvent Log4JIteratorCurrentCb (const void *context, size_t *id);
 
 #ifdef _DEBUG
-    typedef enum { EventSource, Filter } IteratorType;
+    typedef enum { EventSource, EventSourceReverse, Filter } IteratorType;
 #endif
 
 struct Log4JIterator_
@@ -44,12 +44,15 @@ static const Log4JEvent Log4JIteratorFilterCurrent_ (const void *context, size_t
     {
         assert (self != NULL);
         assert (self->Context != NULL);
-        assert (self->Type == EventSource || self->Type == Filter);
+        assert (self->Type == EventSource || self->Type == EventSourceReverse || self->Type == Filter);
         assert (self->Type != EventSource || self->Current == Log4JIteratorEventSourceCurrent_);
+        assert (self->Type != EventSourceReverse || self->Current == Log4JIteratorEventSourceReverseCurrent_);
         assert (self->Type != Filter || self->Current == Log4JIteratorFilterCurrent_);
         assert (self->Type != EventSource || self->MoveNext == Log4JIteratorEventSourceMoveNext_);
+        assert (self->Type != EventSourceReverse || self->MoveNext == Log4JIteratorEventSourceReverseMoveNext_);
         assert (self->Type != Filter || self->MoveNext == Log4JIteratorFilterMoveNext_);
         assert (self->Type != EventSource || self->Destroy == Log4JIteratorEventSourceDestroy_);
+        assert (self->Type != EventSourceReverse || self->Destroy == Log4JIteratorEventSourceReverseDestroy_);
         assert (self->Type != Filter || self->Destroy == Log4JIteratorFilterDestroy_);
     }
 
@@ -217,7 +220,7 @@ LOG4JPARSERC_API void Log4JIteratorInitEventSourceReverse (Log4JIterator **self,
     *result = (Log4JIterator)
     {
     #ifdef _DEBUG
-        .Type = EventSource,
+        .Type = EventSourceReverse,
     #endif
         .Context = context,
         .Destroy = &Log4JIteratorEventSourceReverseDestroy_,
