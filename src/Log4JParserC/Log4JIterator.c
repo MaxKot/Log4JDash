@@ -257,8 +257,8 @@ bool Log4JIteratorEventSourceReverseMoveNext_ (void *context)
 
     if (contextD->First == NULL)
     {
-        nextEvent = Log4JEventSourceFirst (contextD->Source);
-        contextD->First = Log4JEventSourceLast (contextD->Source);
+        nextEvent = Log4JEventSourceLast (contextD->Source);
+        contextD->First = Log4JEventSourceFirst (contextD->Source);
     }
     else if (contextD->Current)
     {
