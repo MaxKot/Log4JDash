@@ -9,6 +9,25 @@ namespace Log4JDash.Web.Models
 {
     public sealed class LogRepository
     {
+        private static void AddFilter
+            (DisposableCollection<List<FilterBase>> filters, Func<FilterBase> filterFactory)
+        {
+            if (filters.Elements.Capacity < filters.Elements.Count + 1)
+            {
+                filters.Elements.Capacity = filters.Elements.Count + 1;
+            }
+
+            FilterBase filter = null;
+            try
+            {
+                filter = filterFactory ();
+            }
+            finally
+            {
+                filters.Elements.Add (filter);
+            }
+        }
+
         public IEnumerable<EventModel> GetEvents (LogQuery query)
         {
             string sourceFile;
@@ -27,22 +46,22 @@ namespace Log4JDash.Web.Models
             {
                 if (query.MinLevel.Value != Level.Debug)
                 {
-                    filters.Elements.Add (new FilterLevel (query.MinLevel.Value, Level.Off));
+                    AddFilter (filters, () => new FilterLevel (query.MinLevel.Value, Level.Off));
                 }
 
                 if (!String.IsNullOrWhiteSpace (query.Logger))
                 {
-                    filters.Elements.Add (new FilterLogger (query.Logger));
+                    AddFilter (filters, () => new FilterLogger (query.Logger));
                 }
 
                 if (!String.IsNullOrWhiteSpace (query.Message))
                 {
-                    filters.Elements.Add (new FilterMessage (query.Message));
+                    AddFilter (filters, () => new FilterMessage (query.Message));
                 }
 
                 if (query.MinTime > DateTime.MinValue || query.MaxTime < DateTime.MaxValue)
                 {
-                    filters.Elements.Add (new FilterTimestamp (query.MinTime, query.MaxTime));
+                    AddFilter (filters, () => new FilterTimestamp (query.MinTime, query.MaxTime));
                 }
 
                 IEnumerable<Event> filteredEvents;
