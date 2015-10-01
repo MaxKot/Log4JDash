@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Log4JParserNet
 {
@@ -10,14 +10,14 @@ namespace Log4JParserNet
 
         private readonly ulong id_;
 
-        private readonly SafeHandle owner_;
+        private readonly IEventSource owner_;
 
         internal EventHandle Handle
         {
             get { return impl_; }
         }
 
-        internal Event (EventHandle impl, ulong id, SafeHandle owner)
+        internal Event (EventHandle impl, ulong id, IEventSource owner)
         {
             Debug.Assert (impl != null, "Event.ctor: impl is null.");
             Debug.Assert (owner != null, "Event.ctor: owner is null.");
@@ -36,7 +36,7 @@ namespace Log4JParserNet
             {
                 var buffer = (byte*) value.ToPointer ();
 
-                var encoding = System.Text.Encoding.UTF8;
+                var encoding = owner_.Encoding;
                 var charCount = encoding.GetCharCount (buffer, intSize);
 
                 var decodeBuffer = new char[charCount];

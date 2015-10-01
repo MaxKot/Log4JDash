@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Log4JParserNet
 {
@@ -16,7 +16,9 @@ namespace Log4JParserNet
 
             protected Log4JFile File => file_;
 
-            public SafeHandle Owner => file_.impl_;
+            public bool IsInvalid => file_.impl_.IsInvalid;
+
+            public Encoding Encoding => file_.Encoding;
 
             public EventsCollectionBase (Log4JFile file)
             {
@@ -56,8 +58,8 @@ namespace Log4JParserNet
         {
             private sealed class Enumerator : EnumeratorBase
             {
-                public Enumerator (EventSourceHandle source)
-                    : base (Init (source), source)
+                public Enumerator (EventsCollection source)
+                    : base (Init (source.File.impl_), source)
                 {
 
                 }
@@ -76,15 +78,15 @@ namespace Log4JParserNet
 
             }
 
-            protected override EnumeratorBase DoGetEnumerator () => new Enumerator (File.impl_);
+            protected override EnumeratorBase DoGetEnumerator () => new Enumerator (this);
         }
 
         private sealed class EventsCollectionReverse : EventsCollectionBase
         {
             private sealed class Enumerator : EnumeratorBase
             {
-                public Enumerator (EventSourceHandle source)
-                    : base (Init (source), source)
+                public Enumerator (EventsCollectionReverse source)
+                    : base (Init (source.File.impl_), source)
                 {
 
                 }
@@ -103,12 +105,14 @@ namespace Log4JParserNet
 
             }
 
-            protected override EnumeratorBase DoGetEnumerator () => new Enumerator (File.impl_);
+            protected override EnumeratorBase DoGetEnumerator () => new Enumerator (this);
         }
 
         private readonly UnmanagedMemoryHandle buffer_;
 
         private readonly EventSourceHandle impl_;
+
+        public Encoding Encoding { get; set; }
 
         public Log4JFile (string fileName)
         {
@@ -131,6 +135,8 @@ namespace Log4JParserNet
             }
 
             Log4JParserC.Log4JEventSourceInitXmlString (out impl_, buffer_.DangerousGetHandle ());
+
+            Encoding = Encoding.ASCII;
         }
 
         public IEnumerableOfEvents GetEvents ()

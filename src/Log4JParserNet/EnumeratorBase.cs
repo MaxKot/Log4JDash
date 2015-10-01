@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace Log4JParserNet
 {
@@ -10,12 +9,9 @@ namespace Log4JParserNet
     {
         private readonly IteratorHandle impl_;
 
-        private readonly SafeHandle owner_;
+        private readonly IEventSource owner_;
 
-        internal SafeHandle Owner
-        {
-            get { return owner_; }
-        }
+        internal IEventSource Owner => owner_;
 
         internal IteratorHandle Handle
         {
@@ -29,7 +25,7 @@ namespace Log4JParserNet
             }
         }
 
-        internal EnumeratorBase (IteratorHandle impl, SafeHandle owner)
+        internal EnumeratorBase (IteratorHandle impl, IEventSource owner)
         {
             Debug.Assert (impl != null, "EnumeratorBase.ctor: impl is null.");
             Debug.Assert (!impl.IsInvalid, "EnumeratorBase.ctor: impl is invalid.");
@@ -37,7 +33,6 @@ namespace Log4JParserNet
 
             Debug.Assert (owner != null, "EnumeratorBase.ctor: owner is null.");
             Debug.Assert (!owner.IsInvalid, "EnumeratorBase.ctor: owner is invalid.");
-            Debug.Assert (!owner.IsClosed, "EnumeratorBase.ctor: owner is closed.");
 
             impl_ = impl;
             owner_ = owner;

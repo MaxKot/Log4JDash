@@ -1,9 +1,10 @@
+using Log4JParserNet;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web.Hosting;
-using Log4JParserNet;
 
 namespace Log4JDash.Web.Models
 {
@@ -44,6 +45,8 @@ namespace Log4JDash.Web.Models
             using (var source = new Log4JFile (sourceFile))
             using (var filters = new List<FilterBase> ().ToDisposable ())
             {
+                source.Encoding = Encoding.GetEncoding (1251);
+
                 if (query.MinLevel.Value != Level.Debug)
                 {
                     AddFilter (filters, () => new FilterLevel (query.MinLevel.Value, Level.Off));

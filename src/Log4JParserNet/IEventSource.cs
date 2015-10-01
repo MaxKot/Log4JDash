@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Text;
 
 namespace Log4JParserNet
 {
@@ -6,6 +6,8 @@ namespace Log4JParserNet
     {
         EnumeratorBase GetEnumerator ();
 
-        SafeHandle Owner { get; }
+        bool IsInvalid { get; }
+
+        Encoding Encoding { get; }
     }
 }

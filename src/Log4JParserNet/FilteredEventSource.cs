@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Log4JParserNet
 {
@@ -41,10 +41,9 @@ namespace Log4JParserNet
 
         private readonly FilterBase filter_;
 
-        SafeHandle IEventSource.Owner
-        {
-            get { return source_.Owner; }
-        }
+        bool IEventSource.IsInvalid => source_.IsInvalid;
+
+        Encoding IEventSource.Encoding => source_.Encoding;
 
         public FilteredEventSource (IEventSource source, FilterBase filter)
         {

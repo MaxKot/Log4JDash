@@ -95,6 +95,7 @@ namespace Log4JParserNet.Tests
 
             using (var subject = new Log4JFile ("sample-1.xml"))
             {
+                subject.Encoding = Encoding.GetEncoding (1251);
                 var actual = subject.GetEvents ();
                 Assert.That (actual, Is.EqualTo (expected));
             }
@@ -159,6 +160,7 @@ namespace Log4JParserNet.Tests
 
             using (var subject = new Log4JFile ("sample-1.xml"))
             {
+                subject.Encoding = Encoding.GetEncoding (1251);
                 var actual = subject.GetEventsReverse ();
                 Assert.That (actual, Is.EqualTo (expected));
             }
