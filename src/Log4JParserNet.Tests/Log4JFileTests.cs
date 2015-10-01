@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Text;
 
 namespace Log4JParserNet.Tests
 {
