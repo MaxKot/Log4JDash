@@ -51,6 +51,13 @@
   </Choose>
   <ItemGroup>
     <Compile Include="EventExpectation.cs" />
+    <Compile Include="FilterAnyTests.cs" />
+    <Compile Include="FilterAllTests.cs" />
+    <Compile Include="FilterNotTests.cs" />
+    <Compile Include="FilterTimestampTests.cs" />
+    <Compile Include="FilterMessageTests.cs" />
+    <Compile Include="FilterLoggerTests.cs" />
+    <Compile Include="FilterLevelTests.cs" />
     <Compile Include="Log4JFileTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
