@@ -46,20 +46,20 @@ namespace Log4JParserNet.Tests
                     Level = Level.Warn,
                     Logger = "Root.ChildA.LoggerA1",
                     Thread = "Thread-4",
-                    Timestamp = 1411231353792L,
+                    Timestamp = 1411231353793L,
                     Message = "#4. Test event E.",
                     Throwable = null,
-                    Id = 1459
+                    Id = 1449
                 },
                 new EventExpectation
                 {
                     Level = Level.Error,
                     Logger = "Root.ChildA.LoggerA1",
                     Thread = "Thread-5",
-                    Timestamp = 1411231353793L,
+                    Timestamp = 1411231353795L,
                     Message = "#5. Test event F.",
                     Throwable = null,
-                    Id = 1938
+                    Id = 1928
                 }
             };
 
@@ -81,20 +81,20 @@ namespace Log4JParserNet.Tests
                     Level = Level.Error,
                     Logger = "Root.ChildA.LoggerA1",
                     Thread = "Thread-5",
-                    Timestamp = 1411231353793L,
+                    Timestamp = 1411231353795L,
                     Message = "#5. Test event F.",
                     Throwable = null,
-                    Id = 1938
+                    Id = 1928
                 },
                 new EventExpectation
                 {
                     Level = Level.Warn,
                     Logger = "Root.ChildA.LoggerA1",
                     Thread = "Thread-4",
-                    Timestamp = 1411231353792L,
+                    Timestamp = 1411231353793L,
                     Message = "#4. Test event E.",
                     Throwable = null,
-                    Id = 1459
+                    Id = 1449
                 },
                 new EventExpectation
                 {
