@@ -49,7 +49,7 @@ namespace Log4JDash.Web.Models
 
                 if (query.MinLevel.Value != Level.Debug)
                 {
-                    AddFilter (filters, () => new FilterLevel (query.MinLevel.Value, Level.Off));
+                    AddFilter (filters, () => new FilterLevel (query.MinLevel.Value, Level.MaxValue));
                 }
 
                 if (!String.IsNullOrWhiteSpace (query.Logger))

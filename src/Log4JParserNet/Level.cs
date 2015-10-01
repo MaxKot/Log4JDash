@@ -21,6 +21,10 @@ namespace Log4JParserNet
 
         public static string Warn { get; }
 
+        public static string MinValue => All;
+
+        public static string MaxValue => Off;
+
         static Level ()
         {
             All = ReadUnmanaged (Log4JParserC.Log4JLevelAll);
