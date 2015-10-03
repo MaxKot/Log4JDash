@@ -28,6 +28,8 @@
 
 .log-list {
     padding-top: 4.5em;
+    list-style-type: none;
+    padding-left: 0;
 }
 
 .log-item-field {
