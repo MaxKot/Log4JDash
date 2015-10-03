@@ -13,27 +13,47 @@
         <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/my/css/log.css")" />
     </head>
     <body>
-        @{
-            var query = new LogQuery ();
-            var any = false;
-        }
         @using (Html.BeginForm (null, null, FormMethod.Get, new { @class = "log-query" }))
         {
             <div>
-                @Html.EditorFor(_ => query, null, String.Empty)
+                @Html.EditorFor(model => model.Query, null, String.Empty)
+            </div>
+            <div>
             </div>
             <div>
                 <input type="submit" value="Искать" />
+                @if (@Model.Events.Count >= Model.Query.Quantity)
+                {
+                    var prevPageQuery = Model.Query.Clone ();
+                    prevPageQuery.Offset += Model.Query.Quantity;
+                    var prevPageRouteValues = prevPageQuery.GetRouteValues ();
+                    <text>@Html.ActionLink("<", "List", prevPageRouteValues)</text>
+                }
+                @if (Model.Query.Offset > 0)
+                {
+                    var nextPageQuery = Model.Query.Clone ();
+                    nextPageQuery.Offset -= Model.Query.Quantity;
+                    var nextPageRouteValues = nextPageQuery.GetRouteValues ();
+                    <text>@Html.ActionLink(">", "List", nextPageRouteValues)</text>
+
+                    var lastPageQuery = Model.Query.Clone ();
+                    lastPageQuery.Offset = 0;
+                    var lastPageRouteValues = lastPageQuery.GetRouteValues ();
+                    <text>@Html.ActionLink("Последняя", "List", lastPageRouteValues)</text>
+                }
             </div>
         }
         <ol class="log-list">
-            @foreach (var @event in Model.Events)
-            {
-                any = true;
-                @Html.DisplayFor(_ => @event)
+            @{
+                var isEmpty = true;
+                foreach (var @event in Model.Events)
+                {
+                    isEmpty = false;
+                    @Html.DisplayFor(_ => @event)
+                }
             }
         </ol>
-        @if (!any)
+        @if (isEmpty)
         {
             <div>Empty!</div>
         }

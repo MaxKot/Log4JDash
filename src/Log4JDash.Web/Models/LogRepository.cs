@@ -29,7 +29,7 @@ namespace Log4JDash.Web.Models
             }
         }
 
-        public IEnumerable<EventModel> GetEvents (LogQuery query)
+        public ICollection<EventModel> GetEvents (LogQuery query)
         {
             string sourceFile;
             switch (query.SourceId)
@@ -103,18 +103,9 @@ namespace Log4JDash.Web.Models
                         break;
                 }
 
-                IEnumerable<Event> eventsWindow;
-                if (query.MinId == null)
-                {
-                    eventsWindow = filteredEvents
-                        .Take (query.Quantity);
-                }
-                else
-                {
-                    eventsWindow = filteredEvents
-                        .Skip ((int) query.MinId)
-                        .Take (query.Quantity);
-                }
+                var eventsWindow = filteredEvents
+                    .Skip (query.Offset)
+                    .Take (query.Quantity);
 
                 var result = eventsWindow
                     .Select (x => new EventModel (x))
