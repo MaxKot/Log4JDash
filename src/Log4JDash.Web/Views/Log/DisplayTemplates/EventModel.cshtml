@@ -37,6 +37,13 @@
                 <label>Message:</label>
                 <span>@Model.Message</span>
             </span>
+            @if (!String.IsNullOrWhiteSpace (Model.Throwable))
+            {
+                <span class="log-item-field log-item-throwable">
+                    <label>Exception:</label>
+                    <span>@Model.Throwable</span>
+                </span>
+            }
         </div>
     </div>
 </li>

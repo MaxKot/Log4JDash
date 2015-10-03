@@ -83,8 +83,16 @@ label[for^='log-item-collapsed'] .log-item-collapsed-open,
     content: ']';
 }
 .log-item-collapsed:checked + .log-item-collapse .log-item-thread,
-.log-item-collapsed:checked + .log-item-collapse .log-item-level {
+.log-item-collapsed:checked + .log-item-collapse .log-item-level,
+.log-item-collapsed:checked + .log-item-collapse .log-item-throwable * {
     display: none;
+}
+.log-item-throwable::after {
+    content: '[exception]';
+    display: none;
+}
+.log-item-collapsed:checked + .log-item-collapse .log-item-throwable::after {
+    display: inline;
 }
 
 .log-item-timestamp-date::after {
