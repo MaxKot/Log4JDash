@@ -101,6 +101,10 @@ label[for^='log-item-collapsed'] .log-item-collapsed-open,
     opacity: 0.25;
 }
 
+.log-item-throwable > span {
+    white-space: pre-wrap;
+}
+
 .log-item-debug {
     background-color: #dddddd;
 }
