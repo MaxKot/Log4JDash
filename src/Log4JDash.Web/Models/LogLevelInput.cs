@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using Log4JParserNet;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Web.Routing;
+using Log4JParserNet;
 
 namespace Log4JDash.Web.Models
 {
