@@ -41,6 +41,7 @@
                     var lastPageRouteValues = lastPageQuery.GetRouteValues ();
                     <text>@Html.ActionLink("Последняя", "List", lastPageRouteValues)</text>
                 }
+                @Html.EditorFor(m => m.Query.Source, null, "Source")
             </div>
         }
         <ol class="log-list">

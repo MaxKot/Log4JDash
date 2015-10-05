@@ -26,6 +26,10 @@
     border-radius: 0 0 0 0.5em;
 }
 
+.log-query-source {
+    float: right;
+}
+
 .log-list {
     padding-top: 4.5em;
     list-style-type: none;

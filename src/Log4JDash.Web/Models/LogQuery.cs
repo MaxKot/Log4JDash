@@ -6,7 +6,7 @@ namespace Log4JDash.Web.Models
 {
     public sealed class LogQuery : ICloneable
     {
-        public int SourceId { get; set; }
+        public LogSourceInput Source { get; set; }
 
         public LogLevelInput MinLevel { get; set; }
 
@@ -29,7 +29,7 @@ namespace Log4JDash.Web.Models
 
         public LogQuery ()
         {
-            SourceId = 1;
+            Source = new LogSourceInput ();
             MinLevel = new LogLevelInput ();
             Logger = null;
             Thread = null;
@@ -48,7 +48,9 @@ namespace Log4JDash.Web.Models
                 throw new ArgumentNullException ("other");
             }
 
-            SourceId = other.SourceId;
+            Source = other.Source != null
+                ? other.Source.Clone ()
+                : null;
             MinLevel = other.MinLevel != null
                 ? other.MinLevel.Clone ()
                 : null;
@@ -78,9 +80,12 @@ namespace Log4JDash.Web.Models
         {
             var result = new RouteValueDictionary ();
 
-            if (SourceId != 1)
+            if (Source != null)
             {
-                result.Add ("SourceId", SourceId);
+                foreach (var item in Source.GetRouteValues ())
+                {
+                    result.Add ("Source." + item.Key, item.Value);
+                }
             }
             if (MinLevel != null)
             {

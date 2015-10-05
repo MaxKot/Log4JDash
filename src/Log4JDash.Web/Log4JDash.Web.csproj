@@ -95,6 +95,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Domain\ILogDirectoryConfig.cs" />
+    <Compile Include="Domain\ILogSourceProviderConfig.cs" />
+    <Compile Include="Domain\LogSourceProvider.cs" />
     <Compile Include="Models\LogRepository.cs" />
     <Compile Include="Models\LogIndexViewModel.cs" />
     <Compile Include="Models\EventModel.cs" />
@@ -105,6 +108,7 @@
     <Compile Include="Models\EventsQuantity.cs" />
     <Compile Include="Models\LogLevelInput.cs" />
     <Compile Include="Models\LogQuery.cs" />
+    <Compile Include="Models\LogSourceInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -119,6 +123,7 @@
     <Content Include="Views\Log\EditorTemplates\String.cshtml" />
     <Content Include="Views\Log\EditorTemplates\_Editor.cshtml" />
     <Content Include="Views\Log\EditorTemplates\DateTime.cshtml" />
+    <Content Include="Views\Log\EditorTemplates\LogSourceInput.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

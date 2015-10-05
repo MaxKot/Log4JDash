@@ -1,0 +1,14 @@
+﻿@model Log4JDash.Web.Models.LogSourceInput
+
+@{
+    var options = Model.Sources.Select (l => new SelectListItem
+    {
+        Value = l,
+        Text = l
+    });
+}
+<div class="editor log-query-source">
+    <div class="editor-input">
+        @Html.DropDownListFor(model => model.Value, options)
+    </div>
+</div>
