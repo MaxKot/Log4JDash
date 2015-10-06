@@ -1,33 +1,61 @@
-
-#ignore thumbnails created by windows
-Thumbs.db
-#Ignore files build by Visual Studio
-*.obj
-*.exe
-*.pdb
-*.user
-*.aps
-*.pch
+# VSS files
+*.scc
+*.vssscc
 *.vspscc
-*_i.c
-*_p.c
-*.ncb
-*.suo
-*.tlb
-*.tlh
+
+# Temp files
+*~$*
+*.tmp
 *.bak
-*.cache
-*.ilk
-*.log
-[Bb]in
-[Dd]ebug*/
-*.lib
-*.sbr
-obj/
-[Rr]elease*/
-_ReSharper*/
-[Tt]est[Rr]esult*
-src/ipch/
-*.opensdf
-*.sdf
-src/*.ide/
+Thumbs.db
+
+# User files
+*.csproj.*
+*.sqlproj.*
+*.vcxproj.*
+*.pubxml.user
+*.resharper.user
+*.ReSharper.user
+*.resharper
+*.ReSharper
+*.TeamCity.user
+*.teamcity.user
+
+!*.csproj.DotSettings
+
+# Visual Studio artifacts
+*.dbmdl
+src/ipch
+src/*.opensdf
+src/*.sdf
+src/*.ide
+src/.vs/**/*.cache
+
+# Other
+*.suo
+*.vsmdi
+*.gpState
+*.docstates
+*.dotCover
+_ReSharper*
+_TeamCity.*
+*.DotSettings.user
+*.DotSettings
+
+# tests
+[Tt]est[Rr]esults
+[Ll]ocal[Tt]est[Rr]un.testrunconfig
+
+# Build output & generated artifacts
+_logs
+_build
+src/**/bin
+src/**/obj
+src/**/[Dd]ebug*/
+src/**/[Rr]elease*/
+src/**/FakesAssemblies
+src/**/**/FakesAssemblies
+src/**/**/**/FakesAssemblies
+!src/**/bin/*.refresh
+!src/packages
+!src/**/**/bin/*.refresh
