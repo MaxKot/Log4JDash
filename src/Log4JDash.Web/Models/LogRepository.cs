@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Web.Hosting;
+using Log4JDash.Web.Configuration;
 using Log4JDash.Web.Domain;
 using Log4JParserNet;
 
@@ -12,21 +10,7 @@ namespace Log4JDash.Web.Models
 {
     public sealed class LogRepository
     {
-        private sealed class LogDirectoryConfigMock : ILogDirectoryConfig
-        {
-            public string Name => "samples";
-
-            public string DirectoryPath => Path.Combine (HostingEnvironment.MapPath ("~"), @"..\Log4JDash");
-
-            public Regex FilenamePattern => new Regex (@".*\.xml");
-        }
-
-        private sealed class LogSourceProviderConfigMock : ILogSourceProviderConfig
-        {
-            public ICollection<ILogDirectoryConfig> Directories => new[] { new LogDirectoryConfigMock () };
-        }
-
-        private readonly LogSourceProvider logSourceProvider_ = new LogSourceProvider (new LogSourceProviderConfigMock ());
+        private readonly LogSourceProvider logSourceProvider_ = new LogSourceProvider (KnownSections.LogSourceProvider ());
 
         private static void AddFilter
             (DisposableCollection<List<FilterBase>> filters, Func<FilterBase> filterFactory)

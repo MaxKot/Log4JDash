@@ -95,9 +95,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Configuration\KnownSections.cs" />
     <Compile Include="Domain\ILogDirectoryConfig.cs" />
+    <Compile Include="Domain\LogDirectoryElement.cs" />
     <Compile Include="Domain\ILogSourceProviderConfig.cs" />
+    <Compile Include="Domain\LogDirectoryElementCollection.cs" />
     <Compile Include="Domain\LogSourceProvider.cs" />
+    <Compile Include="Domain\LogSourceProviderSection.cs" />
+    <Compile Include="Domain\RegexConverter.cs" />
     <Compile Include="Models\LogRepository.cs" />
     <Compile Include="Models\LogIndexViewModel.cs" />
     <Compile Include="Models\EventModel.cs" />

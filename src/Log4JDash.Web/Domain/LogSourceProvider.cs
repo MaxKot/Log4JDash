@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web.Hosting;
 
 namespace Log4JDash.Web.Domain
 {
@@ -25,7 +26,10 @@ namespace Log4JDash.Web.Domain
 
             foreach (var directory in config_.Directories)
             {
-                var files = Directory.GetFiles (directory.DirectoryPath);
+                var directoryPath = !Path.IsPathRooted (directory.DirectoryPath)
+                    ? Path.Combine (HostingEnvironment.MapPath ("~"), directory.DirectoryPath)
+                    : directory.DirectoryPath;
+                var files = Directory.GetFiles (directoryPath);
                 foreach (var fullPath in files)
                 {
                     if (directory.FilenamePattern.IsMatch (fullPath))
