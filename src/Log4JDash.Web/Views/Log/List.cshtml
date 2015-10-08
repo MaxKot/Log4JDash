@@ -10,53 +10,61 @@
     <head>
         <meta name="viewport" content="width=device-width" />
         <title>List</title>
+        <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/reset-css-2.0/reset.css")" />
         <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/my/css/log.css")" />
     </head>
     <body>
-        @using (Html.BeginForm (null, null, FormMethod.Get, new { @class = "log-query" }))
-        {
-            <div>
-                @Html.EditorFor(model => model.Query, null, String.Empty)
-            </div>
-            <div>
-            </div>
-            <div>
-                <input type="submit" value="Искать" />
-                @if (@Model.Events.Count >= Model.Query.Quantity)
-                {
-                    var prevPageQuery = Model.Query.Clone ();
-                    prevPageQuery.Offset += Model.Query.Quantity;
-                    var prevPageRouteValues = prevPageQuery.GetRouteValues ();
-                    <text>@Html.ActionLink("<", "List", prevPageRouteValues)</text>
-                }
-                @if (Model.Query.Offset > 0)
-                {
-                    var nextPageQuery = Model.Query.Clone ();
-                    nextPageQuery.Offset -= Model.Query.Quantity;
-                    var nextPageRouteValues = nextPageQuery.GetRouteValues ();
-                    <text>@Html.ActionLink(">", "List", nextPageRouteValues)</text>
+        <header>
+            <h1>@Model.Query.Source.Value</h1>
 
-                    var lastPageQuery = Model.Query.Clone ();
-                    lastPageQuery.Offset = 0;
-                    var lastPageRouteValues = lastPageQuery.GetRouteValues ();
-                    <text>@Html.ActionLink("Последняя", "List", lastPageRouteValues)</text>
-                }
-                @Html.EditorFor(m => m.Query.Source, null, "Source")
-            </div>
-        }
-        <ol class="log-list">
-            @{
-                var isEmpty = true;
-                foreach (var @event in Model.Events)
-                {
-                    isEmpty = false;
-                    @Html.DisplayFor(_ => @event)
-                }
+            @using (Html.BeginForm (null, null, FormMethod.Get, new { @class = "log-query" }))
+            {
+                <div>
+                    @Html.EditorFor(model => model.Query, null, String.Empty)
+                </div>
+                <div>
+                </div>
+                <div>
+                    <input type="submit" value="Искать" />
+                    @if (@Model.Events.Count >= Model.Query.Quantity)
+                    {
+                        var prevPageQuery = Model.Query.Clone ();
+                        prevPageQuery.Offset += Model.Query.Quantity;
+                        var prevPageRouteValues = prevPageQuery.GetRouteValues ();
+                        <text>@Html.ActionLink("<", "List", prevPageRouteValues)</text>
+                    }
+                    @if (Model.Query.Offset > 0)
+                    {
+                        var nextPageQuery = Model.Query.Clone ();
+                        nextPageQuery.Offset -= Model.Query.Quantity;
+                        var nextPageRouteValues = nextPageQuery.GetRouteValues ();
+                        <text>@Html.ActionLink(">", "List", nextPageRouteValues)</text>
+
+                        var lastPageQuery = Model.Query.Clone ();
+                        lastPageQuery.Offset = 0;
+                        var lastPageRouteValues = lastPageQuery.GetRouteValues ();
+                        <text>@Html.ActionLink("Последняя", "List", lastPageRouteValues)</text>
+                    }
+                    @Html.EditorFor(m => m.Query.Source, null, "Source")
+                </div>
             }
-        </ol>
-        @if (isEmpty)
-        {
-            <div>Empty!</div>
-        }
+        </header>
+
+        <main>
+            <ol class="log-list">
+                @{
+                    var isEmpty = true;
+                    foreach (var @event in Model.Events)
+                    {
+                        isEmpty = false;
+                        @Html.DisplayFor(_ => @event)
+                    }
+                }
+            </ol>
+            @if (isEmpty)
+            {
+                <div>Empty!</div>
+            }
+        </main>
     </body>
 </html>
