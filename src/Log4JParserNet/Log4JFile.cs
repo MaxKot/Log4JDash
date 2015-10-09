@@ -115,15 +115,15 @@ namespace Log4JParserNet
 
         public Encoding Encoding { get; set; }
 
-        public static Log4JFile Create (string fileName)
+        public static Log4JFile Create (string fileName, long? maxSize = null)
         {
             using (var fileStream = File.Open (fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                return Create (fileStream);
+                return Create (fileStream, maxSize);
             }
         }
 
-        public static Log4JFile Create (Stream source)
+        public static Log4JFile Create (Stream source, long? maxSize = null)
         {
             if (source == null)
             {
@@ -133,8 +133,13 @@ namespace Log4JParserNet
             {
                 throw new ArgumentException ("Source stream must support reading.", nameof (source));
             }
+            if (maxSize != null && maxSize < 0L)
+            {
+                const string message = "Maximum size must be a positive value.";
+                throw new ArgumentOutOfRangeException (nameof (maxSize), message);
+            }
 
-            if (!source.CanSeek)
+            if (maxSize == null && !source.CanSeek)
             {
                 using (var seekableCopy = new MemoryStream ())
                 {
@@ -145,9 +150,17 @@ namespace Log4JParserNet
                 }
             }
 
-            var sourceSize = source.Seek (0, SeekOrigin.End);
-            var bufferSize = sourceSize + 1L;
-            source.Seek (0, SeekOrigin.Begin);
+            long bufferSize;
+            if (maxSize == null)
+            {
+                var sourceSize = source.Seek (0, SeekOrigin.End);
+                bufferSize = checked (sourceSize + 1L);
+                source.Seek (0, SeekOrigin.Begin);
+            }
+            else
+            {
+                bufferSize = checked ((long) maxSize + 1);
+            }
 
             UnmanagedMemoryHandle buffer = null;
             try
@@ -160,9 +173,26 @@ namespace Log4JParserNet
 
                 unsafe
                 {
-                    using (var memory = new UnmanagedMemoryStream ((byte*) buffer.DangerousGetHandle (), bufferSize, bufferSize, FileAccess.Write))
+                    var bufferHandle = (byte*) buffer.DangerousGetHandle ();
+                    using (var memory = new UnmanagedMemoryStream (bufferHandle, bufferSize, bufferSize, FileAccess.Write))
                     {
-                        source.CopyTo (memory);
+                        var copyBuffer = new byte[Math.Max (bufferSize - 1, 81920)];
+                        var remainingToCopy = bufferSize - 1L;
+                        while (remainingToCopy > 0L)
+                        {
+                            var toRead = (int) Math.Min (copyBuffer.Length, remainingToCopy);
+                            var read = source.Read (copyBuffer, 0, toRead);
+                            if (read != 0)
+                            {
+                                remainingToCopy -= read;
+                                memory.Write (copyBuffer, 0, read);
+                            }
+                            else
+                            {
+                                remainingToCopy = 0L;
+                            }
+                        }
+
                         memory.WriteByte (0);
                     }
                 }
