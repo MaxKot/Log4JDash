@@ -110,12 +110,30 @@ struct Log4JEventSource_
 
 static void Log4JEventSourceInitXmlStringImpl (Log4JEventSource **self, char *xmlString, bool ownString)
 {
+    *self = nullptr;
     auto ownedStringPtr = ownString ? xmlString : nullptr;
 
     auto doc = new rapidxml::xml_document<char> ();
-    doc->parse<rapidxml::parse_fastest> (xmlString);
+    try
+    {
+        doc->parse<rapidxml::parse_fastest> (xmlString);
+    }
+    catch (const rapidxml::parse_error &ex)
+    {
+
+    }
+    catch (...)
+    {
+        delete doc;
+        throw;
+    }
 
     auto result = (Log4JEventSource *) malloc (sizeof (Log4JEventSource));
+    if (result == nullptr)
+    {
+        delete doc;
+        return;
+    }
     *result = { doc, ownedStringPtr };
 
     *self = result;
