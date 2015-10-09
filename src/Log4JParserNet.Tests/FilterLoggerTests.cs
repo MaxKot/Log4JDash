@@ -53,7 +53,7 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            using (var source = new Log4JFile ("sample-1.xml"))
+            using (var source = Log4JFile.Create ("sample-1.xml"))
             using (var subject = new FilterLogger ("Root.ChildA"))
             {
                 source.Encoding = Encoding.GetEncoding (1251);
@@ -89,7 +89,7 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            using (var source = new Log4JFile ("sample-1.xml"))
+            using (var source = Log4JFile.Create ("sample-1.xml"))
             using (var subject = new FilterLogger ("Root.ChildA.LoggerA1"))
             {
                 source.Encoding = Encoding.GetEncoding (1251);

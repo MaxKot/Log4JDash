@@ -63,7 +63,7 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            using (var subject = new Log4JFile ("sample-1.xml"))
+            using (var subject = Log4JFile.Create ("sample-1.xml"))
             {
                 subject.Encoding = Encoding.GetEncoding (1251);
                 var actual = subject.GetEvents ();
@@ -128,7 +128,7 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            using (var subject = new Log4JFile ("sample-1.xml"))
+            using (var subject = Log4JFile.Create ("sample-1.xml"))
             {
                 subject.Encoding = Encoding.GetEncoding (1251);
                 var actual = subject.GetEventsReverse ();

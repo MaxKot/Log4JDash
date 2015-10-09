@@ -54,7 +54,13 @@ namespace Log4JDash.Web.Domain
             return DoGetSources ().Keys.OrderBy (k => k);
         }
 
-        public string GetFile (string sourceId)
+        public Stream OpenSource (string sourceId)
+        {
+            var filename = GetFile (sourceId);
+            return new FileStream (filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        }
+
+        private string GetFile (string sourceId)
         {
             var sources = DoGetSources ();
             var key = String.IsNullOrWhiteSpace (sourceId)

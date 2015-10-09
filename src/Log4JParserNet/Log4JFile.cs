@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -114,26 +115,73 @@ namespace Log4JParserNet
 
         public Encoding Encoding { get; set; }
 
-        public Log4JFile (string fileName)
+        public static Log4JFile Create (string fileName)
         {
-            using (var file = File.Open (fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var fileStream = File.Open (fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                var fileSize = file.Seek (0, SeekOrigin.End);
-                var bufferSize = fileSize + 1L;
-                file.Seek (0, SeekOrigin.Begin);
+                return Create (fileStream);
+            }
+        }
 
-                buffer_ = new UnmanagedMemoryHandle (bufferSize);
+        public static Log4JFile Create (Stream source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException (nameof (source));
+            }
+            if (!source.CanRead)
+            {
+                throw new ArgumentException ("Source stream must support reading.", nameof (source));
+            }
 
-                unsafe
+            if (!source.CanSeek)
+            {
+                using (var seekableCopy = new MemoryStream ())
                 {
-                    using (var memory = new UnmanagedMemoryStream ((byte*) buffer_.DangerousGetHandle (), bufferSize, bufferSize, FileAccess.Write))
-                    {
-                        file.CopyTo (memory);
-                        memory.WriteByte (0);
-                    }
+                    Debug.Assert (seekableCopy.CanSeek);
+                    source.CopyTo (seekableCopy);
+                    seekableCopy.Seek (0, SeekOrigin.Begin);
+                    return Create (seekableCopy);
                 }
             }
 
+            var sourceSize = source.Seek (0, SeekOrigin.End);
+            var bufferSize = sourceSize + 1L;
+            source.Seek (0, SeekOrigin.Begin);
+
+            UnmanagedMemoryHandle buffer = null;
+            try
+            {
+                try { }
+                finally
+                {
+                    buffer = new UnmanagedMemoryHandle (bufferSize);
+                }
+
+                unsafe
+                {
+                    using (var memory = new UnmanagedMemoryStream ((byte*) buffer.DangerousGetHandle (), bufferSize, bufferSize, FileAccess.Write))
+                    {
+                        source.CopyTo (memory);
+                        memory.WriteByte (0);
+                    }
+                }
+
+                return new Log4JFile (buffer);
+            }
+            catch
+            {
+                if (buffer != null)
+                {
+                    buffer.Dispose ();
+                }
+                throw;
+            }
+        }
+
+        private Log4JFile (UnmanagedMemoryHandle buffer)
+        {
+            buffer_ = buffer;
             Log4JParserC.Log4JEventSourceInitXmlString (out impl_, buffer_.DangerousGetHandle ());
 
             Encoding = Encoding.ASCII;

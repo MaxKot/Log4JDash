@@ -43,7 +43,7 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            using (var source = new Log4JFile ("sample-1.xml"))
+            using (var source = Log4JFile.Create ("sample-1.xml"))
             using (var childFilter1 = new FilterLevel (Level.MinValue, Level.Info))
             using (var childFilter2 = new FilterTimestamp (1411231353792L, 1411231353792L))
             using (var subject = new FilterAny ())

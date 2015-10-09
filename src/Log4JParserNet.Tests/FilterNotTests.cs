@@ -33,7 +33,7 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            using (var source = new Log4JFile ("sample-1.xml"))
+            using (var source = Log4JFile.Create ("sample-1.xml"))
             using (var childFilter = new FilterLevel (Level.Info, Level.Error))
             using (var subject = new FilterNot (childFilter))
             {
