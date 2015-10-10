@@ -111,6 +111,8 @@ namespace Log4JParserNet
 
         private readonly UnmanagedMemoryHandle buffer_;
 
+        public long Size { get; }
+
         private readonly EventSourceHandle impl_;
 
         public Encoding Encoding { get; set; }
@@ -163,6 +165,7 @@ namespace Log4JParserNet
             }
 
             UnmanagedMemoryHandle buffer = null;
+            long size;
             try
             {
                 try { }
@@ -193,11 +196,12 @@ namespace Log4JParserNet
                             }
                         }
 
+                        size = memory.Position;
                         memory.WriteByte (0);
                     }
                 }
 
-                return new Log4JFile (buffer);
+                return new Log4JFile (buffer, size);
             }
             catch
             {
@@ -209,11 +213,11 @@ namespace Log4JParserNet
             }
         }
 
-        private Log4JFile (UnmanagedMemoryHandle buffer)
+        private Log4JFile (UnmanagedMemoryHandle buffer, long size)
         {
             buffer_ = buffer;
+            Size = size;
             Log4JParserC.Log4JEventSourceInitXmlString (out impl_, buffer_.DangerousGetHandle ());
-
             Encoding = Encoding.ASCII;
         }
 
