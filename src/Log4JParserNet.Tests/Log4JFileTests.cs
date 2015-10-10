@@ -30,6 +30,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353782L,
                     Message = "#1. Test event A.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 0
                 },
                 new EventExpectation
@@ -40,6 +48,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#2. Test event B.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 479
                 },
                 new EventExpectation
@@ -50,6 +66,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#3. Test event C. С кирилицей.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 958
                 },
                 new EventExpectation
@@ -60,6 +84,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353793L,
                     Message = "#4. Test event E.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 1449
                 },
                 new EventExpectation
@@ -70,6 +102,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353795L,
                     Message = "#5. Test event F.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 1928
                 }
             };
@@ -96,6 +136,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353795L,
                     Message = "#5. Test event F.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 1928
                 },
                 new EventExpectation
@@ -106,6 +154,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353793L,
                     Message = "#4. Test event E.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 1449
                 },
                 new EventExpectation
@@ -116,6 +172,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#3. Test event C. С кирилицей.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 958
                 },
                 new EventExpectation
@@ -126,6 +190,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#2. Test event B.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 479
                 },
                 new EventExpectation
@@ -136,6 +208,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353782L,
                     Message = "#1. Test event A.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 0
                 }
             };
@@ -169,6 +249,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353782L,
                     Message = "#1. Test event A.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 0
                 },
                 new EventExpectation
@@ -179,6 +267,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#2. Test event B.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 479
                 }
             };
@@ -205,6 +301,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#2. Test event B.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 479
                 },
                 new EventExpectation
@@ -215,6 +319,14 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353782L,
                     Message = "#1. Test event A.",
                     Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
                     Id = 0
                 }
             };

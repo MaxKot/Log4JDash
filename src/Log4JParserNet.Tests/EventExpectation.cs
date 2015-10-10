@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace Log4JParserNet.Tests
@@ -17,6 +18,8 @@ namespace Log4JParserNet.Tests
 
         public string Throwable { get; set; }
 
+        public IDictionary<string, string> Properties { get; } = new Dictionary<string, string> ();
+
         public ulong Id { get; set; }
 
         public bool Equals (Event other)
@@ -27,6 +30,8 @@ namespace Log4JParserNet.Tests
             Assert.That (other.Timestamp, Is.EqualTo (Timestamp));
             Assert.That (other.Message, Is.EqualTo (Message));
             Assert.That (other.Throwable, Is.EqualTo (Throwable));
+            var properties = other.GetProperties ();
+            Assert.That (properties, Is.EquivalentTo (Properties));
             Assert.That (other.Id, Is.EqualTo (Id));
 
             return true;

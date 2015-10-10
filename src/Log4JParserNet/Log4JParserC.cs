@@ -28,6 +28,17 @@ namespace Log4JParserNet
         extern public static void Log4JEventThrowable
             (EventHandle log4JEvent, out IntPtr value, out UIntPtr size);
 
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static UIntPtr Log4JEventProperties
+            (
+            EventHandle log4JEvent,
+            UIntPtr skip,
+            [Out]
+            [MarshalAs (UnmanagedType.LPArray, ArraySubType = UnmanagedType.Struct, SizeParamIndex = 3)]
+            Log4JEventProperty[] properties,
+            UIntPtr propertiesSize
+            );
+
         [DllImport("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventSourceInitXmlString
             (out EventSourceHandle self, IntPtr xmlString);

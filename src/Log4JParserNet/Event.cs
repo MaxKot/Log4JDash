@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Log4JParserNet
@@ -133,6 +134,37 @@ namespace Log4JParserNet
 
                 return PtrToString (value, size);
             }
+        }
+
+        public IList<KeyValuePair<string, string>> GetProperties ()
+        {
+            const int bufferSize = 16;
+            var buffer = new Log4JEventProperty[bufferSize];
+
+            var result = new List<KeyValuePair<string, string>> (16);
+
+            uint totalEvents;
+            var totalEventsRead = 0U;
+            do
+            {
+                totalEvents = Log4JParserC
+                    .Log4JEventProperties (impl_, new UIntPtr (totalEventsRead), buffer, new UIntPtr ((uint) buffer.Length))
+                    .ToUInt32 ();
+
+                var eventsRemaining = totalEvents - totalEventsRead;
+                var eventsRead = eventsRemaining > bufferSize ? bufferSize : eventsRemaining;
+
+                for (var i = 0U; i < eventsRead; ++i)
+                {
+                    var name = PtrToString (buffer[i].Name, buffer[i].NameSize);
+                    var value = PtrToString (buffer[i].Value, buffer[i].ValueSize);
+                    result.Add (new KeyValuePair<string, string> (name, value));
+                }
+
+                totalEventsRead += eventsRead;
+            } while (totalEventsRead != totalEvents);
+
+            return result;
         }
 
         public ulong Id

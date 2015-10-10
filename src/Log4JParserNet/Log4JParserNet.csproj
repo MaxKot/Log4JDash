@@ -67,6 +67,7 @@
     <Compile Include="EnumeratorBase.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="EventHandle.cs" />
+    <Compile Include="Log4JEventProperty.cs" />
     <Compile Include="Log4JFile.cs" />
     <Compile Include="EventSourceHandle.cs" />
     <Compile Include="FilterAll.cs" />
