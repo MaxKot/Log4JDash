@@ -9,8 +9,8 @@ log4j_timestamp::log4j_timestamp (int64_t value)
 std::ostream& operator<< (std::ostream &out, const log4j_timestamp &timestamp)
 {
     auto calue = timestamp._value;
-    time_t t = calue / 1000UL;
-    auto millis = calue % 1000UL;
+    time_t t = calue / 1000U;
+    auto millis = calue % 1000U;
     tm tm;
 
     if (!localtime_s (&tm, &t)) {

@@ -91,9 +91,9 @@ LOG4JPARSERC_API size_t Log4JEventProperties (const Log4JEvent log4JEvent, size_
 {
     if (properties == nullptr)
     {
-        propertiesSize = 0UL;
+        propertiesSize = 0U;
     }
-    size_t actualProperties = 0UL;
+    size_t actualProperties = 0U;
 
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto propertiesNode = node->first_node (TagProperties_, TagPropertiesSize_);
@@ -104,11 +104,11 @@ LOG4JPARSERC_API size_t Log4JEventProperties (const Log4JEvent log4JEvent, size_
         {
             ++actualProperties;
 
-            if (skip != 0UL)
+            if (skip != 0U)
             {
                 --skip;
             }
-            else if (propertiesSize != 0UL)
+            else if (propertiesSize != 0U)
             {
                 auto name = dataNode->first_attribute (AttrDataName_, AttrDataNameSize_);
                 GetValue_ (name, &properties->name, &properties->nameSize);
@@ -137,7 +137,7 @@ void GetValue_ (const rapidxml::xml_base<char> *source, const char **value, size
     else
     {
         *value = nullptr;
-        *size = 0UL;
+        *size = 0U;
     }
 }
 

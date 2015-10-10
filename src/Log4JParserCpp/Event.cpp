@@ -110,18 +110,18 @@ namespace Log4JParser
 
     void Event::Properties (std::vector<Property> &properties) const
     {
-        Log4JEventProperty buffer[16];
-        const size_t bufferSize = sizeof buffer / sizeof buffer[0];
+        const size_t bufferSize = 16U;
+        Log4JEventProperty buffer[bufferSize];
 
         size_t totalEvents;
-        size_t totalEventsRead = 0UL;
+        size_t totalEventsRead = 0U;
         do
         {
             totalEvents = Log4JEventProperties (event_, totalEventsRead, buffer, bufferSize);
             auto eventsRemaining = totalEvents - totalEventsRead;
             auto eventsRead = eventsRemaining > bufferSize ? bufferSize : eventsRemaining;
 
-            for (size_t i = 0UL; i < eventsRead; ++i)
+            for (size_t i = 0U; i < eventsRead; ++i)
             {
                 FixedString name (buffer[i].name, buffer[i].nameSize);
                 FixedString value (buffer[i].value, buffer[i].valueSize);
