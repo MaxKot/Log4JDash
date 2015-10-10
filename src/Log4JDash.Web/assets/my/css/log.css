@@ -107,7 +107,8 @@ label[for^='log-item-collapsed'] .log-item-collapsed-open,
 }
 .log-item-collapsed:checked + .log-item-collapse .log-item-thread,
 .log-item-collapsed:checked + .log-item-collapse .log-item-level,
-.log-item-collapsed:checked + .log-item-collapse .log-item-throwable * {
+.log-item-collapsed:checked + .log-item-collapse .log-item-throwable *,
+.log-item-collapsed:checked + .log-item-collapse .log-item-property {
     display: none;
 }
 .log-item-throwable::after {
@@ -124,7 +125,8 @@ label[for^='log-item-collapsed'] .log-item-collapsed-open,
     opacity: 0.25;
 }
 
-.log-item-throwable > span {
+.log-item-throwable > span,
+.log-item-property > span {
     white-space: pre-wrap;
 }
 

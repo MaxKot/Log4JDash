@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Log4JParserNet;
 
 namespace Log4JDash.Web.Models
@@ -19,6 +20,7 @@ namespace Log4JDash.Web.Models
             Time = e.Time;
             Message = e.Message;
             Throwable = e.Throwable;
+            Properties = e.GetProperties ();
         }
 
         public ulong Id { get; set; }
@@ -34,5 +36,7 @@ namespace Log4JDash.Web.Models
         public string Message { get; set; }
 
         public string Throwable { get; set; }
+
+        public IList<KeyValuePair<string, string>> Properties { get; set; }
     }
 }

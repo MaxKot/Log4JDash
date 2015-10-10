@@ -44,6 +44,13 @@
                     <span>@Model.Throwable</span>
                 </span>
             }
+            @foreach (var property in Model.Properties.OrderBy (kvp => kvp.Key))
+            {
+                <span class="log-item-field log-item-property">
+                    <label>@property.Key:</label>
+                    <span>@property.Value</span>
+                </span>
+            }
         </div>
     </div>
 </li>
