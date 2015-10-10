@@ -28,6 +28,18 @@ const size_t TagMessageSize_ = sizeof (TagMessage_) - 1U;
 const char TagThrowable_[] = "log4j:throwable";
 const size_t TagThrowableSize_ = sizeof (TagThrowable_) - 1U;
 
+const char TagProperties_[] = "log4j:properties";
+const size_t TagPropertiesSize_ = sizeof (TagProperties_) - 1U;
+
+const char TagData_[] = "log4j:data";
+const size_t TagDataSize_ = sizeof (TagData_) - 1U;
+
+const char AttrDataName_[] = "name";
+const size_t AttrDataNameSize_ = sizeof (AttrDataName_) - 1U;
+
+const char AttrDataValue_[] = "value";
+const size_t AttrDataValueSize_ = sizeof (AttrDataValue_) - 1U;
+
 static void GetValue_ (const rapidxml::xml_base<char> *source, const char **value, size_t *size);
 static int64_t ParseTimestamp_ (const char *value, const size_t valueSize);
 
@@ -73,6 +85,46 @@ LOG4JPARSERC_API void __cdecl Log4JEventThrowable (const Log4JEvent log4JEvent, 
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_node (TagThrowable_, TagThrowableSize_);
     GetValue_ (xml, value, size);
+}
+
+LOG4JPARSERC_API size_t Log4JEventProperties (const Log4JEvent log4JEvent, size_t skip, Log4JEventProperty *properties, size_t propertiesSize)
+{
+    if (properties == nullptr)
+    {
+        propertiesSize = 0UL;
+    }
+    size_t actualProperties = 0UL;
+
+    auto node = (rapidxml::xml_node<char> *) log4JEvent;
+    auto propertiesNode = node->first_node (TagProperties_, TagPropertiesSize_);
+    if (propertiesNode != nullptr)
+    {
+        auto dataNode = propertiesNode->first_node (TagData_, TagDataSize_);
+        while (dataNode != nullptr)
+        {
+            ++actualProperties;
+
+            if (skip != 0UL)
+            {
+                --skip;
+            }
+            else if (propertiesSize != 0UL)
+            {
+                auto name = dataNode->first_attribute (AttrDataName_, AttrDataNameSize_);
+                GetValue_ (name, &properties->name, &properties->nameSize);
+
+                auto value = dataNode->first_attribute (AttrDataValue_, AttrDataValueSize_);
+                GetValue_ (value, &properties->value, &properties->valueSize);
+
+                ++properties;
+                --propertiesSize;
+            }
+
+            dataNode = dataNode->next_sibling (TagData_, TagDataSize_);
+        }
+    }
+
+    return actualProperties;
 }
 
 void GetValue_ (const rapidxml::xml_base<char> *source, const char **value, size_t *size)

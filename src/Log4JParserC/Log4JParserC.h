@@ -25,6 +25,16 @@ LOG4JPARSERC_API void Log4JEventMessage (const Log4JEvent log4JEvent, const char
 
 LOG4JPARSERC_API void Log4JEventThrowable (const Log4JEvent log4JEvent, const char **value, size_t *size);
 
+typedef struct
+{
+    const char *name;
+    size_t nameSize;
+    const char *value;
+    size_t valueSize;
+} Log4JEventProperty;
+
+LOG4JPARSERC_API size_t Log4JEventProperties (const Log4JEvent log4JEvent, size_t skip, Log4JEventProperty *properties, size_t propertiesSize);
+
 // Event Source
 
 typedef struct Log4JEventSource_ Log4JEventSource;
