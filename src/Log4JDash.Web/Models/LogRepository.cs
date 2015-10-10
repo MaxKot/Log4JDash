@@ -36,13 +36,15 @@ namespace Log4JDash.Web.Models
             return logSourceProvider_.GetSources ();
         }
 
-        public ICollection<EventModel> GetEvents (LogQuery query)
+        public EventsCollection GetEvents (LogQuery query)
         {
-            using (var sourceStream = logSourceProvider_.OpenSource (query.Source.Value))
-            using (var source = Log4JFile.Create (sourceStream))
+            var source = logSourceProvider_.GetSource (query.Source.Value);
+
+            using (var sourceStream = source.Open ())
+            using (var logFile = Log4JFile.Create (sourceStream, query.Size))
             using (var filters = new List<FilterBase> ().ToDisposable ())
             {
-                source.Encoding = Encoding.GetEncoding (1251);
+                logFile.Encoding = Encoding.GetEncoding (1251);
 
                 if (query.MinLevel.Value != Level.Debug)
                 {
@@ -68,11 +70,11 @@ namespace Log4JDash.Web.Models
                 switch (filters.Elements.Count)
                 {
                     case 0:
-                        filteredEvents = source.GetEventsReverse ();
+                        filteredEvents = logFile.GetEventsReverse ();
                         break;
 
                     case 1:
-                        filteredEvents = source
+                        filteredEvents = logFile
                             .GetEventsReverse ()
                             .Where (filters.Elements.Single ());
                         break;
@@ -94,7 +96,7 @@ namespace Log4JDash.Web.Models
                                 filters.Elements.Add (rootFilter);
                             }
                         }
-                        filteredEvents = source
+                        filteredEvents = logFile
                             .GetEventsReverse ()
                             .Where (rootFilter);
                         break;
@@ -104,11 +106,13 @@ namespace Log4JDash.Web.Models
                     .Skip (query.Offset)
                     .Take (query.Quantity);
 
-                var result = eventsWindow
+                var events = eventsWindow
                     .Select (x => new EventModel (x))
                     .ToList ();
-                result.Reverse ();
-                return result;
+                events.Reverse ();
+                var sourceName = source.Name;
+                var sourceSize = logFile.Size;
+                return new EventsCollection (events, sourceName, sourceSize);
             }
         }
     }

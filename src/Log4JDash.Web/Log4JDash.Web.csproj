@@ -92,7 +92,9 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -101,9 +103,11 @@
     <Compile Include="Domain\LogDirectoryElement.cs" />
     <Compile Include="Domain\ILogSourceProviderConfig.cs" />
     <Compile Include="Domain\LogDirectoryElementCollection.cs" />
+    <Compile Include="Domain\LogSource.cs" />
     <Compile Include="Domain\LogSourceProvider.cs" />
     <Compile Include="Domain\LogSourceProviderSection.cs" />
     <Compile Include="Domain\RegexConverter.cs" />
+    <Compile Include="Models\EventsCollection.cs" />
     <Compile Include="Models\LogRepository.cs" />
     <Compile Include="Models\LogIndexViewModel.cs" />
     <Compile Include="Models\EventModel.cs" />

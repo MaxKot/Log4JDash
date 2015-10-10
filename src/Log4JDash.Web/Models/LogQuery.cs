@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace Log4JDash.Web.Models
@@ -7,6 +8,9 @@ namespace Log4JDash.Web.Models
     public sealed class LogQuery : ICloneable
     {
         public LogSourceInput Source { get; set; }
+
+        [HiddenInput (DisplayValue = false)]
+        public long? Size { get; set; }
 
         public LogLevelInput MinLevel { get; set; }
 
@@ -30,6 +34,7 @@ namespace Log4JDash.Web.Models
         public LogQuery ()
         {
             Source = new LogSourceInput ();
+            Size = null;
             MinLevel = new LogLevelInput ();
             Logger = null;
             Thread = null;
@@ -51,6 +56,7 @@ namespace Log4JDash.Web.Models
             Source = other.Source != null
                 ? other.Source.Clone ()
                 : null;
+            Size = other.Size;
             MinLevel = other.MinLevel != null
                 ? other.MinLevel.Clone ()
                 : null;
@@ -86,6 +92,10 @@ namespace Log4JDash.Web.Models
                 {
                     result.Add ("Source." + item.Key, item.Value);
                 }
+            }
+            if (Size != null)
+            {
+                result.Add ("Size", Size);
             }
             if (MinLevel != null)
             {

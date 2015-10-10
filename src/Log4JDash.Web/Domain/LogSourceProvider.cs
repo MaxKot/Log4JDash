@@ -54,30 +54,24 @@ namespace Log4JDash.Web.Domain
             return DoGetSources ().Keys.OrderBy (k => k);
         }
 
-        public Stream OpenSource (string sourceId)
-        {
-            var filename = GetFile (sourceId);
-            return new FileStream (filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-        }
-
-        private string GetFile (string sourceId)
+        public LogSource GetSource (string sourceId)
         {
             var sources = DoGetSources ();
             var key = String.IsNullOrWhiteSpace (sourceId)
                 ? GetSources ().First ()
                 : sourceId;
 
-            string result;
+            string file;
             try
             {
-                result = sources[key];
+                file = sources[key];
             }
             catch (KeyNotFoundException ex)
             {
                 throw new ArgumentOutOfRangeException ("Invalid log source.", ex);
             }
 
-            return result;
+            return new LogSource (key, file);
         }
     }
 }
