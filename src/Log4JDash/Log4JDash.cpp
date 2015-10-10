@@ -19,6 +19,8 @@ void print_event (const Log4JParser::Event &event, size_t id) {
     auto message = event.Message ();
     auto throwable = event.Throwable ();
     log4j_timestamp time (event.Timestamp ());
+    vector<Log4JParser::Property> properties;
+    event.Properties (properties);
 
     cout
         << id << ". "
@@ -30,6 +32,9 @@ void print_event (const Log4JParser::Event &event, size_t id) {
         << endl;
     if (throwable.Size () > 0) {
         cout << throwable << endl;
+    }
+    for (auto &p : properties) {
+        cout << "  " << p << endl;
     }
 }
 

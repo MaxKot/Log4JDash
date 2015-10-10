@@ -8,12 +8,12 @@ namespace Log4JParser
 
     }
 
-    const char * FixedString::Value ()
+    const char *FixedString::Value () const
     {
         return value_;
     }
 
-    size_t FixedString::Size ()
+    size_t FixedString::Size () const
     {
         return size_;
     }
@@ -22,6 +22,29 @@ namespace Log4JParser
     {
         stream.write (str.Value (), str.Size ());
         return stream;
+    }
+
+    Property::Property (const FixedString name, const FixedString value)
+        : name_ (name), value_ (value)
+    {
+
+    }
+
+    const FixedString Property::Name () const
+    {
+        return name_;
+    }
+
+    const FixedString Property::Value () const
+    {
+        return value_;
+    }
+
+    std::basic_ostream<char, std::char_traits<char>> &operator << (std::basic_ostream<char, std::char_traits<char>> &stream, Property &prop)
+    {
+        auto name = prop.Name ();
+        auto value = prop.Value ();
+        return stream << name << ": " << value;
     }
 
     Event::Event (Log4JEvent event)
@@ -35,7 +58,7 @@ namespace Log4JParser
         event_ = nullptr;
     }
 
-    FixedString Event::Level () const
+    const FixedString Event::Level () const
     {
         const char *level;
         size_t levelSize;
@@ -44,7 +67,7 @@ namespace Log4JParser
         return FixedString (level, levelSize);
     }
 
-    FixedString Event::Logger () const
+    const FixedString Event::Logger () const
     {
         const char *logger;
         size_t loggerSize;
@@ -53,7 +76,7 @@ namespace Log4JParser
         return FixedString (logger, loggerSize);
     }
 
-    FixedString Event::Thread () const
+    const FixedString Event::Thread () const
     {
         const char *thread;
         size_t threadSize;
@@ -67,7 +90,7 @@ namespace Log4JParser
         return Log4JEventTimestamp (event_);
     }
 
-    FixedString Event::Message () const
+    const FixedString Event::Message () const
     {
         const char *message;
         size_t messageSize;
@@ -76,13 +99,37 @@ namespace Log4JParser
         return FixedString (message, messageSize);
     }
 
-    FixedString Event::Throwable () const
+    const FixedString Event::Throwable () const
     {
         const char *throwable;
         size_t throwableSize;
         Log4JEventThrowable (event_, &throwable, &throwableSize);
 
         return FixedString (throwable, throwableSize);
+    }
+
+    void Event::Properties (std::vector<Property> &properties) const
+    {
+        Log4JEventProperty buffer[16];
+        const size_t bufferSize = sizeof (buffer) / sizeof (Log4JEventProperty);
+
+        size_t totalEvents;
+        size_t totalEventsRead = 0UL;
+        do
+        {
+            totalEvents = Log4JEventProperties (event_, totalEventsRead, buffer, bufferSize);
+            auto eventsRemaining = totalEvents - totalEventsRead;
+            auto eventsRead = eventsRemaining > bufferSize ? bufferSize : eventsRemaining;
+
+            for (size_t i = 0UL; i < eventsRead; ++i)
+            {
+                FixedString name (buffer[i].name, buffer[i].nameSize);
+                FixedString value (buffer[i].value, buffer[i].valueSize);
+                properties.push_back (Property (name, value));
+            }
+
+            totalEventsRead += eventsRead;
+        } while (totalEventsRead != totalEvents);
     }
 
     Log4JEvent Event::GetEvent (const Event event)

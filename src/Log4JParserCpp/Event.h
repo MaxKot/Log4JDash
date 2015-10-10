@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 extern "C"
 {
 #include <Log4JParserC.h>
@@ -13,8 +14,8 @@ namespace Log4JParser
     public:
         FixedString (const char *value, const size_t size);
 
-        const char *Value ();
-        size_t Size ();
+        const char *Value () const;
+        size_t Size () const;
 
     private:
         const char *value_;
@@ -22,6 +23,21 @@ namespace Log4JParser
     };
 
     std::basic_ostream<char, std::char_traits<char>> &operator << (std::basic_ostream<char, std::char_traits<char>> &stream, FixedString &str);
+
+    class Property
+    {
+    public:
+        Property (const FixedString name, const FixedString value);
+
+        const FixedString Name () const;
+        const FixedString Value () const;
+
+    private:
+        const FixedString name_;
+        const FixedString value_;
+    };
+
+    std::basic_ostream<char, std::char_traits<char>> &operator << (std::basic_ostream<char, std::char_traits<char>> &stream, Property &str);
 
     class Event
     {
@@ -33,17 +49,19 @@ namespace Log4JParser
         ~Event ();
 
     public:
-        FixedString Level () const;
+        const FixedString Level () const;
 
-        FixedString Logger () const;
+        const FixedString Logger () const;
 
-        FixedString Thread () const;
+        const FixedString Thread () const;
 
         int64_t Timestamp () const;
 
-        FixedString Message () const;
+        const FixedString Message () const;
 
-        FixedString Throwable () const;
+        const FixedString Throwable () const;
+
+        void Properties (std::vector<Property> &properties) const;
 
     private:
         static Log4JEvent GetEvent (const Event event);
