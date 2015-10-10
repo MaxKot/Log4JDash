@@ -111,7 +111,7 @@ typedef struct
 
 LOG4JPARSERC_API void Log4JIteratorInitEventSource (Log4JIterator **self, const Log4JEventSource *source)
 {
-    Log4JIteratorEventSourceContext_ *context = (Log4JIteratorEventSourceContext_ *) malloc (sizeof (Log4JIteratorEventSourceContext_));
+    Log4JIteratorEventSourceContext_ *context = (Log4JIteratorEventSourceContext_ *) malloc (sizeof (*context));
     *context = (Log4JIteratorEventSourceContext_ )
     {
         .Source = source,
@@ -119,7 +119,7 @@ LOG4JPARSERC_API void Log4JIteratorInitEventSource (Log4JIterator **self, const 
         .First = NULL
     };
 
-    Log4JIterator *result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
+    Log4JIterator *result = (Log4JIterator *) malloc (sizeof (*result));
     *result = (Log4JIterator)
     {
         #ifdef _DEBUG
@@ -208,7 +208,7 @@ typedef struct
 
 LOG4JPARSERC_API void Log4JIteratorInitEventSourceReverse (Log4JIterator **self, const Log4JEventSource *source)
 {
-    Log4JIteratorEventSourceContext_ *context = (Log4JIteratorEventSourceContext_ *) malloc (sizeof (Log4JIteratorEventSourceContext_));
+    Log4JIteratorEventSourceContext_ *context = (Log4JIteratorEventSourceContext_ *) malloc (sizeof (*context));
     *context = (Log4JIteratorEventSourceContext_)
     {
         .Source = source,
@@ -216,7 +216,7 @@ LOG4JPARSERC_API void Log4JIteratorInitEventSourceReverse (Log4JIterator **self,
         .First = NULL
     };
 
-    Log4JIterator *result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
+    Log4JIterator *result = (Log4JIterator *) malloc (sizeof (*result));
     *result = (Log4JIterator)
     {
     #ifdef _DEBUG
@@ -304,10 +304,10 @@ typedef struct
 
 LOG4JPARSERC_API void Log4JIteratorInitFilter (Log4JIterator **self, Log4JIterator *inner, const Log4JFilter *filter)
 {
-    Log4JIteratorFilterContext_ *context = (Log4JIteratorFilterContext_ *) malloc (sizeof (Log4JIteratorFilterContext_));
+    Log4JIteratorFilterContext_ *context = (Log4JIteratorFilterContext_ *) malloc (sizeof (*context));
     *context = (Log4JIteratorFilterContext_) { .Inner = inner, .Filter = filter };
 
-    Log4JIterator *result = (Log4JIterator *) malloc (sizeof (Log4JIterator));
+    Log4JIterator *result = (Log4JIterator *) malloc (sizeof (*result));
     *result = (Log4JIterator)
     {
         #ifdef _DEBUG

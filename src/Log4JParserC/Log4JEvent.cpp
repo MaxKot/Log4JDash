@@ -180,7 +180,7 @@ static void Log4JEventSourceInitXmlStringImpl (Log4JEventSource **self, char *xm
         throw;
     }
 
-    auto result = (Log4JEventSource *) malloc (sizeof (Log4JEventSource));
+    Log4JEventSource *result = (Log4JEventSource *) malloc (sizeof (*result));
     if (result == nullptr)
     {
         delete doc;
