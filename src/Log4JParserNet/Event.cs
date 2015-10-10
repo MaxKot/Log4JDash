@@ -40,9 +40,12 @@ namespace Log4JParserNet
                 var charCount = encoding.GetCharCount (buffer, intSize);
 
                 var decodeBuffer = new char[charCount];
-                fixed (char *decodeBufferPtr = &decodeBuffer[0])
+                if (decodeBuffer.Length > 0)
                 {
-                    encoding.GetChars (buffer, intSize, decodeBufferPtr, decodeBuffer.Length);
+                    fixed (char* decodeBufferPtr = &decodeBuffer[0])
+                    {
+                        encoding.GetChars (buffer, intSize, decodeBufferPtr, decodeBuffer.Length);
+                    }
                 }
 
                 result = new String (decodeBuffer);
