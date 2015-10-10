@@ -15,7 +15,7 @@ std::ostream& operator<< (std::ostream &out, const log4j_timestamp &timestamp)
 
     if (!localtime_s (&tm, &t)) {
         char tbuf[1024];
-        strftime (tbuf, sizeof (tbuf), "%Y-%m-%d %H:%M:%S", &tm);
+        strftime (tbuf, sizeof tbuf / sizeof tbuf[0], "%Y-%m-%d %H:%M:%S", &tm);
 
         out << tbuf << ".";
         out.width (3);

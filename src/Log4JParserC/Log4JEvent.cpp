@@ -8,37 +8,37 @@ extern "C"
 }
 
 const char TagEvent_[] = "log4j:event";
-const size_t TagEventSize_ = sizeof (TagEvent_) - 1U;
+const size_t TagEventSize_ = sizeof TagEvent_ / sizeof TagEvent_[0] - 1U;
 
 const char AttrLevel_[] = "level";
-const size_t AttrLevelSize_ = sizeof (AttrLevel_) - 1U;
+const size_t AttrLevelSize_ = sizeof AttrLevel_ / sizeof AttrLevel_[0] - 1U;
 
 const char AttrLogger_[] = "logger";
-const size_t AttrLoggerSize_ = sizeof (AttrLogger_) - 1U;
+const size_t AttrLoggerSize_ = sizeof AttrLogger_ / sizeof AttrLogger_[0] - 1U;
 
 const char AttrThread_[] = "thread";
-const size_t AttrThreadSize_ = sizeof (AttrThread_) - 1U;
+const size_t AttrThreadSize_ = sizeof AttrThread_ / sizeof AttrThread_[0] - 1U;
 
 const char AttrTimestamp_[] = "timestamp";
-const size_t AttrTimestampSize_ = sizeof (AttrTimestamp_) - 1U;
+const size_t AttrTimestampSize_ = sizeof AttrTimestamp_ / sizeof AttrTimestamp_[0] - 1U;
 
 const char TagMessage_[] = "log4j:message";
-const size_t TagMessageSize_ = sizeof (TagMessage_) - 1U;
+const size_t TagMessageSize_ = sizeof TagMessage_ / sizeof TagMessage_[0] - 1U;
 
 const char TagThrowable_[] = "log4j:throwable";
-const size_t TagThrowableSize_ = sizeof (TagThrowable_) - 1U;
+const size_t TagThrowableSize_ = sizeof TagThrowable_ / sizeof TagThrowable_[0] - 1U;
 
 const char TagProperties_[] = "log4j:properties";
-const size_t TagPropertiesSize_ = sizeof (TagProperties_) - 1U;
+const size_t TagPropertiesSize_ = sizeof TagProperties_ / sizeof TagProperties_[0] - 1U;
 
 const char TagData_[] = "log4j:data";
-const size_t TagDataSize_ = sizeof (TagData_) - 1U;
+const size_t TagDataSize_ = sizeof TagData_ / sizeof TagData_[0] - 1U;
 
 const char AttrDataName_[] = "name";
-const size_t AttrDataNameSize_ = sizeof (AttrDataName_) - 1U;
+const size_t AttrDataNameSize_ = sizeof AttrDataName_ / sizeof AttrDataName_[0] - 1U;
 
 const char AttrDataValue_[] = "value";
-const size_t AttrDataValueSize_ = sizeof (AttrDataValue_) - 1U;
+const size_t AttrDataValueSize_ = sizeof AttrDataValue_ / sizeof AttrDataValue_[0] - 1U;
 
 static void GetValue_ (const rapidxml::xml_base<char> *source, const char **value, size_t *size);
 static int64_t ParseTimestamp_ (const char *value, const size_t valueSize);
@@ -180,7 +180,7 @@ static void Log4JEventSourceInitXmlStringImpl (Log4JEventSource **self, char *xm
         throw;
     }
 
-    Log4JEventSource *result = (Log4JEventSource *) malloc (sizeof (*result));
+    Log4JEventSource *result = (Log4JEventSource *) malloc (sizeof *result);
     if (result == nullptr)
     {
         delete doc;

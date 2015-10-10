@@ -61,10 +61,10 @@ static bool Log4JFilterLevelApply_ (void *context, const Log4JEvent event);
 
 LOG4JPARSERC_API void Log4JFilterInitLevelI (Log4JFilter **self, int32_t min, int32_t max)
 {
-    Log4JFilterLevelContext_ *context = (Log4JFilterLevelContext_ *) malloc (sizeof (*context));
+    Log4JFilterLevelContext_ *context = (Log4JFilterLevelContext_ *) malloc (sizeof *context);
     *context = (Log4JFilterLevelContext_ ) { .Min = min, .Max = max };
 
-    Log4JFilter *result = (Log4JFilter *) malloc (sizeof (*result));
+    Log4JFilter *result = (Log4JFilter *) malloc (sizeof *result);
     InitLog4JFilter_ (result, context, &Log4JFilterLevelDestroy_, &Log4JFilterLevelApply_);
 
     *self = result;
@@ -113,14 +113,12 @@ static bool Log4JFilterLoggerApply_ (void *context, const Log4JEvent event);
 
 LOG4JPARSERC_API void Log4JFilterInitLoggerFs (Log4JFilter **self, const char *logger, const size_t loggerSize)
 {
-    Log4JFilterLoggerContext_ *context = (Log4JFilterLoggerContext_ *) malloc (sizeof (*context));
-    // Reminder: logger_size must be multiplied by sizeof (Ch) if this code is reused for non-char
-    // strings (e.g. wchar strings).
-    char *contextLogger = (char *) malloc (loggerSize);
+    Log4JFilterLoggerContext_ *context = (Log4JFilterLoggerContext_ *) malloc (sizeof *context);
+    char *contextLogger = (char *) malloc (loggerSize * sizeof logger[0]);
     memcpy (contextLogger, logger, loggerSize);
     *context = (Log4JFilterLoggerContext_ ) { .Logger = contextLogger, .LoggerSize = loggerSize };
 
-    Log4JFilter *result = (Log4JFilter *) malloc (sizeof (*result));
+    Log4JFilter *result = (Log4JFilter *) malloc (sizeof *result);
     InitLog4JFilter_ (result, context, &Log4JFilterLoggerDestroy_, &Log4JFilterLoggerApply_);
 
     *self = result;
@@ -169,14 +167,12 @@ static bool Log4JFilterMessageApply_ (void *context, const Log4JEvent event);
 
 LOG4JPARSERC_API void Log4JFilterInitMessageFs (Log4JFilter **self, const char *message, const size_t messageSize)
 {
-    Log4JFilterMessageContext_ *context = (Log4JFilterMessageContext_ *) malloc (sizeof (*context));
-    // Reminder: message_size must be multiplied by sizeof (Ch) if this code is reused for non-char
-    // strings (e.g. wchar strings).
-    char *contextMessage = (char *) malloc (messageSize);
+    Log4JFilterMessageContext_ *context = (Log4JFilterMessageContext_ *) malloc (sizeof *context);
+    char *contextMessage = (char *) malloc (messageSize * sizeof message[0]);
     memcpy (contextMessage, message, messageSize);
     *context = (Log4JFilterMessageContext_) { .Message = contextMessage, .MessageSize = messageSize };
 
-    Log4JFilter *result = (Log4JFilter *) malloc (sizeof (*result));
+    Log4JFilter *result = (Log4JFilter *) malloc (sizeof *result);
     InitLog4JFilter_ (result, context, &Log4JFilterMessageDestroy_, &Log4JFilterMessageApply_);
 
     *self = result;
@@ -254,10 +250,10 @@ static bool Log4JFilterTimestampApply_ (void *context, const Log4JEvent event);
 
 LOG4JPARSERC_API void Log4JFilterInitTimestamp (Log4JFilter **self, int64_t min, int64_t max)
 {
-    Log4JFilterTimestampContext_ *context = (Log4JFilterTimestampContext_ *) malloc (sizeof (*context));
+    Log4JFilterTimestampContext_ *context = (Log4JFilterTimestampContext_ *) malloc (sizeof *context);
     *context = (Log4JFilterTimestampContext_) { .Min = min, .Max = max };
 
-    Log4JFilter *result = (Log4JFilter *) malloc (sizeof (*result));
+    Log4JFilter *result = (Log4JFilter *) malloc (sizeof *result);
     InitLog4JFilter_ (result, context, &Log4JFilterTimestampDestroy_, &Log4JFilterTimestampApply_);
 
     *self = result;
@@ -303,7 +299,7 @@ static void Log4JFilterListDestroy_ (Log4JFilterEntry_ *head)
 
 static Log4JFilterEntry_ *Log4JFilterListAdd_ (Log4JFilterEntry_ *head, const Log4JFilter *filter)
 {
-    Log4JFilterEntry_ *result = (Log4JFilterEntry_ *) malloc (sizeof (*result));
+    Log4JFilterEntry_ *result = (Log4JFilterEntry_ *) malloc (sizeof *result);
     *result = (Log4JFilterEntry_ ) { .Filter = filter, .Next = head };
     return result;
 }
@@ -343,10 +339,10 @@ static bool Log4JFilterAllApply (void *context, const Log4JEvent event);
 
 LOG4JPARSERC_API void Log4JFilterInitAll (Log4JFilter **self)
 {
-    Log4JFilterAllContext_ *context = (Log4JFilterAllContext_ *) malloc (sizeof (*context));
+    Log4JFilterAllContext_ *context = (Log4JFilterAllContext_ *) malloc (sizeof *context);
     *context = (Log4JFilterAllContext_ ) { .ChildrenHead = NULL };
 
-    Log4JFilter *result = (Log4JFilter *) malloc (sizeof (*result));
+    Log4JFilter *result = (Log4JFilter *) malloc (sizeof *result);
     InitLog4JFilter_ (result, context, &Log4JFilterAllDestroy_, &Log4JFilterAllApply);
 
     *self = result;
@@ -409,10 +405,10 @@ static bool Log4JFilterAnyApply_ (void *context, const Log4JEvent event);
 
 LOG4JPARSERC_API void Log4JFilterInitAny (Log4JFilter **self)
 {
-    Log4JFilterAnyContext_ *context = (Log4JFilterAnyContext_ *) malloc (sizeof (*context));
+    Log4JFilterAnyContext_ *context = (Log4JFilterAnyContext_ *) malloc (sizeof *context);
     *context = (Log4JFilterAnyContext_) { .ChildrenHead = NULL };
 
-    Log4JFilter *result = (Log4JFilter *) malloc (sizeof (*result));
+    Log4JFilter *result = (Log4JFilter *) malloc (sizeof *result);
     InitLog4JFilter_ (result, context, &Log4JFilterAnyDestroy_, &Log4JFilterAnyApply_);
 
     *self = result;
@@ -475,10 +471,10 @@ static bool Log4JFilterNotApply_ (void *context, const Log4JEvent event);
 
 LOG4JPARSERC_API void Log4JFilterInitNot (Log4JFilter **self, const Log4JFilter *child_filter)
 {
-    Log4JFilterNotContext_ *context = (Log4JFilterNotContext_ *) malloc (sizeof (*context));
+    Log4JFilterNotContext_ *context = (Log4JFilterNotContext_ *) malloc (sizeof *context);
     *context = (Log4JFilterNotContext_ ) { .ChildFilter = child_filter };
 
-    Log4JFilter *result = (Log4JFilter *) malloc (sizeof (*result));
+    Log4JFilter *result = (Log4JFilter *) malloc (sizeof *result);
     InitLog4JFilter_ (result, context, &Log4JFilterNotDestroy_, &Log4JFilterNotApply_);
 
     *self = result;

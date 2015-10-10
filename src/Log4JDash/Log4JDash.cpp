@@ -122,7 +122,7 @@ int main (int argc, char **argv)
 
     //char buffer_in[10 * 1204];
 
-    //fgets (buffer_in, sizeof (buffer_in), stdin);
+    //fgets (buffer_in, sizeof buffer_in / sizeof buffer_in[0], stdin);
 
     setlocale (LC_ALL, "ru-RU");
     const char filename[] = "test-log.cyr.xml";
