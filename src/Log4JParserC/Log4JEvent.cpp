@@ -118,7 +118,7 @@ static void Log4JEventSourceInitXmlStringImpl (Log4JEventSource **self, char *xm
     {
         doc->parse<rapidxml::parse_fastest> (xmlString);
     }
-    catch (const rapidxml::parse_error &ex)
+    catch (const rapidxml::parse_error &)
     {
 
     }
