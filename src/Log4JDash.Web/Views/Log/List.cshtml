@@ -1,11 +1,8 @@
 ﻿@using Log4JDash.Web.Models
 @model LogIndexViewModel
-
 @{
     Layout = null;
-}
-
-<!DOCTYPE html>
+}<!DOCTYPE html>
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
@@ -15,14 +12,27 @@
     </head>
     <body>
         <header>
-            <h1>@Model.Query.Source.Value</h1>
+            @{
+                var latestPageModel = new LogQuery
+                {
+                    Source = { Value = Model.Query.Source.Value }
+                };
+                var latestPageRouteValues = latestPageModel.GetRouteValues ();
+            }
+            <h1>
+                @Model.Query.Source.Value
+                @if (Model.Query.Size != null)
+                {
+                    <span class="log-latest">
+                        @Html.ActionLink("\u21BB", null, latestPageRouteValues)
+                    </span>
+                }
+            </h1>
 
             @using (Html.BeginForm (null, null, FormMethod.Get, new { @class = "log-query" }))
             {
                 <div>
                     @Html.EditorFor(model => model.Query, null, String.Empty)
-                </div>
-                <div>
                 </div>
                 <div>
                     <input type="submit" value="Искать" />
