@@ -61,10 +61,6 @@ namespace Log4JParserNet
         extern public static bool Log4JFilterApply (FilterHandle self, EventHandle @event);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JFilterInitLevelI
-            (out FilterHandle self, Int32 min, Int32 max);
-
-        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JFilterInitLevelC
             (
             out FilterHandle self,

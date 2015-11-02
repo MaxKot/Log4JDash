@@ -59,7 +59,7 @@ typedef struct
 static void Log4JFilterLevelDestroy_ (void *context);
 static bool Log4JFilterLevelApply_ (void *context, const Log4JEvent event);
 
-LOG4JPARSERC_API void Log4JFilterInitLevelI (Log4JFilter **self, int32_t min, int32_t max)
+static void Log4JFilterInitLevelI (Log4JFilter **self, int32_t min, int32_t max)
 {
     Log4JFilterLevelContext_ *context = (Log4JFilterLevelContext_ *) malloc (sizeof *context);
     *context = (Log4JFilterLevelContext_ ) { .Min = min, .Max = max };

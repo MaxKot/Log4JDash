@@ -34,7 +34,6 @@ namespace Log4JParser
     class FilterLevel : public FilterBase
     {
     public:
-        FilterLevel (int32_t min, int32_t max);
         FilterLevel (const char *min, const char *max);
     };
 

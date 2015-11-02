@@ -30,20 +30,6 @@ namespace Log4JParser
         return filter->filter_;
     }
 
-    static Log4JFilter *Log4JFilterInitLevelI_ (int32_t min, int32_t max)
-    {
-        Log4JFilter *filter;
-        Log4JFilterInitLevelI (&filter, min, max);
-
-        return filter;
-    }
-
-    FilterLevel::FilterLevel (int32_t min, int32_t max)
-        : FilterBase (Log4JFilterInitLevelI_ (min, max))
-    {
-
-    }
-
     static Log4JFilter *Log4JFilterInitLevelC_ (const char *min, const char *max)
     {
         Log4JFilter *filter;

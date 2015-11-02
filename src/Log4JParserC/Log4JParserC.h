@@ -65,7 +65,6 @@ LOG4JPARSERC_API bool Log4JFilterApply (const Log4JFilter *self, const Log4JEven
 
 // Level filter
 
-LOG4JPARSERC_API void Log4JFilterInitLevelI (Log4JFilter **self, int32_t min, int32_t max);
 LOG4JPARSERC_API void Log4JFilterInitLevelC (Log4JFilter **self, const char *min, const char *max);
 
 // Logger filter
