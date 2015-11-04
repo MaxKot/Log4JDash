@@ -1,4 +1,4 @@
-#include "Event.h"
+﻿#include "Event.h"
 
 namespace Log4JParser
 {

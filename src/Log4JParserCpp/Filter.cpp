@@ -1,4 +1,4 @@
-#include "Filter.h"
+﻿#include "Filter.h"
 
 namespace Log4JParser
 {

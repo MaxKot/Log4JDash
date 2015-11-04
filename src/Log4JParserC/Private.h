@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #define __STR2__(x) #x
 #define __STR1__(x) __STR2__(x)

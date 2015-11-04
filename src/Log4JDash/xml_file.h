@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <rapidxml\rapidxml.hpp>
 #include "file_string.h"

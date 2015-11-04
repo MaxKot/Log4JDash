@@ -1,4 +1,4 @@
-#include "Iterator.h"
+﻿#include "Iterator.h"
 
 namespace Log4JParser
 {

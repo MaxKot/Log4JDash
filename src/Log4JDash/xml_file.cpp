@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "xml_file.h"
 
 using rapidxml::xml_document;

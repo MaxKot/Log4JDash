@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "log4j_timestamp.h"
 
 log4j_timestamp::log4j_timestamp (int64_t value)

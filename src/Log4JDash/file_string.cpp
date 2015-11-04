@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "file_string.h"
 #include "time_trace.h"
 
