@@ -89,6 +89,8 @@
     <Compile Include="UnmanagedMemoryHandle.cs" />
   </ItemGroup>
   <Choose>
+    <When Condition="'$(Log4JParserCPath)' != ''">
+    </When>
     <When Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
       <PropertyGroup>
         <Log4JParserCPath>..\x64\Debug\Log4JParserC.dll</Log4JParserCPath>
