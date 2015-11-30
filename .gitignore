@@ -48,7 +48,8 @@ _TeamCity.*
 
 # Build output & generated artifacts
 _logs
-_build
+build
+out
 src/**/bin
 src/**/obj
 src/**/[Dd]ebug*/

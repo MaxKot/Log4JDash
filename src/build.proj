@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">Win32</Platform>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+
+    <RootPath>$(MSBuildProjectDirectory)\..\</RootPath>
+
+    <SrcPath>$(RootPath)src\</SrcPath>
+    <SolutionDir>$(SrcPath)</SolutionDir>
+
+    <BuildPath Condition="'$(BuildPath)' == ''">$(RootPath)build\</BuildPath>
+    <OutputPath Condition="'$(OutputPath)' == ''">$(RootPath)out\$(Platform)\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)' == 'Win32'">
+    <NativePlatform Condition="'$(NativePlatform)' == ''">Win32</NativePlatform>
+    <ManagedPlatform Condition="'$(ManagedPlatform)' == ''">x86</ManagedPlatform>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)' == 'x64'">
+    <NativePlatform Condition="'$(NativePlatform)' == ''">x64</NativePlatform>
+    <ManagedPlatform Condition="'$(ManagedPlatform)' == ''">x64</ManagedPlatform>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <VcProject>
+      <ProjPath>$(SrcPath)%(Identity)\%(Identity).vcxproj</ProjPath>
+    </VcProject>
+    <CSharpProject>
+      <ProjPath>$(SrcPath)%(Identity)\%(Identity).csproj</ProjPath>
+    </CSharpProject>
+  </ItemDefinitionGroup>
+
+  <Target Name="BuildParserC">
+    <ItemGroup>
+      <VcProject Include="Log4JParserC" />
+    </ItemGroup>
+    <MSBuild Projects="%(VcProject.ProjPath)"
+             ContinueOnError="false"
+             Targets="Rebuild"
+             Properties="
+               SolutionDir=$(SolutionDir);
+               Configuration=$(Configuration);
+               Platform=$(NativePlatform);
+               IntDir=$(BuildPath)%(VcProject.Identity)\;
+               OutDir=$(OutputPath)%(VcProject.Identity)\;
+             " />
+  </Target>
+
+  <Target Name="BuildParserCpp"  DependsOnTargets ="BuildParserC">
+    <ItemGroup>
+      <VcProject Include="Log4JParserCpp" />
+    </ItemGroup>
+    <MSBuild Projects="%(VcProject.ProjPath)"
+             ContinueOnError="false"
+             Targets="Rebuild"
+             Properties="
+               SolutionDir=$(SolutionDir);
+               Configuration=$(Configuration);
+               Platform=$(NativePlatform);
+               IntDir=$(BuildPath)%(VcProject.Identity)\;
+               OutDir=$(OutputPath)%(VcProject.Identity)\;
+             " />
+  </Target>
+
+  <Target Name="BuildParserNet"  DependsOnTargets ="BuildParserC">
+    <ItemGroup>
+      <CSharpProject Include="Log4JParserNet" />
+    </ItemGroup>
+    <MSBuild Projects="%(CSharpProject.ProjPath)"
+             ContinueOnError="false"
+             Targets="Rebuild"
+             Properties="
+               SolutionDir=$(SolutionDir);
+               Configuration=$(Configuration);
+               Platform=$(ManagedPlatform);
+               IntermediateOutputPath=$(BuildPath)%(CSharpProject.Identity)\;
+               OutputPath=$(OutputPath)%(CSharpProject.Identity)\;
+               Log4JParserCPath=$(OutputPath)\Log4JParserC\Log4JParserC.dll;
+             " />
+  </Target>
+
+  <Target Name="BuildDashWeb"  DependsOnTargets ="BuildParserC">
+    <ItemGroup>
+      <CSharpProject Include="Log4JDash.Web" />
+    </ItemGroup>
+    <MSBuild Projects="%(CSharpProject.ProjPath)"
+             ContinueOnError="false"
+             Targets="_WPPCopyWebApplication"
+             Properties="
+               SolutionDir=$(SolutionDir);
+               Configuration=$(Configuration);
+               Platform=$(ManagedPlatform);
+               IntermediateOutputPath=$(BuildPath)%(CSharpProject.Identity)\obj\;
+               OutputPath=$(BuildPath)%(CSharpProject.Identity)\bin\;
+               Log4JParserCPath=$(OutputPath)\Log4JParserC\Log4JParserC.dll;
+               IsDesktopBuild=True;
+               WebProjectOutputDir=$(BuildPath)%(CSharpProject.Identity)\build\;
+               File=%(CSharpProject.ProjPath);
+             " />
+    <AspNetCompiler VirtualPath="%(CSharpProject.Identity)" 
+                    PhysicalPath="$(BuildPath)%(CSharpProject.Identity)\build\"
+                    TargetPath="$(BuildPath)%(CSharpProject.Identity)\precompile\"
+                    Clean="True"
+                    Force="True"
+                    Debug="False"
+                    Updateable="False" />
+    <Exec Command='aspnet_merge.exe "$(BuildPath)%(CSharpProject.Identity)\precompile" -o %(CSharpProject.Identity).Precompiled.dll -r'
+          WorkingDirectory="C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6 Tools" />
+  </Target>
+
+  <Target Name="Build"  DependsOnTargets ="BuildParserC;BuildParserCpp;BuildParserNet;BuildDashWeb">
+
+  </Target>
+</Project>
