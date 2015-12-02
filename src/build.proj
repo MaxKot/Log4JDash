@@ -70,6 +70,14 @@
     </ParserNetProject>
     <DashWebProject>
       <ProjPath>$(SrcPath)%(Identity)\%(Identity).csproj</ProjPath>
+
+      <IntermediateOutputPath>$(BuildPath)%(Identity)\obj\</IntermediateOutputPath>
+      <BinariesOutputPath>$(BuildPath)%(Identity)\bin\</BinariesOutputPath>
+      <WebProjectOutputDir>$(BuildPath)%(Identity)\web-out\</WebProjectOutputDir>
+      <PrecompiledOutputDir>$(BuildPath)%(Identity)\web-precompile</PrecompiledOutputDir>
+      <PrecompiledAssembly>%(Identity).Precompiled.dll</PrecompiledAssembly>
+
+      <OutputPath>$(OutputPath)%(Identity)\</OutputPath>
     </DashWebProject>
   </ItemDefinitionGroup>
 
@@ -87,6 +95,9 @@
                IntDir=%(ParserCProject.IntDir);
                OutDir=%(ParserCProject.OutDir);
              " />
+    <PropertyGroup>
+      <Log4JParserC>%(ParserCProject.OutDir)\Log4JParserC.dll</Log4JParserC>
+    </PropertyGroup>
   </Target>
 
   <Target Name="BuildParserCpp" DependsOnTargets="BuildParserC">
@@ -118,7 +129,7 @@
                Platform=$(ManagedPlatform);
                IntermediateOutputPath=%(ParserNetProject.IntermediateOutputPath);
                OutputPath=%(ParserNetProject.OutputPath);
-               Log4JParserCPath=$(OutputPath)\Log4JParserC\Log4JParserC.dll;
+               Log4JParserCPath=$(Log4JParserC);
              " />
   </Target>
 
@@ -133,21 +144,28 @@
                SolutionDir=$(SolutionDir);
                Configuration=$(Configuration);
                Platform=$(ManagedPlatform);
-               IntermediateOutputPath=$(BuildPath)%(DashWebProject.Identity)\obj\;
-               OutputPath=$(BuildPath)%(DashWebProject.Identity)\bin\;
-               Log4JParserCPath=$(OutputPath)\Log4JParserC\Log4JParserC.dll;
+               IntermediateOutputPath=%(DashWebProject.IntermediateOutputPath);
+               OutputPath=%(DashWebProject.BinariesOutputPath);
+               Log4JParserCPath=$(Log4JParserC);
                IsDesktopBuild=True;
-               WebProjectOutputDir=$(BuildPath)%(DashWebProject.Identity)\build\;
+               WebProjectOutputDir=%(DashWebProject.WebProjectOutputDir);
                File=%(DashWebProject.ProjPath);
              " />
     <AspNetCompiler VirtualPath="%(DashWebProject.Identity)" 
-                    PhysicalPath="$(BuildPath)%(DashWebProject.Identity)\build\"
-                    TargetPath="$(BuildPath)%(DashWebProject.Identity)\precompile\"
+                    PhysicalPath="%(DashWebProject.WebProjectOutputDir)"
+                    TargetPath="%(DashWebProject.PrecompiledOutputDir)"
                     Clean="True"
                     Force="True"
                     Debug="False"
                     Updateable="False" />
-    <Exec Command='"$(AspNetMerge)" "$(BuildPath)%(DashWebProject.Identity)\precompile" -o %(DashWebProject.Identity).Precompiled.dll -r' />
+    <Exec Command='"$(AspNetMerge)" "%(DashWebProject.PrecompiledOutputDir)" -o %(DashWebProject.PrecompiledAssembly) -r' />
+    <ItemGroup>
+      <_DashWebFile Include="%(DashWebProject.PrecompiledOutputDir)\**\*">
+        <DestinationBase>%(DashWebProject.OutputPath)</DestinationBase>
+      </_DashWebFile>
+    </ItemGroup>
+    <Copy SourceFiles="@(_DashWebFile)"
+          DestinationFolder="%(_DashWebFile.DestinationBase)%(_DashWebFile.RecursiveDir)" />
   </Target>
 
   <Target Name="Build" DependsOnTargets ="BuildParserC;BuildParserCpp;BuildParserNet;BuildDashWeb">
