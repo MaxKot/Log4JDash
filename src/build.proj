@@ -25,93 +25,105 @@
   </PropertyGroup>
 
   <ItemDefinitionGroup>
-    <VcProject>
+    <ParserCProject>
       <ProjPath>$(SrcPath)%(Identity)\%(Identity).vcxproj</ProjPath>
-    </VcProject>
-    <CSharpProject>
+      <IntDir>$(BuildPath)%(Identity)\</IntDir>
+      <OutDir>$(OutputPath)%(Identity)\</OutDir>
+    </ParserCProject>
+    <ParserCppProject>
+      <ProjPath>$(SrcPath)%(Identity)\%(Identity).vcxproj</ProjPath>
+      <IntDir>$(BuildPath)%(Identity)\</IntDir>
+      <OutDir>$(OutputPath)%(Identity)\</OutDir>
+    </ParserCppProject>
+    <ParserNetProject>
       <ProjPath>$(SrcPath)%(Identity)\%(Identity).csproj</ProjPath>
-    </CSharpProject>
+      <IntermediateOutputPath>$(BuildPath)%(Identity)\</IntermediateOutputPath>
+      <OutputPath>$(OutputPath)%(Identity)\</OutputPath>
+    </ParserNetProject>
+    <DashWebProject>
+      <ProjPath>$(SrcPath)%(Identity)\%(Identity).csproj</ProjPath>
+    </DashWebProject>
   </ItemDefinitionGroup>
 
   <Target Name="BuildParserC">
     <ItemGroup>
-      <VcProject Include="Log4JParserC" />
+      <ParserCProject Include="Log4JParserC" />
     </ItemGroup>
-    <MSBuild Projects="%(VcProject.ProjPath)"
+    <MSBuild Projects="%(ParserCProject.ProjPath)"
              ContinueOnError="false"
              Targets="Rebuild"
              Properties="
                SolutionDir=$(SolutionDir);
                Configuration=$(Configuration);
                Platform=$(NativePlatform);
-               IntDir=$(BuildPath)%(VcProject.Identity)\;
-               OutDir=$(OutputPath)%(VcProject.Identity)\;
+               IntDir=%(ParserCProject.IntDir);
+               OutDir=%(ParserCProject.OutDir);
              " />
   </Target>
 
-  <Target Name="BuildParserCpp"  DependsOnTargets ="BuildParserC">
+  <Target Name="BuildParserCpp" DependsOnTargets="BuildParserC">
     <ItemGroup>
-      <VcProject Include="Log4JParserCpp" />
+      <ParserCppProject Include="Log4JParserCpp" />
     </ItemGroup>
-    <MSBuild Projects="%(VcProject.ProjPath)"
+    <MSBuild Projects="%(ParserCppProject.ProjPath)"
              ContinueOnError="false"
              Targets="Rebuild"
              Properties="
                SolutionDir=$(SolutionDir);
                Configuration=$(Configuration);
                Platform=$(NativePlatform);
-               IntDir=$(BuildPath)%(VcProject.Identity)\;
-               OutDir=$(OutputPath)%(VcProject.Identity)\;
+               IntDir=%(ParserCppProject.IntDir);
+               OutDir=%(ParserCppProject.OutDir);
              " />
   </Target>
 
-  <Target Name="BuildParserNet"  DependsOnTargets ="BuildParserC">
+  <Target Name="BuildParserNet" DependsOnTargets="BuildParserC">
     <ItemGroup>
-      <CSharpProject Include="Log4JParserNet" />
+      <ParserNetProject Include="Log4JParserNet" />
     </ItemGroup>
-    <MSBuild Projects="%(CSharpProject.ProjPath)"
+    <MSBuild Projects="%(ParserNetProject.ProjPath)"
              ContinueOnError="false"
              Targets="Rebuild"
              Properties="
                SolutionDir=$(SolutionDir);
                Configuration=$(Configuration);
                Platform=$(ManagedPlatform);
-               IntermediateOutputPath=$(BuildPath)%(CSharpProject.Identity)\;
-               OutputPath=$(OutputPath)%(CSharpProject.Identity)\;
+               IntermediateOutputPath=%(ParserNetProject.IntermediateOutputPath);
+               OutputPath=%(ParserNetProject.OutputPath);
                Log4JParserCPath=$(OutputPath)\Log4JParserC\Log4JParserC.dll;
              " />
   </Target>
 
-  <Target Name="BuildDashWeb"  DependsOnTargets ="BuildParserC">
+  <Target Name="BuildDashWeb" DependsOnTargets="BuildParserC">
     <ItemGroup>
-      <CSharpProject Include="Log4JDash.Web" />
+      <DashWebProject Include="Log4JDash.Web" />
     </ItemGroup>
-    <MSBuild Projects="%(CSharpProject.ProjPath)"
+    <MSBuild Projects="%(DashWebProject.ProjPath)"
              ContinueOnError="false"
              Targets="_WPPCopyWebApplication"
              Properties="
                SolutionDir=$(SolutionDir);
                Configuration=$(Configuration);
                Platform=$(ManagedPlatform);
-               IntermediateOutputPath=$(BuildPath)%(CSharpProject.Identity)\obj\;
-               OutputPath=$(BuildPath)%(CSharpProject.Identity)\bin\;
+               IntermediateOutputPath=$(BuildPath)%(DashWebProject.Identity)\obj\;
+               OutputPath=$(BuildPath)%(DashWebProject.Identity)\bin\;
                Log4JParserCPath=$(OutputPath)\Log4JParserC\Log4JParserC.dll;
                IsDesktopBuild=True;
-               WebProjectOutputDir=$(BuildPath)%(CSharpProject.Identity)\build\;
-               File=%(CSharpProject.ProjPath);
+               WebProjectOutputDir=$(BuildPath)%(DashWebProject.Identity)\build\;
+               File=%(DashWebProject.ProjPath);
              " />
-    <AspNetCompiler VirtualPath="%(CSharpProject.Identity)" 
-                    PhysicalPath="$(BuildPath)%(CSharpProject.Identity)\build\"
-                    TargetPath="$(BuildPath)%(CSharpProject.Identity)\precompile\"
+    <AspNetCompiler VirtualPath="%(DashWebProject.Identity)" 
+                    PhysicalPath="$(BuildPath)%(DashWebProject.Identity)\build\"
+                    TargetPath="$(BuildPath)%(DashWebProject.Identity)\precompile\"
                     Clean="True"
                     Force="True"
                     Debug="False"
                     Updateable="False" />
-    <Exec Command='aspnet_merge.exe "$(BuildPath)%(CSharpProject.Identity)\precompile" -o %(CSharpProject.Identity).Precompiled.dll -r'
+    <Exec Command='aspnet_merge.exe "$(BuildPath)%(DashWebProject.Identity)\precompile" -o %(DashWebProject.Identity).Precompiled.dll -r'
           WorkingDirectory="C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6 Tools" />
   </Target>
 
-  <Target Name="Build"  DependsOnTargets ="BuildParserC;BuildParserCpp;BuildParserNet;BuildDashWeb">
+  <Target Name="Build" DependsOnTargets ="BuildParserC;BuildParserCpp;BuildParserNet;BuildDashWeb">
 
   </Target>
 </Project>
