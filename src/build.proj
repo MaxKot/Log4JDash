@@ -24,6 +24,34 @@
     <ManagedPlatform Condition="'$(ManagedPlatform)' == ''">x64</ManagedPlatform>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <_RegKeyWinSdk80>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v8.0A@InstallationFolder)</_RegKeyWinSdk80>
+    <_AspNetMergeWinSdk80 Condition="'$(_RegKeyWinSdk80)' != ''">$([System.IO.Path]::Combine('$(_RegKeyWinSdk80)', 'bin\NETFX 4.0 Tools\aspnet_merge.exe'))</_AspNetMergeWinSdk80>
+
+    <_RegKeyWinSdk81>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v8.1A@InstallationFolder)</_RegKeyWinSdk81>
+    <_AspNetMergeWinSdk81 Condition="'$(_RegKeyWinSdk81)' != ''">$([System.IO.Path]::Combine('$(_RegKeyWinSdk81)', 'bin\NETFX 4.5.1 Tools\aspnet_merge.exe'))</_AspNetMergeWinSdk81>
+
+    <_RegKeyNetFxSdk46>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\NETFXSDK\4.6@InstallationFolder)</_RegKeyNetFxSdk46>
+    <_AspNetMergeNetFxSdk46 Condition="'$(_RegKeyNetFxSdk46)' != ''">$([System.IO.Path]::Combine('$(_RegKeyNetFxSdk46)', 'bin\NETFX 4.6 Tools\aspnet_merge.exe'))</_AspNetMergeNetFxSdk46>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="'$(_AspNetMergeNetFxSdk46)' != ''">
+      <PropertyGroup>
+        <AspNetMerge>$(_AspNetMergeNetFxSdk46)</AspNetMerge>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(_AspNetMergeWinSdk81)' != ''">
+      <PropertyGroup>
+        <AspNetMerge>$(_AspNetMergeWinSdk81)</AspNetMerge>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(_AspNetMergeWinSdk80)' != ''">
+      <PropertyGroup>
+        <AspNetMerge>$(_AspNetMergeWinSdk80)</AspNetMerge>
+      </PropertyGroup>
+    </When>
+  </Choose>
+
   <ItemDefinitionGroup>
     <ParserCProject>
       <ProjPath>$(SrcPath)%(Identity)\%(Identity).vcxproj</ProjPath>
@@ -119,8 +147,7 @@
                     Force="True"
                     Debug="False"
                     Updateable="False" />
-    <Exec Command='aspnet_merge.exe "$(BuildPath)%(DashWebProject.Identity)\precompile" -o %(DashWebProject.Identity).Precompiled.dll -r'
-          WorkingDirectory="C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6 Tools" />
+    <Exec Command='"$(AspNetMerge)" "$(BuildPath)%(DashWebProject.Identity)\precompile" -o %(DashWebProject.Identity).Precompiled.dll -r' />
   </Target>
 
   <Target Name="Build" DependsOnTargets ="BuildParserC;BuildParserCpp;BuildParserNet;BuildDashWeb">
