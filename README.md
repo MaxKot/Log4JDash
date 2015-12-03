@@ -41,3 +41,11 @@ interface to reduce switching between managed and unmanaged code.
 DisposableCollection class is also provided for easier buildup of event filters. Please not that
 complex filters (such as And, Or and Not filters) do **not** take ownership of its parts, i.e.
 child filters must be explicitly disposed by the client code.
+
+## Building
+
+Use build.bat script to build Log4JParserC, Log4JParserCpp Log4JParserDashNet and Log4JDash.Web
+projects. Use serc\build.proj targets BuildParserC, BuildParserCpp, BuildParserNet and BuildDashWeb
+to build a specific project.
+
+All build outputs are placed in 'out' folder. Folder 'build' contains intermediate build outputs.
