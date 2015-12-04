@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  
+  <!--
+    Build configuration
+  -->
+
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">Win32</Platform>
@@ -23,6 +28,23 @@
     <NativePlatform Condition="'$(NativePlatform)' == ''">x64</NativePlatform>
     <ManagedPlatform Condition="'$(ManagedPlatform)' == ''">x64</ManagedPlatform>
   </PropertyGroup>
+  
+  <Target Name="ConfigurationInfo">
+    <Message Importance="High" Text="Configuration:          '$(Configuration)'" />
+    <Message Importance="High" Text="Platform:               '$(Platform)'" />
+    <Message Importance="High" Text="TargetFrameworkVersion: '$(TargetFrameworkVersion)'" />
+    <Message Importance="High" Text="RootPath:               '$(RootPath)'" />
+    <Message Importance="High" Text="SrcPath:                '$(SrcPath)'" />
+    <Message Importance="High" Text="SolutionDir:            '$(SolutionDir)'" />
+    <Message Importance="High" Text="BuildPath:              '$(BuildPath)'" />
+    <Message Importance="High" Text="OutputPath:             '$(OutputPath)'" />
+    <Message Importance="High" Text="NativePlatform:         '$(NativePlatform)'" />
+    <Message Importance="High" Text="ManagedPlatform:        '$(ManagedPlatform)'" />
+  </Target>
+
+  <!--
+    aspnet_merge.exe detection
+  -->
 
   <PropertyGroup>
     <_RegKeyWinSdk80>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v8.0A@InstallationFolder)</_RegKeyWinSdk80>
@@ -51,6 +73,10 @@
       </PropertyGroup>
     </When>
   </Choose>
+
+  <!--
+    Build targets
+  -->
 
   <ItemDefinitionGroup>
     <ParserCProject>
@@ -81,7 +107,7 @@
     </DashWebProject>
   </ItemDefinitionGroup>
 
-  <Target Name="BuildParserC">
+  <Target Name="BuildParserC" DependsOnTargets="ConfigurationInfo">
     <ItemGroup>
       <ParserCProject Include="Log4JParserC" />
     </ItemGroup>
@@ -100,7 +126,7 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="BuildParserCpp" DependsOnTargets="BuildParserC">
+  <Target Name="BuildParserCpp" DependsOnTargets="ConfigurationInfo;BuildParserC">
     <ItemGroup>
       <ParserCppProject Include="Log4JParserCpp" />
     </ItemGroup>
@@ -116,7 +142,7 @@
              " />
   </Target>
 
-  <Target Name="BuildParserNet" DependsOnTargets="BuildParserC">
+  <Target Name="BuildParserNet" DependsOnTargets="ConfigurationInfo;BuildParserC">
     <ItemGroup>
       <ParserNetProject Include="Log4JParserNet" />
     </ItemGroup>
@@ -133,7 +159,7 @@
              " />
   </Target>
 
-  <Target Name="BuildDashWeb" DependsOnTargets="BuildParserC">
+  <Target Name="BuildDashWeb" DependsOnTargets="ConfigurationInfo;BuildParserC">
     <ItemGroup>
       <DashWebProject Include="Log4JDash.Web" />
     </ItemGroup>
@@ -168,7 +194,7 @@
           DestinationFolder="%(_DashWebFile.DestinationBase)%(_DashWebFile.RecursiveDir)" />
   </Target>
 
-  <Target Name="Build" DependsOnTargets ="BuildParserC;BuildParserCpp;BuildParserNet;BuildDashWeb">
+  <Target Name="Build" DependsOnTargets ="ConfigurationInfo;BuildParserC;BuildParserCpp;BuildParserNet;BuildDashWeb">
 
   </Target>
 </Project>
