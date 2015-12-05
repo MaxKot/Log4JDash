@@ -90,9 +90,9 @@
     <Content Include="assets\my\css\log.css" />
     <Content Include="assets\reset-css-2.0\reset.css" />
     <Content Include="Global.asax" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
-    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Scripts\jquery-2.1.4.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.4.js" />
+    <Content Include="Scripts\jquery-2.1.4.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
@@ -133,7 +133,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Views\Log\List.cshtml" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Log\EditorTemplates\LogQuery.cshtml" />
     <Content Include="Views\Log\EditorTemplates\EventsQuantity.cshtml" />
     <Content Include="Views\Log\DisplayTemplates\EventModel.cshtml" />
@@ -142,6 +141,7 @@
     <Content Include="Views\Log\EditorTemplates\_Editor.cshtml" />
     <Content Include="Views\Log\EditorTemplates\DateTime.cshtml" />
     <Content Include="Views\Log\EditorTemplates\LogSourceInput.cshtml" />
+    <Content Include="Scripts\jquery-2.1.4.min.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
