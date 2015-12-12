@@ -73,6 +73,7 @@ namespace Log4JParser
     class EventSource
     {
         friend class IteratorEventSource;
+        friend class IteratorEventSourceReverse;
 
     public:
         EventSource (char *xmlString);

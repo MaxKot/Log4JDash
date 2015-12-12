@@ -49,6 +49,20 @@ namespace Log4JParser
 
     }
 
+    static Log4JIterator *Log4JIteratorInitEventSourceReverse_ (const Log4JEventSource *source)
+    {
+        Log4JIterator *iterator;
+        Log4JIteratorInitEventSourceReverse (&iterator, source);
+
+        return iterator;
+    }
+
+    IteratorEventSourceReverse::IteratorEventSourceReverse (const EventSource *source)
+        : IteratorBase (Log4JIteratorInitEventSourceReverse_ (EventSource::GetEventSource (source)))
+    {
+
+    }
+
     static Log4JIterator *Log4JIteratorInitFilter_ (Log4JIterator *inner, const Log4JFilter *filter)
     {
         Log4JIterator *iterator;

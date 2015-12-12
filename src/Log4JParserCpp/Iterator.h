@@ -36,6 +36,12 @@ namespace Log4JParser
         IteratorEventSource (const EventSource *source);
     };
 
+    class IteratorEventSourceReverse : public IteratorBase
+    {
+    public:
+        IteratorEventSourceReverse (const EventSource *source);
+    };
+
     class IteratorFilter : public IteratorBase
     {
     public:
