@@ -43,28 +43,29 @@ const size_t AttrDataNameSize_ = sizeof AttrDataName_ / sizeof AttrDataName_[0] 
 const char AttrDataValue_[] = "value";
 const size_t AttrDataValueSize_ = sizeof AttrDataValue_ / sizeof AttrDataValue_[0] - 1U;
 
-static void GetValue_ (const rapidxml::xml_base<char> *source, const char **value, size_t *size);
+static void GetAttributeValue_ (const rapidxml::xml_attribute<char> *source, const char **value, size_t *size);
+static void GetNodeValue_ (const rapidxml::xml_node<char> *source, const char **value, size_t *size);
 static int64_t ParseTimestamp_ (const char *value, const size_t valueSize);
 
 LOG4JPARSERC_API void __cdecl Log4JEventLevel (const Log4JEvent log4JEvent, const char **value, size_t *size)
 {
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_attribute (AttrLevel_, AttrLevelSize_);
-    GetValue_ (xml, value, size);
+    GetAttributeValue_ (xml, value, size);
 }
 
 LOG4JPARSERC_API void __cdecl Log4JEventLogger (const Log4JEvent log4JEvent, const char **value, size_t *size)
 {
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_attribute (AttrLogger_, AttrLoggerSize_);
-    GetValue_ (xml, value, size);
+    GetAttributeValue_ (xml, value, size);
 }
 
 LOG4JPARSERC_API void __cdecl Log4JEventThread (const Log4JEvent log4JEvent, const char **value, size_t *size)
 {
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_attribute (AttrThread_, AttrThreadSize_);
-    GetValue_ (xml, value, size);
+    GetAttributeValue_ (xml, value, size);
 }
 
 LOG4JPARSERC_API int64_t __cdecl Log4JEventTimestamp (const Log4JEvent log4JEvent)
@@ -80,14 +81,14 @@ LOG4JPARSERC_API void __cdecl Log4JEventMessage (const Log4JEvent log4JEvent, co
 {
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_node (TagMessage_, TagMessageSize_);
-    GetValue_ (xml, value, size);
+    GetNodeValue_ (xml, value, size);
 }
 
 LOG4JPARSERC_API void __cdecl Log4JEventThrowable (const Log4JEvent log4JEvent, const char **value, size_t *size)
 {
     auto node = (rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_node (TagThrowable_, TagThrowableSize_);
-    GetValue_ (xml, value, size);
+    GetNodeValue_ (xml, value, size);
 }
 
 LOG4JPARSERC_API size_t Log4JEventProperties (const Log4JEvent log4JEvent, size_t skip, Log4JEventProperty *properties, size_t propertiesSize)
@@ -114,10 +115,10 @@ LOG4JPARSERC_API size_t Log4JEventProperties (const Log4JEvent log4JEvent, size_
             else if (propertiesSize != 0U)
             {
                 auto name = dataNode->first_attribute (AttrDataName_, AttrDataNameSize_);
-                GetValue_ (name, &properties->name, &properties->nameSize);
+                GetAttributeValue_ (name, &properties->name, &properties->nameSize);
 
                 auto value = dataNode->first_attribute (AttrDataValue_, AttrDataValueSize_);
-                GetValue_ (value, &properties->value, &properties->valueSize);
+                GetAttributeValue_ (value, &properties->value, &properties->valueSize);
 
                 ++properties;
                 --propertiesSize;
@@ -130,12 +131,38 @@ LOG4JPARSERC_API size_t Log4JEventProperties (const Log4JEvent log4JEvent, size_
     return actualProperties;
 }
 
-void GetValue_ (const rapidxml::xml_base<char> *source, const char **value, size_t *size)
+void GetAttributeValue_ (const rapidxml::xml_attribute<char> *source, const char **value, size_t *size)
 {
     if (source)
     {
         *value = source->value ();
         *size = source->value_size ();
+    }
+    else
+    {
+        *value = nullptr;
+        *size = 0U;
+    }
+}
+
+void GetNodeValue_ (const rapidxml::xml_node<char> *source, const char **value, size_t *size)
+{
+    if (source)
+    {
+        auto firstChild = source->first_node ();
+        auto isCDataContainer = firstChild &&
+                                !firstChild->next_sibling () &&
+                                firstChild->type () == rapidxml::node_type::node_cdata;
+        if (isCDataContainer)
+        {
+            *value = firstChild->value ();
+            *size = firstChild->value_size ();
+        }
+        else
+        {
+            *value = source->value ();
+            *size = source->value_size ();
+        }
     }
     else
     {
@@ -178,7 +205,7 @@ static Log4JStatus Log4JEventSourceInitXmlStringImpl (Log4JEventSource **self, c
         docs->push_back (doc);
         try
         {
-            doc->parse<rapidxml::parse_fastest> (nextPart);
+            doc->parse<rapidxml::parse_default> (nextPart);
             nextPart = nullptr;
         }
         catch (const rapidxml::parse_error &ex)
