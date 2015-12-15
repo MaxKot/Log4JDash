@@ -339,6 +339,118 @@ namespace Log4JParserNet.Tests
             }
         }
 
+        private const string SampleErrorInMiddle = @"<?xml version=""1.0"" encoding=""windows-1251""?>
+<log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message><log4j:properties><log4j:data name=""log4jmachinename"" value=""EXAMPLE_PC"" /><log4j:data name=""log4japp"" value=""LogGenerator.exe"" /><log4j:data name=""log4net:Identity"" value="""" /><log4j:data name=""log4net:UserName"" value=""EXAMPLE_PC\Dev"" /><log4j:data name=""log4net:HostName"" value=""EXAMPLE_PC"" /></log4j:properties></log4j:event>
+<log4j:event logger=""Root.ChildA.LoggerA2"" timesta
+<log4j:event logger=""Root.ChildB.LoggerB2"" timestamp=""1411231353792"" level=""DEBUG"" thread=""Thread-2""><log4j:message>#2. Test event B.</log4j:message><log4j:properties><log4j:data name=""log4jmachinename"" value=""EXAMPLE_PC"" /><log4j:data name=""log4japp"" value=""LogGenerator.exe"" /><log4j:data name=""log4net:Identity"" value="""" /><log4j:data name=""log4net:UserName"" value=""EXAMPLE_PC\Dev"" /><log4j:data name=""log4net:HostName"" value=""EXAMPLE_PC"" /></log4j:properties></log4j:event>
+";
+
+        private static readonly byte[] sampleErrorInMiddleBytes = Encoding.GetEncoding (1251).GetBytes (SampleErrorInMiddle);
+
+        [Test]
+        public void CanReadFileWithErrorInMiddle ()
+        {
+            var expected = new[]
+            {
+                new EventExpectation
+                {
+                    Level = Level.Info,
+                    Logger = "Root.ChildA.LoggerA2",
+                    Thread = "Thread-1",
+                    Timestamp = 1411231353782L,
+                    Message = "#1. Test event A.",
+                    Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
+                    Id = 0
+                },
+                new EventExpectation
+                {
+                    Level = Level.Debug,
+                    Logger = "Root.ChildB.LoggerB2",
+                    Thread = "Thread-2",
+                    Timestamp = 1411231353792L,
+                    Message = "#2. Test event B.",
+                    Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
+                    Id = 531
+                }
+            };
+
+            using (var source = new MemoryStream (sampleErrorInMiddleBytes))
+            using (var subject = Log4JFile.Create (source))
+            {
+                subject.Encoding = Encoding.GetEncoding (1251);
+                var actual = subject.GetEvents ();
+                Assert.That (actual, Is.EqualTo (expected));
+            }
+        }
+
+        [Test]
+        public void CanReadFileWithErrorInMiddleInReverseOrder ()
+        {
+            var expected = new[]
+            {
+                new EventExpectation
+                {
+                    Level = Level.Debug,
+                    Logger = "Root.ChildB.LoggerB2",
+                    Thread = "Thread-2",
+                    Timestamp = 1411231353792L,
+                    Message = "#2. Test event B.",
+                    Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
+                    Id = 531
+                },
+                new EventExpectation
+                {
+                    Level = Level.Info,
+                    Logger = "Root.ChildA.LoggerA2",
+                    Thread = "Thread-1",
+                    Timestamp = 1411231353782L,
+                    Message = "#1. Test event A.",
+                    Throwable = null,
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
+                    Id = 0
+                }
+            };
+
+            using (var source = new MemoryStream (sampleErrorInMiddleBytes))
+            using (var subject = Log4JFile.Create (source))
+            {
+                subject.Encoding = Encoding.GetEncoding (1251);
+                var actual = subject.GetEventsReverse ();
+                Assert.That (actual, Is.EqualTo (expected));
+            }
+        }
+
         private const string SampleProperties16 = @"<?xml version=""1.0"" encoding=""windows-1251""?>
 <log4j:event logger=""L1"" timestamp=""0"" level=""INFO"" thread=""1"">
   <log4j:message>Msg</log4j:message>

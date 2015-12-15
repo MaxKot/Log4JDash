@@ -1,4 +1,5 @@
 ﻿#include <string.h>
+#include <vector>
 #include <stdio.h>
 #include <rapidxml\rapidxml.hpp>
 #include <Windows.h>
@@ -6,6 +7,8 @@ extern "C"
 {
 #include "Log4JParserC.h"
 }
+
+const char LogFragmentStart_[] = "<log4j:event";
 
 const char TagEvent_[] = "log4j:event";
 const size_t TagEventSize_ = sizeof TagEvent_ / sizeof TagEvent_[0] - 1U;
@@ -156,49 +159,75 @@ int64_t ParseTimestamp_ (const char *value, const size_t valueSize)
 
 struct Log4JEventSource_
 {
-    const rapidxml::xml_document<char> *Doc;
+    std::vector<const rapidxml::xml_document<char> *> *Docs;
     char *OwnXmlString;
 };
 
-static void Log4JEventSourceInitXmlStringImpl (Log4JEventSource **self, char *xmlString, bool ownString)
+static Log4JStatus Log4JEventSourceInitXmlStringImpl (Log4JEventSource **self, char *xmlString, bool ownString)
 {
     *self = nullptr;
     auto ownedStringPtr = ownString ? xmlString : nullptr;
 
-    auto doc = new rapidxml::xml_document<char> ();
-    try
-    {
-        doc->parse<rapidxml::parse_fastest> (xmlString);
-    }
-    catch (const rapidxml::parse_error &)
-    {
+    auto status = Log4JStatus::E_SUCCESS;
 
-    }
-    catch (...)
+    auto nextPart = xmlString;
+    auto docs = new std::vector<const rapidxml::xml_document<char> *> ();
+    while (nextPart)
     {
-        delete doc;
-        throw;
+        auto doc = new rapidxml::xml_document<char> ();
+        docs->push_back (doc);
+        try
+        {
+            doc->parse<rapidxml::parse_fastest> (nextPart);
+            nextPart = nullptr;
+        }
+        catch (const rapidxml::parse_error &ex)
+        {
+            status = Log4JStatus::E_DOCUMENT_ERRORS;
+            nextPart = strstr (ex.where<char> (), LogFragmentStart_);
+        }
+        catch (...)
+        {
+            for (auto docsIter = docs->begin (); docsIter != docs->end (); ++docsIter)
+            {
+                delete *docsIter;
+            }
+            throw;
+        }
     }
 
     Log4JEventSource *result = (Log4JEventSource *) malloc (sizeof *result);
     if (result == nullptr)
     {
-        delete doc;
-        return;
+        for (auto docsIter = docs->begin (); docsIter != docs->end (); ++docsIter)
+        {
+            delete *docsIter;
+        }
+        *self = nullptr;
+        return Log4JStatus::E_MEMORY_ERROR;
     }
-    *result = { doc, ownedStringPtr };
+    *result = { docs, ownedStringPtr };
 
     *self = result;
+
+    return status;
 }
 
-LOG4JPARSERC_API void __cdecl Log4JEventSourceInitXmlString (Log4JEventSource **self, char *xmlString)
+LOG4JPARSERC_API Log4JStatus __cdecl Log4JEventSourceInitXmlString (Log4JEventSource **self, char *xmlString)
 {
-    Log4JEventSourceInitXmlStringImpl (self, xmlString, false);
+    return Log4JEventSourceInitXmlStringImpl (self, xmlString, false);
 }
 
 LOG4JPARSERC_API void __cdecl Log4JEventSourceDestroy (Log4JEventSource *self)
 {
-    delete self->Doc;
+    auto docs = self->Docs;
+    for (auto docsIter = docs->begin (); docsIter != docs->end (); ++docsIter)
+    {
+        delete *docsIter;
+    }
+    docs->clear ();
+    delete docs;
+
     if (self->OwnXmlString)
     {
         free (self->OwnXmlString);
@@ -208,28 +237,68 @@ LOG4JPARSERC_API void __cdecl Log4JEventSourceDestroy (Log4JEventSource *self)
     free (self);
 }
 
+static size_t IndexOfCurrentDocument (const std::vector<const rapidxml::xml_document<char> *> *docs, const rapidxml::xml_node<char> *node)
+{
+    auto currentDocument = node->document ();
+    auto docsSize = docs->size ();
+    for (size_t i = 0; i < docsSize; ++i)
+    {
+        if (docs->at (i) == currentDocument)
+        {
+            return i;
+        }
+    }
+
+    return docsSize;
+}
+
 LOG4JPARSERC_API Log4JEvent __cdecl Log4JEventSourceFirst (const Log4JEventSource *self)
 {
-    auto node = self->Doc->first_node (TagEvent_, TagEventSize_);
+    auto node = self->Docs->front ()->first_node (TagEvent_, TagEventSize_);
     return node;
 }
 
 LOG4JPARSERC_API Log4JEvent __cdecl Log4JEventSourceNext (const Log4JEventSource *self, const Log4JEvent event)
 {
+    auto docs = self->Docs;
     auto node = (rapidxml::xml_node<char> *) event;
+
     auto nextNode = node->next_sibling (TagEvent_, TagEventSize_);
+    if (!nextNode)
+    {
+        auto currentDocumentIndex = IndexOfCurrentDocument (self->Docs, node);
+        auto nextDocumentIndex = currentDocumentIndex + 1;
+        if (nextDocumentIndex < docs->size ())
+        {
+            nextNode = docs->at (nextDocumentIndex)->first_node (TagEvent_, TagEventSize_);
+        }
+    }
+
     return nextNode;
 }
 
 LOG4JPARSERC_API Log4JEvent __cdecl Log4JEventSourceLast (const Log4JEventSource *self)
 {
-    auto node = self->Doc->last_node (TagEvent_, TagEventSize_);
+    auto node = self->Docs->back ()->last_node (TagEvent_, TagEventSize_);
     return node;
 }
 
 LOG4JPARSERC_API Log4JEvent __cdecl Log4JEventSourcePrev (const Log4JEventSource *self, const Log4JEvent event)
 {
+    auto docs = self->Docs;
     auto node = (rapidxml::xml_node<char> *) event;
+
     auto prevNode = node->previous_sibling (TagEvent_, TagEventSize_);
+    if (!prevNode)
+    {
+        auto currentDocumentIndex = IndexOfCurrentDocument (self->Docs, node);
+        auto prevDocumentIndex = currentDocumentIndex - 1;
+        // if currentDocumentIndex == 0 then prevDocumentIndex would overflow to SIZE_MAX
+        if (prevDocumentIndex < docs->size ())
+        {
+            prevNode = docs->at (prevDocumentIndex)->first_node (TagEvent_, TagEventSize_);
+        }
+    }
+
     return prevNode;
 }

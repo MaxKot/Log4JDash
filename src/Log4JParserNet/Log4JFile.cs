@@ -217,7 +217,25 @@ namespace Log4JParserNet
         {
             buffer_ = buffer;
             Size = size;
-            Log4JParserC.Log4JEventSourceInitXmlString (out impl_, buffer_.DangerousGetHandle ());
+            var status = Log4JParserC.Log4JEventSourceInitXmlString (out impl_, buffer_.DangerousGetHandle ());
+
+            switch (status)
+            {
+                case Log4JParserC.Status.Success:
+                    break;
+
+                case Log4JParserC.Status.DocumentErrors:
+                    break;
+
+                case Log4JParserC.Status.MemoryError:
+                    impl_.Dispose ();
+                    throw new OutOfMemoryException ();
+
+                default:
+                    impl_.Dispose ();
+                    throw new InvalidOperationException ();
+            }
+
             Encoding = Encoding.ASCII;
         }
 

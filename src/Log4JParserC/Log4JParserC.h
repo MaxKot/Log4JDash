@@ -43,7 +43,14 @@ LOG4JPARSERC_API size_t Log4JEventProperties (const Log4JEvent log4JEvent, size_
 
 typedef struct Log4JEventSource_ Log4JEventSource;
 
-LOG4JPARSERC_API void Log4JEventSourceInitXmlString (Log4JEventSource **self, char *xmlString);
+typedef enum
+{
+    E_SUCCESS = 0,
+    E_MEMORY_ERROR = 10,
+    E_DOCUMENT_ERRORS = 20,
+} Log4JStatus;
+
+LOG4JPARSERC_API Log4JStatus Log4JEventSourceInitXmlString (Log4JEventSource **self, char *xmlString);
 
 LOG4JPARSERC_API void Log4JEventSourceDestroy (Log4JEventSource *self);
 

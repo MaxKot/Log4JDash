@@ -5,6 +5,13 @@ namespace Log4JParserNet
 {
     internal static class Log4JParserC
     {
+        public enum Status
+        {
+            Success = 0,
+            MemoryError = 10,
+            DocumentErrors = 20
+        }
+
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventLevel
             (EventHandle log4JEvent, out IntPtr value, out UIntPtr size);
@@ -40,7 +47,7 @@ namespace Log4JParserNet
             );
 
         [DllImport("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JEventSourceInitXmlString
+        extern public static Status Log4JEventSourceInitXmlString
             (out EventSourceHandle self, IntPtr xmlString);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
