@@ -73,15 +73,14 @@ main {
     width: 100%;
 }
 .log-item-collapse-content {
-    display: inline-block;
+    display: table-cell;
 }
 
 label[for^='log-item-collapsed'] {
-    display: inline-block;
-    float: left;
+    display: table-cell;
     height: 1.2em;
     width: 1.2em;
-    vertical-align: middle;
+    vertical-align: top;
     text-align: center;
     cursor: pointer;
     font-weight: bold;
@@ -125,10 +124,22 @@ label[for^='log-item-collapsed'] .log-item-collapsed-open,
     white-space: normal;
 }
 
-.log-item-collapsed:checked + .log-item-collapse .log-item-thread,
-.log-item-collapsed:checked + .log-item-collapse .log-item-level,
-.log-item-collapsed:checked + .log-item-collapse .log-item-throwable *,
-.log-item-collapsed:checked + .log-item-collapse .log-item-property {
+.log-item-collapsed:checked + .log-item-collapse .log-item-field,
+.log-item-collapsed:checked + .log-item-collapse *::after,
+.log-item-collapsed:checked + .log-item-collapse *::before {
+    vertical-align: top;
+}
+
+.log-item-collapsed:checked + .log-item-collapse .log-item-field > span {
+    display: inline-block;
+    max-height: 3em;
+    overflow-y: hidden;
+}
+
+.log-item-collapsed:checked + .log-item-collapse .log-item-field.log-item-thread,
+.log-item-collapsed:checked + .log-item-collapse .log-item-field.log-item-level,
+.log-item-collapsed:checked + .log-item-collapse .log-item-field.log-item-throwable *,
+.log-item-collapsed:checked + .log-item-collapse .log-item-field.log-item-property {
     display: none;
 }
 .log-item-throwable::after {
@@ -145,6 +156,7 @@ label[for^='log-item-collapsed'] .log-item-collapsed-open,
     opacity: 0.25;
 }
 
+.log-item-message > span,
 .log-item-throwable > span,
 .log-item-property > span {
     white-space: pre-wrap;
