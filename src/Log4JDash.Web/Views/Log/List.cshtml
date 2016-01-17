@@ -18,14 +18,19 @@
                     Source = { Value = Model.Query.Source.Value }
                 };
                 var latestPageRouteValues = latestPageModel.GetRouteValues ();
+
+                var source = Model.Query.Source.Value;
             }
             <h1>
-                @Model.Query.Source.Value
-                @if (Model.Query.Size != null)
+                @if (source != null)
                 {
-                    <span class="log-latest">
-                        @Html.ActionLink("\u21BB", null, latestPageRouteValues)
-                    </span>
+                    @source.Id
+                    if (source.Size != null)
+                    {
+                        <span class="log-latest">
+                            @Html.ActionLink("\u21BB", null, latestPageRouteValues)
+                        </span>
+                    }
                 }
             </h1>
 

@@ -125,6 +125,8 @@
     <Compile Include="Models\LogLevelInput.cs" />
     <Compile Include="Models\LogQuery.cs" />
     <Compile Include="Models\LogSourceInput.cs" />
+    <Compile Include="Models\LogSourceModel.cs" />
+    <Compile Include="Models\LogSourceModelConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

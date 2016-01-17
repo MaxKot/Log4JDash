@@ -3,8 +3,8 @@
 @{
     var options = Model.Sources.Select (l => new SelectListItem
     {
-        Value = l,
-        Text = l
+        Value = Convert.ToString (l),
+        Text = l.Id
     });
 }
 <div class="editor log-query-source">

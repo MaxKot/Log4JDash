@@ -38,10 +38,11 @@ namespace Log4JDash.Web.Models
 
         public EventsCollection GetEvents (LogQuery query)
         {
-            var source = logSourceProvider_.GetSource (query.Source.Value);
+            var sourceModel = query.Source.Value;
+            var source = logSourceProvider_.GetSource (sourceModel?.Id);
 
             using (var sourceStream = source.Open ())
-            using (var logFile = Log4JFile.Create (sourceStream, query.Size))
+            using (var logFile = Log4JFile.Create (sourceStream, sourceModel?.Size))
             using (var filters = new List<FilterBase> ().ToDisposable ())
             {
                 logFile.Encoding = Encoding.GetEncoding (1251);

@@ -7,13 +7,11 @@ namespace Log4JDash.Web.Models
 {
     public sealed class LogSourceInput : ICloneable
     {
-        public string Value
-        { get; set; }
+        public LogSourceModel Value { get; set; }
 
-        public ICollection<string> Sources
-        { get; set; }
+        public ICollection<LogSourceModel> Sources { get; set; }
 
-        public LogSourceInput (string value, ICollection<string> sources)
+        public LogSourceInput (LogSourceModel value, ICollection<LogSourceModel> sources)
         {
             Debug.Assert (sources != null, "LogSourceInput.ctor: levels is null.");
 
@@ -21,7 +19,7 @@ namespace Log4JDash.Web.Models
             Sources = sources;
         }
 
-        public LogSourceInput () : this (null, new string[0])
+        public LogSourceInput () : this (null, new LogSourceModel[0])
         {
 
         }
@@ -34,6 +32,7 @@ namespace Log4JDash.Web.Models
             }
 
             Value = other.Value;
+            Sources = other.Sources;
         }
 
         public LogSourceInput Clone ()
@@ -50,9 +49,9 @@ namespace Log4JDash.Web.Models
         {
             var result = new RouteValueDictionary ();
 
-            if (!String.IsNullOrWhiteSpace (Value))
+            if (Value != null)
             {
-                result.Add ("Value", Value);
+                result.Add ("Value", Convert.ToString (Value));
             }
 
             return result;
