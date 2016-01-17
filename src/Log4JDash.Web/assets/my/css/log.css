@@ -64,6 +64,10 @@ main {
     display: block;
 }
 
+.log-item-field > label {
+    color: #606060
+}
+
 .log-item-collapsed {
     display: none;
 }
