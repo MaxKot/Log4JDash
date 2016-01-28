@@ -1,14 +1,25 @@
 ﻿@model Log4JDash.Web.Models.LogSourceInput
 
-@{
-    var options = Model.Sources.Select (l => new SelectListItem
-    {
-        Value = Convert.ToString (l),
-        Text = l.Id
-    });
-}
 <div class="editor log-query-source">
     <div class="editor-input">
-        @Html.DropDownListFor(model => model.Value, options)
+        @{
+            var selectId = Html.IdFor (model => model.Value);
+            var selectName = Html.NameFor (model => model.Value);
+        }
+        <select id="@selectId" name="@selectName">
+            @foreach (var source in Model.Sources)
+            {
+                var optionValue = Convert.ToString (source);
+                var optionText = source.Id;
+
+                var idComparer = StringComparer.OrdinalIgnoreCase;
+                var isSelected = idComparer.Equals (source.Id, Model.Value.Id);
+                var optionSelected = isSelected
+                    ? Html.Raw (" selected=\"selected\"")
+                    : MvcHtmlString.Empty;
+
+                <option value="@optionValue"@optionSelected>@optionText</option>
+            }
+        </select>
     </div>
 </div>
