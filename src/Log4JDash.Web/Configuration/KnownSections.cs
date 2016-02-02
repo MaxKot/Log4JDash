@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using Log4JDash.Web.Domain;
+using Log4JDash.Web.Filters;
 
 namespace Log4JDash.Web.Configuration
 {
@@ -13,6 +14,15 @@ namespace Log4JDash.Web.Configuration
             ValidateSection (section, LogSourceProviderName);
 
             return (LogSourceProviderSection) section;
+        }
+
+        public const string RequireHttpsName = "log4JDash/requireHttps";
+
+        public static RequireHttpsSection RequireHttps ()
+        {
+            var section = (RequireHttpsSection) ConfigurationManager.GetSection (RequireHttpsName);
+
+            return section ?? new RequireHttpsSection ();
         }
 
         private static void ValidateSection (object section, string sectionName)

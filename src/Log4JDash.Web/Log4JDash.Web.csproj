@@ -15,7 +15,7 @@
     <AssemblyName>Log4JDash.Web</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
+    <IISExpressSSLPort>44385</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -113,6 +113,9 @@
     <Compile Include="Domain\LogSourceProvider.cs" />
     <Compile Include="Domain\LogSourceProviderSection.cs" />
     <Compile Include="Domain\RegexConverter.cs" />
+    <Compile Include="Filters\ConfigurableRequireHttpsAttribute.cs" />
+    <Compile Include="Filters\IRequireHttpsConfig.cs" />
+    <Compile Include="Filters\RequireHttpsSection.cs" />
     <Compile Include="Models\EventsCollection.cs" />
     <Compile Include="Models\LogRepository.cs" />
     <Compile Include="Models\LogIndexViewModel.cs" />

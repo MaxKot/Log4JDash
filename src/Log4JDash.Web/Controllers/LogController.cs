@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
+using Log4JDash.Web.Filters;
 using Log4JDash.Web.Models;
 
 namespace Log4JDash.Web.Controllers
 {
+    [ConfigurableRequireHttps]
     public sealed class LogController : Controller
     {
         private readonly LogRepository repository_;
