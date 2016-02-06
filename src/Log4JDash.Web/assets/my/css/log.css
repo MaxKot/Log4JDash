@@ -181,6 +181,10 @@ label[for^='log-item-collapsed'] .log-item-collapsed-open,
 .log-item-fatal {
     background-color: #444;
 }
+select.log-item-fatal option {
+    color: #000;
+}
+select.log-item-fatal option.log-item-fatal,
 .log-item-fatal {
     color: #fff;
 }

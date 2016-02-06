@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Web.Routing;
 using Log4JParserNet;
 
 namespace Log4JDash.Web.Models
 {
+    [TypeConverter (typeof (LogLevelInputConverter))]
     public sealed class LogLevelInput : ICloneable
     {
         private static readonly string[] DefaultLevels = new[]

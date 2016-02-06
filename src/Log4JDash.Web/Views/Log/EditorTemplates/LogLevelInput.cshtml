@@ -3,10 +3,31 @@
 @{
     Layout = "_Editor.cshtml";
 
-    var options = Model.Levels.Select (l => new SelectListItem
-    {
-        Value = l,
-        Text = l
-    });
+    var selectedLevelClass = Model.Value.ToLowerInvariant ();
+
+    var id = Html.IdForModel ();
+    var name = Html.NameForModel ();
 }
-@Html.DropDownListFor(model => model.Value, options)
+<script type="text/javascript">
+    function SyncSelectClass(select) {
+        var selectedOption = select.options[select.selectedIndex];
+        select.className = selectedOption.className;
+    }
+</script>
+<select id="@id" name="@name" class="log-item-@selectedLevelClass" onchange="SyncSelectClass(this)">
+    @foreach (var level in Model.Levels)
+    {
+        var levelClass = level.ToLowerInvariant ();
+        var isSelected = StringComparer.OrdinalIgnoreCase.Equals (Model.Value, level);
+        var selected = isSelected
+            ? Html.Raw ("selected=\"selected\"")
+            : MvcHtmlString.Empty;
+        <option value="@level" class="log-item-@levelClass"@selected>@level</option>
+    }
+</select>
+<script type="text/javascript">
+    (function () {
+        var select = document.getElementById('@id');
+        SyncSelectClass(select);
+    })();
+</script>
