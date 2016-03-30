@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
 using System.Web.Routing;
+using Log4JDash.Web.Mvc;
 
 namespace Log4JDash.Web.Models
 {
@@ -15,8 +15,14 @@ namespace Log4JDash.Web.Models
 
         public string Thread { get; set; }
 
+        private static DateTime DefaultMinTime () => DateTime.MinValue;
+
+        [DefaultValueFactory ("DefaultMinTime")]
         public DateTime MinTime { get; set; }
 
+        private static DateTime DefaultMaxTime () => DateTime.MaxValue;
+
+        [DefaultValueFactory ("DefaultMaxTime")]
         public DateTime MaxTime { get; set; }
 
         public string Message { get; set; }
@@ -34,8 +40,8 @@ namespace Log4JDash.Web.Models
             MinLevel = new LogLevelInput ();
             Logger = null;
             Thread = null;
-            MinTime = DateTime.MinValue;
-            MaxTime = DateTime.MaxValue;
+            MinTime = DefaultMinTime ();
+            MaxTime = DefaultMaxTime ();
             Message = null;
             Throwable = null;
             Quantity = new EventsQuantity ();
@@ -103,11 +109,11 @@ namespace Log4JDash.Web.Models
             {
                 result.Add ("Thread", Thread);
             }
-            if (MinTime > DateTime.MinValue)
+            if (MinTime > DefaultMinTime ())
             {
                 result.Add ("MinTime", MinTime);
             }
-            if (MaxTime < DateTime.MaxValue)
+            if (MaxTime < DefaultMaxTime ())
             {
                 result.Add ("MaxTime", MaxTime);
             }
