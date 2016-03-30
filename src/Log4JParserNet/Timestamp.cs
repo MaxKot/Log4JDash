@@ -13,7 +13,7 @@ namespace Log4JParserNet
 
         public static Int64 FromDateTime (DateTime date)
         {
-            return (Int64) date.Subtract (TimestampZero).TotalMilliseconds;
+            return (Int64) date.ToUniversalTime ().Subtract (TimestampZero).TotalMilliseconds;
         }
     }
 }
