@@ -1,5 +1,5 @@
 ﻿
-namespace Log4JDash.Web.Filters
+namespace Log4JDash.Web.Mvc
 {
     public interface IRequireHttpsConfig
     {

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
-using Log4JDash.Web.Filters;
 using Log4JDash.Web.Models;
+using Log4JDash.Web.Mvc;
 
 namespace Log4JDash.Web.Controllers
 {

@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Web.Mvc;
 using Log4JDash.Web.Configuration;
 
-namespace Log4JDash.Web.Filters
+namespace Log4JDash.Web.Mvc
 {
     public class ConfigurableRequireHttpsAttribute : RequireHttpsAttribute
     {

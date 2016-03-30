@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace Log4JDash.Web.Filters
+namespace Log4JDash.Web.Mvc
 {
     public class RequireHttpsSection
         : ConfigurationSection
