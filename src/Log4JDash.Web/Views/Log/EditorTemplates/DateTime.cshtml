@@ -1,5 +1,9 @@
-﻿@model DateTime
+﻿@using Log4JDash.Web.Mvc
+@model DateTime
 @{
     Layout = "_Editor.cshtml";
+
+    var attributes = new Dictionary<string, object> ();
+    DefaultValueUtil.PopulateHtmlAttributes (ViewData.ModelMetadata, attributes);
 }
-@Html.TextBox("", Model)
+@Html.TextBox("", Model, attributes)
