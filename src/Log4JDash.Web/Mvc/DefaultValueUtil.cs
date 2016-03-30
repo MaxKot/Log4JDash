@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace Log4JDash.Web.Mvc
@@ -12,7 +13,21 @@ namespace Log4JDash.Web.Mvc
             object value;
             if (modelMetadata.AdditionalValues.TryGetValue (MetadataKey, out value))
             {
-                htmlAttributes.Add ("data-default", value);
+                object attributeValue;
+                if (value == null)
+                {
+                    attributeValue = modelMetadata.NullDisplayText;
+                }
+                else if (modelMetadata.EditFormatString != null)
+                {
+                    attributeValue = String.Format (modelMetadata.EditFormatString, value);
+                }
+                else
+                {
+                    attributeValue = value;
+                }
+                htmlAttributes.Add ("data-default", attributeValue);
+                
             }
         }
     }
