@@ -18,11 +18,13 @@ namespace Log4JDash.Web.Models
         private static DateTime DefaultMinTime () => DateTime.MinValue;
 
         [DefaultValueFactory ("DefaultMinTime")]
+        [DisplayFormat (ApplyFormatInEditMode = true, DataFormatString = "{0:O}")]
         public DateTime MinTime { get; set; }
 
         private static DateTime DefaultMaxTime () => DateTime.MaxValue;
 
         [DefaultValueFactory ("DefaultMaxTime")]
+        [DisplayFormat (ApplyFormatInEditMode = true, DataFormatString = "{0:O}")]
         public DateTime MaxTime { get; set; }
 
         public string Message { get; set; }

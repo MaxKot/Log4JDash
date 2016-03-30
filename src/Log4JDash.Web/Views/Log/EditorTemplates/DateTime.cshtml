@@ -4,6 +4,8 @@
     Layout = "_Editor.cshtml";
 
     var attributes = new Dictionary<string, object> ();
-    DefaultValueUtil.PopulateHtmlAttributes (ViewData.ModelMetadata, attributes);
+    var modelMetadata = ViewData.ModelMetadata;
+    DefaultValueUtil.PopulateHtmlAttributes (modelMetadata, attributes);
+    var format = modelMetadata.EditFormatString;
 }
-@Html.TextBox("", Model, attributes)
+@Html.TextBox("", Model, format, attributes)
