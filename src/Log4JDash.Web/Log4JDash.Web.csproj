@@ -115,6 +115,8 @@
     <Compile Include="Domain\RegexConverter.cs" />
     <Compile Include="Mvc\ConfigurableRequireHttpsAttribute.cs" />
     <Compile Include="Mvc\IRequireHttpsConfig.cs" />
+    <Compile Include="Mvc\MetadataAttributeBase.cs" />
+    <Compile Include="Mvc\MyModelMetadataProvider.cs" />
     <Compile Include="Mvc\RequireHttpsSection.cs" />
     <Compile Include="Models\EventsCollection.cs" />
     <Compile Include="Models\LogRepository.cs" />
