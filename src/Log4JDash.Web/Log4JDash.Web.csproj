@@ -114,6 +114,9 @@
     <Compile Include="Domain\LogSourceProviderSection.cs" />
     <Compile Include="Domain\RegexConverter.cs" />
     <Compile Include="Mvc\ConfigurableRequireHttpsAttribute.cs" />
+    <Compile Include="Mvc\DefaultValueAttribute.cs" />
+    <Compile Include="Mvc\DefaultValueFactoryAttribute.cs" />
+    <Compile Include="Mvc\DefaultValueUtil.cs" />
     <Compile Include="Mvc\IRequireHttpsConfig.cs" />
     <Compile Include="Mvc\MetadataAttributeBase.cs" />
     <Compile Include="Mvc\MyModelMetadataProvider.cs" />
