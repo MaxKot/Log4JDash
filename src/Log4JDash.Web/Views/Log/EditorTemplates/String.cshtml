@@ -1,5 +1,10 @@
-﻿@model string
+﻿@using Log4JDash.Web.Mvc
+@model string
 @{
     Layout = "_Editor.cshtml";
+
+    var attributes = new Dictionary<string, object> ();
+    var modelMetadata = ViewData.ModelMetadata;
+    DefaultValueUtil.PopulateHtmlAttributes (modelMetadata, attributes);
 }
-@Html.TextBox("", Model)
+@Html.TextBox("", Model, attributes)

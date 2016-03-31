@@ -11,8 +11,14 @@ namespace Log4JDash.Web.Models
 
         public LogLevelInput MinLevel { get; set; }
 
+        private const string DefaultLogger = null;
+
+        [DefaultValue (DefaultLogger)]
         public string Logger { get; set; }
 
+        private const string DefaultThread = null;
+
+        [DefaultValue (DefaultThread)]
         public string Thread { get; set; }
 
         private static DateTime DefaultMinTime () => DateTime.MinValue;
@@ -27,27 +33,36 @@ namespace Log4JDash.Web.Models
         [DisplayFormat (ApplyFormatInEditMode = true, DataFormatString = "{0:O}")]
         public DateTime MaxTime { get; set; }
 
+        private const string DefaultMessage = null;
+
+        [DefaultValue (DefaultMessage)]
         public string Message { get; set; }
 
+        private const string DefaultThrowable = null;
+
+        [DefaultValue (DefaultThrowable)]
         public string Throwable { get; set; }
 
         [Display (Name = "")]
         public EventsQuantity Quantity { get; set; }
 
+        private const int DefaultOffset = 0;
+
+        [DefaultValue (DefaultOffset)]
         public int Offset { get; set; }
 
         public LogQuery ()
         {
             Source = new LogSourceInput ();
             MinLevel = new LogLevelInput ();
-            Logger = null;
-            Thread = null;
+            Logger = DefaultLogger;
+            Thread = DefaultThread;
             MinTime = DefaultMinTime ();
             MaxTime = DefaultMaxTime ();
-            Message = null;
-            Throwable = null;
+            Message = DefaultMessage;
+            Throwable = DefaultThrowable;
             Quantity = new EventsQuantity ();
-            Offset = 0;
+            Offset = DefaultOffset;
         }
 
         public LogQuery (LogQuery other)
@@ -134,7 +149,7 @@ namespace Log4JDash.Web.Models
                     result.Add ("Quantity." + item.Key, item.Value);
                 }
             }
-            if (Offset > 0)
+            if (Offset > DefaultOffset)
             {
                 result.Add ("Offset", Offset);
             }
