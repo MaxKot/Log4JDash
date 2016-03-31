@@ -39,9 +39,7 @@
                 'use strict';
 
                 function suppressDefaults(form) {
-                    function doSuppress(rootElement) {
-                        var suppressed = []
-
+                    function doSuppress(rootElement, suppressedElements) {
                         var children = rootElement.elements;
 
                         for (var i in children) {
@@ -56,17 +54,23 @@
 
                                 if (suppressSubmission) {
                                     child.disabled = true;
-                                    suppressed.push(child);
+                                    suppressedElements.push(child);
                                 }
                             }
 
-                            suppressed = suppressed.concat(doSuppress(child));
+                            doSuppress(child, suppressedElements);
                         }
-
-                        return suppressed;
                     }
 
-                    var suppressedElements = doSuppress(form);
+                    var suppressedElements = [];
+                    try {
+                        doSuppress(form, suppressedElements);
+                    } catch(e) {
+                        for (var i in suppressedElements) {
+                            suppressedElements[i].disabled = false;
+                        }
+                        throw e;
+                    }
 
                     var oldHandler = window.onbeforeunload;
                     window.onbeforeunload = function () {
