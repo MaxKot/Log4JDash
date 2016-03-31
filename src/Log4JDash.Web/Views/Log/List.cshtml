@@ -35,7 +35,36 @@
                 }
             </h1>
 
-            @using (Html.BeginForm (null, null, FormMethod.Get, new { @class = "log-query" }))
+            <script type="text/javascript">
+                'strict';
+
+                function suppressDefaults(form) {
+                    function doSuppress(el) {
+                        var children = el.elements;
+
+                        for (var i in children) {
+                            var child = children[i];
+
+                            if (child.tagName === 'INPUT') {
+                                var defaultValue = child.getAttribute('data-default');
+                                var isDefault = defaultValue !== undefined &&
+                                                defaultValue !== null &&
+                                                child.value === defaultValue;
+
+                                if (isDefault) {
+                                    child.disabled = true;
+                                }
+                            }
+
+                            doSuppress(child);
+                        }
+                    }
+
+                    doSuppress(form);
+                }
+            </script>
+
+            @using (Html.BeginForm (null, null, FormMethod.Get, new { @class = "log-query", onsubmit = "suppressDefaults(this);" }))
             {
                 <div>
                     @Html.EditorFor(model => model.Query, null, String.Empty)
