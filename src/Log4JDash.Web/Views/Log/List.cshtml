@@ -36,31 +36,48 @@
             </h1>
 
             <script type="text/javascript">
-                'strict';
+                'use strict';
 
                 function suppressDefaults(form) {
-                    function doSuppress(el) {
-                        var children = el.elements;
+                    function doSuppress(rootElement) {
+                        var suppressed = []
+
+                        var children = rootElement.elements;
 
                         for (var i in children) {
                             var child = children[i];
 
                             if (child.tagName === 'INPUT') {
                                 var defaultValue = child.getAttribute('data-default');
-                                var isDefault = defaultValue !== undefined &&
-                                                defaultValue !== null &&
-                                                child.value === defaultValue;
+                                var suppressSubmission = defaultValue !== undefined &&
+                                                         defaultValue !== null &&
+                                                         child.value === defaultValue &&
+                                                         !child.disabled;
 
-                                if (isDefault) {
+                                if (suppressSubmission) {
                                     child.disabled = true;
+                                    suppressed.push(child);
                                 }
                             }
 
-                            doSuppress(child);
+                            suppressed = suppressed.concat(doSuppress(child));
                         }
+
+                        return suppressed;
                     }
 
-                    doSuppress(form);
+                    var suppressedElements = doSuppress(form);
+
+                    var oldHandler = window.onbeforeunload;
+                    window.onbeforeunload = function () {
+                        try {
+                            for (var i in suppressedElements) {
+                                suppressedElements[i].disabled = false;
+                            }
+                        } finally {
+                            oldHandler.apply(this, arguments);
+                        }
+                    }
                 }
             </script>
 
