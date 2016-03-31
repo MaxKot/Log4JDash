@@ -21,15 +21,15 @@ namespace Log4JDash.Web.Models
         [DefaultValue (DefaultThread)]
         public string Thread { get; set; }
 
-        private static DateTime DefaultMinTime () => DateTime.MinValue;
+        private static readonly DateTime DefaultMinTime = DateTime.MinValue;
 
-        [DefaultValueFactory ("DefaultMinTime")]
+        [DefaultValueSource ("DefaultMinTime")]
         [DisplayFormat (ApplyFormatInEditMode = true, DataFormatString = "{0:O}")]
         public DateTime MinTime { get; set; }
 
-        private static DateTime DefaultMaxTime () => DateTime.MaxValue;
+        private static readonly DateTime DefaultMaxTime = DateTime.MaxValue;
 
-        [DefaultValueFactory ("DefaultMaxTime")]
+        [DefaultValueSource ("DefaultMaxTime")]
         [DisplayFormat (ApplyFormatInEditMode = true, DataFormatString = "{0:O}")]
         public DateTime MaxTime { get; set; }
 
@@ -57,8 +57,8 @@ namespace Log4JDash.Web.Models
             MinLevel = new LogLevelInput ();
             Logger = DefaultLogger;
             Thread = DefaultThread;
-            MinTime = DefaultMinTime ();
-            MaxTime = DefaultMaxTime ();
+            MinTime = DefaultMinTime;
+            MaxTime = DefaultMaxTime;
             Message = DefaultMessage;
             Throwable = DefaultThrowable;
             Quantity = new EventsQuantity ();
@@ -126,11 +126,11 @@ namespace Log4JDash.Web.Models
             {
                 result.Add ("Thread", Thread);
             }
-            if (MinTime > DefaultMinTime ())
+            if (MinTime > DefaultMinTime)
             {
                 result.Add ("MinTime", MinTime);
             }
-            if (MaxTime < DefaultMaxTime ())
+            if (MaxTime < DefaultMaxTime)
             {
                 result.Add ("MaxTime", MaxTime);
             }
