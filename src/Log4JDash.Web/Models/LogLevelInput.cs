@@ -65,11 +65,16 @@ namespace Log4JDash.Web.Models
 
         public RouteValueDictionary GetRouteValues ()
         {
+            return GetRouteValues (null);
+        }
+
+        public RouteValueDictionary GetRouteValues (string memberName)
+        {
             var result = new RouteValueDictionary ();
 
             if (!Level.Equals (Value, DefaultLevels[0]))
             {
-                result.Add ("Value", Value);
+                result.Add (memberName, Value);
             }
 
             return result;

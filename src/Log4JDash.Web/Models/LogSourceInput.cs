@@ -47,11 +47,19 @@ namespace Log4JDash.Web.Models
 
         public RouteValueDictionary GetRouteValues ()
         {
+            return GetRouteValues (null);
+        }
+
+        public RouteValueDictionary GetRouteValues (string memberName)
+        {
+            var prefix = String.IsNullOrWhiteSpace (memberName)
+                ? null
+                : memberName + '.';
             var result = new RouteValueDictionary ();
 
             if (Value != null)
             {
-                result.Add ("Value", Convert.ToString (Value));
+                result.Add (prefix + "Value", Convert.ToString (Value));
             }
 
             return result;
