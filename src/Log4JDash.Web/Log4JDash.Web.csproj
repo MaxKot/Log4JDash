@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\my\css\log.css" />
+    <Content Include="assets\my\js\suppressDefaults.js" />
     <Content Include="assets\reset-css-2.0\reset.css" />
     <Content Include="Global.asax" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
