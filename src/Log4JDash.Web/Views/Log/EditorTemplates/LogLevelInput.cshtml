@@ -24,7 +24,7 @@
         var levelClass = level.ToLowerInvariant ();
         var isSelected = StringComparer.OrdinalIgnoreCase.Equals (Model.Value, level);
         var selected = isSelected
-            ? Html.Raw ("selected=\"selected\"")
+            ? Html.Raw (" selected=\"selected\"")
             : MvcHtmlString.Empty;
         <option value="@level" class="log-item-@levelClass"@selected>@level</option>
     }

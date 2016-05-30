@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Web.Routing;
 
 namespace Log4JDash.Web.Models
 {
+    [TypeConverter (typeof (EventsQuantityConverter))]
     public sealed class EventsQuantity : ICloneable
     {
         public int Value { get; set; }
@@ -50,15 +52,10 @@ namespace Log4JDash.Web.Models
 
         public RouteValueDictionary GetRouteValues (string memberName)
         {
-            var prefix = String.IsNullOrWhiteSpace (memberName)
-                ? null
-                : memberName + '.';
-            var result = new RouteValueDictionary ();
-
-            if (Value != 20)
+            var result = new RouteValueDictionary
             {
-                result.Add (prefix + "Value", Value);
-            }
+                { memberName, Value }
+            };
 
             return result;
         }

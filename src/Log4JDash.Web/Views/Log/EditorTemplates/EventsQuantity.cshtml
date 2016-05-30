@@ -1,21 +1,11 @@
-﻿@model Log4JDash.Web.Models.EventsQuantity
-@functions
-{
-    private SelectListItem Convert (int value, int currentValue)
-    {
-        var valueString = value.ToString ();
-        var result = new SelectListItem
-        {
-            Value = valueString,
-            Text = valueString,
-            Selected = value == currentValue
-        };
-
-        return result;
-    }
-}
+﻿@using System.Globalization
+@using Log4JDash.Web.Mvc
+@model Log4JDash.Web.Models.EventsQuantity
 @{
     Layout = "_Editor.cshtml";
+
+    var id = Html.IdForModel ();
+    var name = Html.NameForModel ();
 
     var value = Model.Value > 0
         ? Model.Value
@@ -30,6 +20,17 @@
         100,
         value
     };
-    var selectListItems = options.Select (v => Convert (v, value));
+
+    var modelMetadata = ViewData.ModelMetadata;
+    var defaultValue = DefaultValueUtil.GetDefaultValue (modelMetadata);
 }
-@Html.DropDownListFor(model => model.Value, selectListItems)
+<select id="@id" name="@name" onchange="SyncSelectClass(this)" @DefaultValueUtil.HtmlAttibute="@defaultValue">
+    @foreach (var q in options)
+    {
+        var isSelected = q == value;
+        var selected = isSelected
+            ? Html.Raw (" selected=\"selected\"")
+            : MvcHtmlString.Empty;
+        <option value="@q.ToString(CultureInfo.InvariantCulture)"@selected>@q</option>
+    }
+</select>

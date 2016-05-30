@@ -50,7 +50,10 @@ namespace Log4JDash.Web.Models
         [DefaultValue (DefaultThrowable)]
         public string Throwable { get; set; }
 
+        private const int DefaultQuantity = 20;
+
         [Display (Name = "")]
+        [DefaultValue (DefaultQuantity)]
         public EventsQuantity Quantity { get; set; }
 
         private const int DefaultOffset = 0;
@@ -68,7 +71,7 @@ namespace Log4JDash.Web.Models
             MaxTime = DefaultMaxTime;
             Message = DefaultMessage;
             Throwable = DefaultThrowable;
-            Quantity = new EventsQuantity ();
+            Quantity = new EventsQuantity (DefaultQuantity);
             Offset = DefaultOffset;
         }
 
@@ -157,7 +160,7 @@ namespace Log4JDash.Web.Models
             {
                 result.Add (prefix + "Throwable", Throwable);
             }
-            if (Quantity != null)
+            if (Quantity != null && Quantity.Value != DefaultQuantity)
             {
                 foreach (var item in Quantity.GetRouteValues ("Quantity"))
                 {
