@@ -7,7 +7,7 @@ function suppressDefaults(form) {
         for (var i in children) {
             var child = children[i];
 
-            if (child.tagName === 'INPUT') {
+            if (child.tagName === 'INPUT' || child.tagName === 'SELECT') {
                 var defaultValue = child.getAttribute('data-default');
                 var suppressSubmission = defaultValue !== undefined &&
                                             defaultValue !== null &&

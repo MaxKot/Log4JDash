@@ -9,6 +9,9 @@ namespace Log4JDash.Web.Models
     {
         public LogSourceInput Source { get; set; }
 
+        private static readonly string DefaultMinLevel = LogLevelInput.DefaultLevels[0];
+
+        [DefaultValueSource ("DefaultMinLevel")]
         public LogLevelInput MinLevel { get; set; }
 
         private const string DefaultLogger = null;
@@ -58,7 +61,7 @@ namespace Log4JDash.Web.Models
         public LogQuery ()
         {
             Source = new LogSourceInput ();
-            MinLevel = new LogLevelInput ();
+            MinLevel = new LogLevelInput (DefaultMinLevel);
             Logger = DefaultLogger;
             Thread = DefaultThread;
             MinTime = DefaultMinTime;
@@ -123,7 +126,7 @@ namespace Log4JDash.Web.Models
                     result.Add (prefix + item.Key, item.Value);
                 }
             }
-            if (MinLevel != null)
+            if (MinLevel != null && MinLevel.Value != DefaultMinLevel)
             {
                 foreach (var item in MinLevel.GetRouteValues ("MinLevel"))
                 {
