@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Web.Mvc;
 
 namespace Log4JDash.Web.Mvc
 {
-    internal sealed class DefaultValueSourceAttribute : MetadataAttributeBase
+    internal sealed class DefaultValueSourceAttribute : Attribute, IMetadataAware
     {
         private static ConcurrentDictionary<Tuple<Type, string>, Func<object>> FactoryCache =
             new ConcurrentDictionary<Tuple<Type, string>, Func<object>> ();
@@ -19,14 +18,13 @@ namespace Log4JDash.Web.Mvc
             sourceName_ = sourceName;
         }
 
-        internal override void GetMetadataForProperty
-            (Func<object> modelAccessor, Type containerType, PropertyDescriptor propertyDescriptor, ModelMetadata result)
+        public void OnMetadataCreated (ModelMetadata metadata)
         {
-            var factoryKey = Tuple.Create (containerType, sourceName_);
+            var factoryKey = Tuple.Create (metadata.ContainerType, sourceName_);
             var factory = FactoryCache.GetOrAdd (factoryKey, CreateFactory);
             var value = factory ();
 
-            result.AdditionalValues.Add (DefaultValueUtil.MetadataKey, value);
+            metadata.AdditionalValues.Add (DefaultValueUtil.MetadataKey, value);
         }
 
         private static Func<object> CreateFactory (Tuple<Type, string> key)

@@ -1,10 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Web.Mvc;
 
 namespace Log4JDash.Web.Mvc
 {
-    internal sealed class DefaultValueAttribute : MetadataAttributeBase
+    internal sealed class DefaultValueAttribute : Attribute, IMetadataAware
     {
         private readonly object value_;
 
@@ -13,10 +12,9 @@ namespace Log4JDash.Web.Mvc
             value_ = value;
         }
 
-        internal override void GetMetadataForProperty
-            (Func<object> modelAccessor, Type containerType, PropertyDescriptor propertyDescriptor, ModelMetadata result)
+        public void OnMetadataCreated (ModelMetadata metadata)
         {
-            result.AdditionalValues.Add (DefaultValueUtil.MetadataKey, value_);
+            metadata.AdditionalValues.Add (DefaultValueUtil.MetadataKey, value_);
         }
     }
 }
