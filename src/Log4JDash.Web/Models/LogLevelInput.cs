@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Web.Mvc;
 using System.Web.Routing;
 using Log4JParserNet;
 
 namespace Log4JDash.Web.Models
 {
     [TypeConverter (typeof (LogLevelInputConverter))]
+    [Bind (Exclude = "Levels")]
     public sealed class LogLevelInput : ICloneable
     {
-        private static readonly string[] DefaultLevels = new[]
+        public static readonly string[] DefaultLevels = new[]
         {
             Level.Debug,
             Level.Info,
@@ -65,12 +67,15 @@ namespace Log4JDash.Web.Models
 
         public RouteValueDictionary GetRouteValues ()
         {
-            var result = new RouteValueDictionary ();
+            return GetRouteValues (null);
+        }
 
-            if (!Level.Equals (Value, DefaultLevels[0]))
+        public RouteValueDictionary GetRouteValues (string memberName)
+        {
+            var result = new RouteValueDictionary
             {
-                result.Add ("Value", Value);
-            }
+                { memberName, Value }
+            };
 
             return result;
         }

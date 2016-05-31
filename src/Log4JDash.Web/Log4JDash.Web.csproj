@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\my\css\log.css" />
+    <Content Include="assets\my\js\suppressDefaults.js" />
     <Content Include="assets\reset-css-2.0\reset.css" />
     <Content Include="Global.asax" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
@@ -113,7 +114,12 @@
     <Compile Include="Domain\LogSourceProvider.cs" />
     <Compile Include="Domain\LogSourceProviderSection.cs" />
     <Compile Include="Domain\RegexConverter.cs" />
+    <Compile Include="Models\EventsQuantityConverter.cs" />
+    <Compile Include="Models\LogSourceInputConverter.cs" />
     <Compile Include="Mvc\ConfigurableRequireHttpsAttribute.cs" />
+    <Compile Include="Mvc\DefaultValueAttribute.cs" />
+    <Compile Include="Mvc\DefaultValueSourceAttribute.cs" />
+    <Compile Include="Mvc\DefaultValueUtil.cs" />
     <Compile Include="Mvc\IRequireHttpsConfig.cs" />
     <Compile Include="Mvc\RequireHttpsSection.cs" />
     <Compile Include="Models\EventsCollection.cs" />

@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace Log4JDash.Web.Models
 {
+    [TypeConverter (typeof (LogSourceInputConverter))]
+    [Bind (Exclude = "Sources")]
     public sealed class LogSourceInput : ICloneable
     {
         public LogSourceModel Value { get; set; }
@@ -47,11 +51,16 @@ namespace Log4JDash.Web.Models
 
         public RouteValueDictionary GetRouteValues ()
         {
+            return GetRouteValues (null);
+        }
+
+        public RouteValueDictionary GetRouteValues (string memberName)
+        {
             var result = new RouteValueDictionary ();
 
             if (Value != null)
             {
-                result.Add ("Value", Convert.ToString (Value));
+                result.Add (memberName, Convert.ToString (Value));
             }
 
             return result;

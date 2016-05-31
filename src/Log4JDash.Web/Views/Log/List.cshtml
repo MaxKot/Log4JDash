@@ -35,7 +35,7 @@
                 }
             </h1>
 
-            @using (Html.BeginForm (null, null, FormMethod.Get, new { @class = "log-query" }))
+            @using (Html.BeginForm (null, null, FormMethod.Get, new { @class = "log-query", onsubmit = "suppressDefaults(this);" }))
             {
                 <div>
                     @Html.EditorFor(model => model.Query, null, String.Empty)
@@ -82,5 +82,7 @@
                 <div>Empty!</div>
             }
         </main>
+
+        <script type="text/javascript" src="@Url.Content("~/assets/my/js/suppressDefaults.js")"></script>
     </body>
 </html>

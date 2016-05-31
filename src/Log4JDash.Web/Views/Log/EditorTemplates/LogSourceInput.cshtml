@@ -3,8 +3,8 @@
 <div class="editor log-query-source">
     <div class="editor-input">
         @{
-            var selectId = Html.IdFor (model => model.Value);
-            var selectName = Html.NameFor (model => model.Value);
+            var selectId = Html.IdForModel ();
+            var selectName = Html.NameForModel ();
         }
         <select id="@selectId" name="@selectName">
             @foreach (var source in Model.Sources)
