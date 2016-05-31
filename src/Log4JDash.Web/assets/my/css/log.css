@@ -170,13 +170,13 @@ label[for^='log-item-collapsed'] .log-item-collapsed-open,
     background-color: #dddddd;
 }
 .log-item-info {
-    background-color: #bbffbb;
+    background-color: #ccffcc;
 }
 .log-item-warn {
-    background-color: #ffffbb;
+    background-color: #ffffcc;
 }
 .log-item-error {
-    background-color: #ffbbbb;
+    background-color: #ffcccc;
 }
 .log-item-fatal {
     background-color: #444;
