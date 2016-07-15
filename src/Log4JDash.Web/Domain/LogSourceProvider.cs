@@ -29,7 +29,27 @@ namespace Log4JDash.Web.Domain
                 var directoryPath = !Path.IsPathRooted (directory.DirectoryPath)
                     ? Path.Combine (HostingEnvironment.MapPath ("~"), directory.DirectoryPath)
                     : directory.DirectoryPath;
-                var files = Directory.GetFiles (directoryPath);
+                string[] files;
+                try
+                {
+                    files = Directory.GetFiles (directoryPath);
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    files = new string[0];
+                }
+                catch (PathTooLongException)
+                {
+                    files = new string[0];
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    files = new string[0];
+                }
+                catch (IOException)
+                {
+                    files = new string[0];
+                }
                 foreach (var fullPath in files)
                 {
                     if (directory.FilenamePattern.IsMatch (fullPath))

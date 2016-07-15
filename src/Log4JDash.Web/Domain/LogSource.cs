@@ -4,8 +4,7 @@ namespace Log4JDash.Web.Domain
 {
     internal sealed class LogSource
     {
-        public string Name
-        { get; }
+        public string Name { get; }
 
         private readonly string file_;
 
