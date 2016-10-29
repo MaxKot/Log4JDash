@@ -751,5 +751,53 @@ namespace Log4JParserNet.Tests
                 Assert.That (actual, Is.EqualTo (expected));
             }
         }
+
+        private const string SampleEscapedCData = @"<log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1"">
+    <log4j:message><![CDATA[<nestedXml><![CDATA[Nested CDATA]]>]]<![CDATA[></nestedXml>]]></log4j:message>
+    <log4j:properties>
+        <log4j:data name=""log4jmachinename"" value=""EXAMPLE_PC"" />
+        <log4j:data name=""log4japp"" value=""LogGenerator.exe"" />
+        <log4j:data name=""log4net:Identity"" value="""" />
+        <log4j:data name=""log4net:UserName"" value=""EXAMPLE_PC\Dev"" />
+        <log4j:data name=""log4net:HostName"" value=""EXAMPLE_PC"" />
+    </log4j:properties>
+    <log4j:throwable><![CDATA[System.FormatException: An error is present.]]></log4j:throwable>
+</log4j:event>";
+
+        private static readonly byte[] sampleEscapedCDataBytes = Encoding.GetEncoding (1251).GetBytes (SampleEscapedCData);
+
+        [Test]
+        public void HandlesEscapedCDataNodes ()
+        {
+            var expected = new[]
+            {
+                new EventExpectation
+                {
+                    Level = Level.Info,
+                    Logger = "Root.ChildA.LoggerA2",
+                    Thread = "Thread-1",
+                    Timestamp = 1411231353782L,
+                    Message = "<nestedXml><![CDATA[Nested CDATA]]></nestedXml>",
+                    Throwable = "System.FormatException: An error is present.",
+                    Properties =
+                    {
+                        { "log4jmachinename", "EXAMPLE_PC" },
+                        { "log4japp", "LogGenerator.exe" },
+                        { "log4net:Identity", "" },
+                        { "log4net:UserName", "EXAMPLE_PC\\Dev" },
+                        { "log4net:HostName", "EXAMPLE_PC" }
+                    },
+                    Id = 0
+                }
+            };
+
+            using (var source = new MemoryStream (sampleEscapedCDataBytes))
+            using (var subject = Log4JFile.Create (source))
+            {
+                subject.Encoding = Encoding.GetEncoding (1251);
+                var actual = subject.GetEvents ();
+                Assert.That (actual, Is.EqualTo (expected));
+            }
+        }
     }
 }

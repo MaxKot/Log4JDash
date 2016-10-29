@@ -44,33 +44,33 @@ const char AttrDataValue_[] = "value";
 const size_t AttrDataValueSize_ = sizeof AttrDataValue_ / sizeof AttrDataValue_[0] - 1U;
 
 static void GetAttributeValue_ (const rapidxml::xml_attribute<char> *source, const char **value, size_t *size);
-static void GetNodeValue_ (const rapidxml::xml_node<char> *source, const char **value, size_t *size);
+static void GetNodeValue_ (rapidxml::xml_node<char> *source, const char **value, size_t *size);
 static int64_t ParseTimestamp_ (const char *value, const size_t valueSize);
 
 LOG4JPARSERC_API void __cdecl Log4JEventLevel (const Log4JEvent log4JEvent, const char **value, size_t *size)
 {
-    auto node = (rapidxml::xml_node<char> *) log4JEvent;
+    auto node = (const rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_attribute (AttrLevel_, AttrLevelSize_);
     GetAttributeValue_ (xml, value, size);
 }
 
 LOG4JPARSERC_API void __cdecl Log4JEventLogger (const Log4JEvent log4JEvent, const char **value, size_t *size)
 {
-    auto node = (rapidxml::xml_node<char> *) log4JEvent;
+    auto node = (const rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_attribute (AttrLogger_, AttrLoggerSize_);
     GetAttributeValue_ (xml, value, size);
 }
 
 LOG4JPARSERC_API void __cdecl Log4JEventThread (const Log4JEvent log4JEvent, const char **value, size_t *size)
 {
-    auto node = (rapidxml::xml_node<char> *) log4JEvent;
+    auto node = (const rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_attribute (AttrThread_, AttrThreadSize_);
     GetAttributeValue_ (xml, value, size);
 }
 
 LOG4JPARSERC_API int64_t __cdecl Log4JEventTimestamp (const Log4JEvent log4JEvent)
 {
-    auto node = (rapidxml::xml_node<char> *) log4JEvent;
+    auto node = (const rapidxml::xml_node<char> *) log4JEvent;
     auto xml = node->first_attribute (AttrTimestamp_, AttrTimestampSize_);
     auto result = ParseTimestamp_ (xml->value (), xml->value_size ());
 
@@ -145,23 +145,52 @@ void GetAttributeValue_ (const rapidxml::xml_attribute<char> *source, const char
     }
 }
 
-void GetNodeValue_ (const rapidxml::xml_node<char> *source, const char **value, size_t *size)
+void GetNodeValue_ (rapidxml::xml_node<char> *source, const char **value, size_t *size)
 {
     if (source)
     {
         auto firstChild = source->first_node ();
-        auto isCDataContainer = firstChild &&
-                                !firstChild->next_sibling () &&
-                                firstChild->type () == rapidxml::node_type::node_cdata;
-        if (isCDataContainer)
+        if (!firstChild)
+        {
+            *value = source->value ();
+            *size = source->value_size ();
+        }
+        else if (firstChild == source->last_node ())
         {
             *value = firstChild->value ();
             *size = firstChild->value_size ();
         }
         else
         {
-            *value = source->value ();
-            *size = source->value_size ();
+            auto bufferLength = 0U;
+            for (auto node = firstChild; node; node = node->next_sibling ())
+            {
+                bufferLength += node->value_size ();
+            }
+
+            auto bufferSize = bufferLength + 1;
+            auto buffer = source->document ()->allocate_string (nullptr, bufferSize);
+            buffer[bufferSize - 1] = '\0';
+
+            auto concatHead = buffer;
+            auto bufferFreeSize = bufferSize;
+            for (auto node = firstChild; node; node = node->next_sibling ())
+            {
+                auto nodeValue = node->value ();
+                auto nodeValueSize = node->value_size ();
+
+                strncpy_s (concatHead, bufferFreeSize, nodeValue, nodeValueSize);
+                auto copied = min (bufferFreeSize, nodeValueSize);
+
+                bufferFreeSize -= copied;
+                concatHead += copied;
+            }
+
+            source->remove_all_nodes ();
+            source->value (buffer, bufferLength);
+
+            *value = buffer;
+            *size = bufferLength;
         }
     }
     else
