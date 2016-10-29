@@ -30,7 +30,7 @@ namespace Log4JParserNet.Tests
             var expected = new DateTime (2014, 09, 20, 20, 42, 51, 554, DateTimeKind.Local);
             var sample = GetLog4NetTimestamp (expected);
 
-            var actual = Timestamp.ToDateTime (sample);
+            var actual = Timestamp.ToDateTime (sample).ToLocalTime ();
 
             Assert.That (actual, Is.EqualTo (expected));
         }
