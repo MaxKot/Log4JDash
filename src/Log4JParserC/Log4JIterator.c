@@ -153,13 +153,13 @@ const Log4JEvent Log4JIteratorEventSourceBaseCurrent_ (const void *context, size
     {
         size_t sizeDump;
 
-        const char *currentMessage;
-        Log4JEventMessage (contextD->Current, &currentMessage, &sizeDump);
+        const char *currentLogger;
+        Log4JEventLogger (contextD->Current, &currentLogger, &sizeDump);
 
-        const char *firstMessage;
-        Log4JEventMessage(contextD->First, &firstMessage, &sizeDump);
+        const char *firstLogger;
+        Log4JEventLogger (contextD->First, &firstLogger, &sizeDump);
 
-        *id = currentMessage - firstMessage;
+        *id = currentLogger - firstLogger;
     }
 
     return contextD->Current;

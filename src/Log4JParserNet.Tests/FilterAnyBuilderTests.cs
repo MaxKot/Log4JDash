@@ -40,7 +40,7 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#2. Test event B.",
                     Throwable = null,
-                    Id = 202
+                    Id = 201
                 },
                 new EventExpectation
                 {
@@ -50,7 +50,7 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#3. Test event C. С кирилицей.",
                     Throwable = null,
-                    Id = 404
+                    Id = 403
                 }
             };
 

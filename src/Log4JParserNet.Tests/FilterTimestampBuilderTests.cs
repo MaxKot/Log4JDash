@@ -31,7 +31,7 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#2. Test event B.",
                     Throwable = null,
-                    Id = 165
+                    Id = 164
                 },
                 new EventExpectation
                 {
@@ -41,7 +41,7 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#3. Test event C. С кирилицей.",
                     Throwable = null,
-                    Id = 330
+                    Id = 329
                 },
                 new EventExpectation
                 {
@@ -61,7 +61,7 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353795L,
                     Message = "#5. Test event F.",
                     Throwable = null,
-                    Id = 672
+                    Id = 671
                 }
             };
 
@@ -100,7 +100,7 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#2. Test event B.",
                     Throwable = null,
-                    Id = 165
+                    Id = 164
                 },
                 new EventExpectation
                 {
@@ -110,7 +110,7 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#3. Test event C. С кирилицей.",
                     Throwable = null,
-                    Id = 330
+                    Id = 329
                 }
             };
 
@@ -139,7 +139,7 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#2. Test event B.",
                     Throwable = null,
-                    Id = 165
+                    Id = 164
                 },
                 new EventExpectation
                 {
@@ -149,7 +149,7 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#3. Test event C. С кирилицей.",
                     Throwable = null,
-                    Id = 330
+                    Id = 329
                 },
                 new EventExpectation
                 {

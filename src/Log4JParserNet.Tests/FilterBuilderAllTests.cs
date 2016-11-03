@@ -31,7 +31,7 @@ namespace Log4JParserNet.Tests
                     Timestamp = 1411231353792L,
                     Message = "#2. Test event B.",
                     Throwable = null,
-                    Id = 165
+                    Id = 164
                 }
             };
 
