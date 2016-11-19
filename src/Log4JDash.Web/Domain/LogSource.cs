@@ -10,10 +10,13 @@ namespace Log4JDash.Web.Domain
 
         private readonly string file_;
 
-        public LogSource (string name, string file)
+        private readonly Encoding encoding_;
+
+        public LogSource (string name, string file, Encoding encoding)
         {
             Name = name;
             file_ = file;
+            encoding_ = encoding;
         }
 
         public Log4JFile Open (long? maxSize = null)
@@ -24,7 +27,7 @@ namespace Log4JDash.Web.Domain
                 try
                 {
                     logFile = Log4JFile.Create (sourceStream, maxSize);
-                    logFile.Encoding = Encoding.GetEncoding (1251);
+                    logFile.Encoding = encoding_;
 
                     return logFile;
                 }

@@ -55,7 +55,7 @@ namespace Log4JDash.Web.Domain
                     if (directory.FilenamePattern.IsMatch (fullPath))
                     {
                         var fileId = GetFileId (directory, fullPath);
-                        var source = new LogSource (fileId, fullPath);
+                        var source = new LogSource (fileId, fullPath, directory.Encoding);
 
                         result.Add (fileId, source);
                     }

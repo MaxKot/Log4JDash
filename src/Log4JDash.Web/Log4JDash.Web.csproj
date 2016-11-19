@@ -113,6 +113,7 @@
     <Compile Include="Domain\LogSource.cs" />
     <Compile Include="Domain\LogSourceProvider.cs" />
     <Compile Include="Domain\LogSourceProviderSection.cs" />
+    <Compile Include="Domain\EncodingConverter.cs" />
     <Compile Include="Domain\RegexConverter.cs" />
     <Compile Include="Models\EventsQuantityConverter.cs" />
     <Compile Include="Models\LogSourceInputConverter.cs" />
