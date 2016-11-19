@@ -10,10 +10,7 @@ namespace Log4JParserNet
         {
             get
             {
-                if (disposedValue_)
-                {
-                    throw new ObjectDisposedException ("FilterBase");
-                }
+                GuardState ();
                 return impl_;
             }
         }
@@ -25,10 +22,7 @@ namespace Log4JParserNet
 
         public bool Apply (Event @event)
         {
-            if (disposedValue_)
-            {
-                throw new ObjectDisposedException ("FilterBase");
-            }
+            GuardState ();
             return Log4JParserC.Log4JFilterApply (impl_, @event.Handle);
         }
 
@@ -52,6 +46,14 @@ namespace Log4JParserNet
         public void Dispose ()
         {
             Dispose (true);
+        }
+
+        private void GuardState ()
+        {
+            if (disposedValue_)
+            {
+                throw new ObjectDisposedException ("FilterBase");
+            }
         }
 
         #endregion

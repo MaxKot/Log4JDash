@@ -40,20 +40,14 @@ namespace Log4JParserNet
 
         public bool MoveNext ()
         {
-            if (disposedValue_ || impl_.IsInvalid || impl_.IsClosed)
-            {
-                throw new ObjectDisposedException ("IteratorBase");
-            }
+            GuardState ();
             var result = Log4JParserC.Log4JIteratorMoveNext (impl_);
             return result;
         }
 
         public void Reset ()
         {
-            if (disposedValue_ || impl_.IsInvalid || impl_.IsClosed)
-            {
-                throw new ObjectDisposedException ("IteratorBase");
-            }
+            GuardState ();
             throw new NotSupportedException ();
         }
 
@@ -61,10 +55,7 @@ namespace Log4JParserNet
         {
             get
             {
-                if (disposedValue_ || impl_.IsInvalid || impl_.IsClosed)
-                {
-                    throw new ObjectDisposedException ("IteratorBase");
-                }
+                GuardState ();
                 UIntPtr id;
                 var handle = Log4JParserC.Log4JIteratorCurrent (impl_, out id);
                 return new Event (handle, id.ToUInt64 (), owner_);
@@ -96,6 +87,14 @@ namespace Log4JParserNet
         public void Dispose ()
         {
             Dispose (true);
+        }
+
+        private void GuardState ()
+        {
+            if (disposedValue_ || impl_.IsInvalid || impl_.IsClosed)
+            {
+                throw new ObjectDisposedException ("IteratorBase");
+            }
         }
 
         #endregion
