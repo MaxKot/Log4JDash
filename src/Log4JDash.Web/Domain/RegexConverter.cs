@@ -55,7 +55,7 @@ namespace Log4JDash.Web.Domain
                 var regex = (Regex) value;
                 return regex.ToString ();
             }
-            if (destinationType == typeof (InstanceDescriptor) && value is CultureInfo)
+            if (destinationType == typeof (InstanceDescriptor) && value is Regex)
             {
                 var regex = (Regex) value;
                 var ctor = typeof (Regex).GetConstructor (new[] { typeof (string) });
