@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Configuration;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Log4JDash.Web.Domain
@@ -50,6 +51,22 @@ namespace Log4JDash.Web.Domain
         {
             get { return (Regex) base[FilenamePatternAttribute]; }
             set { base[FilenamePatternAttribute] = value; }
+        }
+
+        #endregion
+
+        #region Encoding
+
+        /// <summary>The name of the configuration tag attribute defining <see cref="Encoding" />.</summary>
+        private const string EncodingAttribute = "encoding";
+
+        /// <inheritdoc />
+        [ConfigurationProperty (EncodingAttribute, IsRequired = false, DefaultValue = "ASCII")]
+        [TypeConverter (typeof (EncodingConverter))]
+        public Encoding Encoding
+        {
+            get { return (Encoding) base[EncodingAttribute]; }
+            set { base[EncodingAttribute] = value; }
         }
 
         #endregion

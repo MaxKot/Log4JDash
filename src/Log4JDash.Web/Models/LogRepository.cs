@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Log4JDash.Web.Configuration;
 using Log4JDash.Web.Domain;
 using Log4JParserNet;
@@ -41,12 +40,9 @@ namespace Log4JDash.Web.Models
             var sourceModel = query.Source.Value;
             var source = logSourceProvider_.GetSource (sourceModel?.Id);
 
-            using (var sourceStream = source.Open ())
-            using (var logFile = Log4JFile.Create (sourceStream, sourceModel?.Size))
+            using (var logFile = source.Open (sourceModel?.Size))
             using (var filters = new List<FilterBase> ().ToDisposable ())
             {
-                logFile.Encoding = Encoding.GetEncoding (1251);
-
                 if (query.MinLevel.Value != Level.Debug)
                 {
                     AddFilter (filters, () => new FilterLevel (query.MinLevel.Value, Level.MaxValue));

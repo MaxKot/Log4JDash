@@ -115,7 +115,20 @@ namespace Log4JParserNet
 
         private readonly EventSourceHandle impl_;
 
-        public Encoding Encoding { get; set; }
+        private Encoding encoding_;
+
+        public Encoding Encoding
+        {
+            get { return encoding_; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException (nameof (value));
+                }
+                encoding_ = value;
+            }
+        }
 
         public static Log4JFile Create (string fileName, long? maxSize = null)
         {

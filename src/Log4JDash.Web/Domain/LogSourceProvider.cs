@@ -20,9 +20,9 @@ namespace Log4JDash.Web.Domain
             config_ = config;
         }
 
-        private IReadOnlyDictionary<string, string> DoGetSources ()
+        private IReadOnlyDictionary<string, LogSource> DoGetSources ()
         {
-            var result = new Dictionary<string, string> ();
+            var result = new Dictionary<string, LogSource> ();
 
             foreach (var directory in config_.Directories)
             {
@@ -55,7 +55,9 @@ namespace Log4JDash.Web.Domain
                     if (directory.FilenamePattern.IsMatch (fullPath))
                     {
                         var fileId = GetFileId (directory, fullPath);
-                        result.Add (fileId, fullPath);
+                        var source = new LogSource (fileId, fullPath, directory.Encoding);
+
+                        result.Add (fileId, source);
                     }
                 }
             }
@@ -81,17 +83,14 @@ namespace Log4JDash.Web.Domain
                 ? GetSources ().First ()
                 : sourceId;
 
-            string file;
             try
             {
-                file = sources[key];
+                return sources[key];
             }
             catch (KeyNotFoundException ex)
             {
                 throw new ArgumentOutOfRangeException ("Invalid log source.", ex);
             }
-
-            return new LogSource (key, file);
         }
     }
 }

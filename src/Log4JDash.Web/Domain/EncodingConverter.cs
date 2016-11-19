@@ -2,11 +2,13 @@
 using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
 using System.Globalization;
+using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Log4JDash.Web.Domain
 {
-    public class RegexConverter : TypeConverter
+    public class EncodingConverter : TypeConverter
     {
         /// <inheritdoc />
         public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
@@ -34,9 +36,8 @@ namespace Log4JDash.Web.Domain
         {
             if (value is string)
             {
-                var text = (string) value;
-
-                return new Regex (text);
+                var name = (string) value;
+                return Encoding.GetEncoding (name);
             }
 
             return base.ConvertFrom (context, culture, value);
@@ -50,18 +51,18 @@ namespace Log4JDash.Web.Domain
                 throw new ArgumentNullException ("destinationType");
             }
 
-            if (destinationType == typeof (string) && value is Regex)
+            if (destinationType == typeof (string) && value is Encoding)
             {
-                var regex = (Regex) value;
-                return regex.ToString ();
+                var encoding = (Encoding) value;
+                return encoding.WebName;
             }
-            if (destinationType == typeof (InstanceDescriptor) && value is Regex)
+            if (destinationType == typeof (InstanceDescriptor) && value is Encoding)
             {
-                var regex = (Regex) value;
-                var ctor = typeof (Regex).GetConstructor (new[] { typeof (string) });
+                var encoding = (Encoding) value;
+                var ctor = typeof (Encoding).GetMethod ("GetEncoding", new[] { typeof (string) });
                 if (ctor != null)
                 {
-                    return new InstanceDescriptor (ctor, new object[] { regex.ToString () });
+                    return new InstanceDescriptor (ctor, new object[] { encoding.WebName });
                 }
             }
 
