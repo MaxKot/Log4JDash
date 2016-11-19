@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Text;
+using Log4JParserNet;
 
 namespace Log4JDash.Web.Domain
 {
@@ -14,9 +16,24 @@ namespace Log4JDash.Web.Domain
             file_ = file;
         }
 
-        public Stream Open ()
+        public Log4JFile Open (long? maxSize = null)
         {
-            return new FileStream (file_, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using (var sourceStream = new FileStream (file_, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                Log4JFile logFile = null;
+                try
+                {
+                    logFile = Log4JFile.Create (sourceStream, maxSize);
+                    logFile.Encoding = Encoding.GetEncoding (1251);
+
+                    return logFile;
+                }
+                catch
+                {
+                    logFile?.Dispose ();
+                    throw;
+                }
+            }
         }
     }
 }
