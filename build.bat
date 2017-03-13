@@ -1,3 +1,4 @@
+@setlocal
 @echo off
 for %%f in (
     "%VS150COMNTOOLS%VsMSBuildCmd.bat"
@@ -35,3 +36,4 @@ if "%platform%" equ "" (
 )
 
 msbuild %~dp0\src\build.proj /t:Build /p:Platform=%platform%
+@endlocal
