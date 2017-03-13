@@ -34,4 +34,4 @@ if "%platform%" equ "" (
     set platform=Win32
 )
 
-msbuild src\build.proj /t:Build /p:Platform=%platform%
+msbuild %~dp0\src\build.proj /t:Build /p:Platform=%platform%
