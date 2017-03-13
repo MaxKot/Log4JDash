@@ -1,5 +1,12 @@
 @echo off
 for %%f in (
+    "%VS150COMNTOOLS%VsMSBuildCmd.bat"
+    "%ProgramFiles%\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles%\Microsoft Visual Studio\2017\Professional\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles%\Microsoft Visual Studio\2017\Community\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Professional\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\Common7\Tools\VsMSBuildCmd.bat"
     "%VS140COMNTOOLS%VsMSBuildCmd.bat"
     "%ProgramFiles%\Microsoft Visual Studio 14.0\Common7\Tools\VsMSBuildCmd.bat"
     "%ProgramFiles(x86)%\Microsoft Visual Studio 14.0\Common7\Tools\VsMSBuildCmd.bat"
