@@ -31,7 +31,8 @@ src/*.sdf
 src/*.VC.opendb
 src/*.VC.db
 src/*.ide
-src/.vs/**/*.cache
+.vs
+src/.vs
 
 # Other
 *.suo

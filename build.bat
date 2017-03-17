@@ -1,5 +1,13 @@
+@setlocal
 @echo off
 for %%f in (
+    "%VS150COMNTOOLS%VsMSBuildCmd.bat"
+    "%ProgramFiles%\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles%\Microsoft Visual Studio\2017\Professional\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles%\Microsoft Visual Studio\2017\Community\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Professional\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\Common7\Tools\VsMSBuildCmd.bat"
     "%VS140COMNTOOLS%VsMSBuildCmd.bat"
     "%ProgramFiles%\Microsoft Visual Studio 14.0\Common7\Tools\VsMSBuildCmd.bat"
     "%ProgramFiles(x86)%\Microsoft Visual Studio 14.0\Common7\Tools\VsMSBuildCmd.bat"
@@ -27,4 +35,5 @@ if "%platform%" equ "" (
     set platform=Win32
 )
 
-msbuild src\build.proj /t:Build /p:Platform=%platform%
+msbuild %~dp0\src\build.proj /t:Build /p:Platform=%platform%
+@endlocal

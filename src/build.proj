@@ -47,32 +47,127 @@
   -->
 
   <PropertyGroup>
-    <_RegKeyWinSdk80>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v8.0A@InstallationFolder)</_RegKeyWinSdk80>
+    <_RegKeyWinSdk80Wow64>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\Windows\v8.0@InstallationFolder)</_RegKeyWinSdk80Wow64>
+    <_AspNetMergeWinSdk80Wow64 Condition="'$(_RegKeyWinSdk80Wow64)' != ''">$([System.IO.Path]::Combine('$(_RegKeyWinSdk80Wow64)', 'bin\NETFX 4.0 Tools\aspnet_merge.exe'))</_AspNetMergeWinSdk80Wow64>
+    <_RegKeyWinSdk80>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v8.0@InstallationFolder)</_RegKeyWinSdk80>
     <_AspNetMergeWinSdk80 Condition="'$(_RegKeyWinSdk80)' != ''">$([System.IO.Path]::Combine('$(_RegKeyWinSdk80)', 'bin\NETFX 4.0 Tools\aspnet_merge.exe'))</_AspNetMergeWinSdk80>
 
+    <_RegKeyWinSdk80AWow64>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\Windows\v8.0A@InstallationFolder)</_RegKeyWinSdk80AWow64>
+    <_AspNetMergeWinSdk80AWow64 Condition="'$(_RegKeyWinSdk80AWow64)' != ''">$([System.IO.Path]::Combine('$(_RegKeyWinSdk80AWow64)', 'bin\NETFX 4.0 Tools\aspnet_merge.exe'))</_AspNetMergeWinSdk80AWow64>
+    <_RegKeyWinSdk80A>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v8.0A@InstallationFolder)</_RegKeyWinSdk80A>
+    <_AspNetMergeWinSdk80A Condition="'$(_RegKeyWinSdk80A)' != ''">$([System.IO.Path]::Combine('$(_RegKeyWinSdk80A)', 'bin\NETFX 4.0 Tools\aspnet_merge.exe'))</_AspNetMergeWinSdk80A>
+
+    <_RegKeyWinSdk81Wow64>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\Windows\v8.1@InstallationFolder)</_RegKeyWinSdk81Wow64>
+    <_AspNetMergeWinSdk81Wow64 Condition="'$(_RegKeyWinSdk81Wow64)' != ''">$([System.IO.Path]::Combine('$(_RegKeyWinSdk81Wow64)', 'bin\NETFX 4.5.1 Tools\aspnet_merge.exe'))</_AspNetMergeWinSdk81Wow64>
     <_RegKeyWinSdk81>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v8.1A@InstallationFolder)</_RegKeyWinSdk81>
     <_AspNetMergeWinSdk81 Condition="'$(_RegKeyWinSdk81)' != ''">$([System.IO.Path]::Combine('$(_RegKeyWinSdk81)', 'bin\NETFX 4.5.1 Tools\aspnet_merge.exe'))</_AspNetMergeWinSdk81>
 
-    <_RegKeyNetFxSdk46>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\NETFXSDK\4.6@InstallationFolder)</_RegKeyNetFxSdk46>
+    <_RegKeyWinSdk81AWow64>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\Windows\v8.1A@InstallationFolder)</_RegKeyWinSdk81AWow64>
+    <_AspNetMergeWinSdk81AWow64 Condition="'$(_RegKeyWinSdk81AWow64)' != ''">$([System.IO.Path]::Combine('$(_RegKeyWinSdk81AWow64)', 'bin\NETFX 4.5.1 Tools\aspnet_merge.exe'))</_AspNetMergeWinSdk81AWow64>
+    <_RegKeyWinSdk81A>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v8.1A@InstallationFolder)</_RegKeyWinSdk81A>
+    <_AspNetMergeWinSdk81A Condition="'$(_RegKeyWinSdk81A)' != ''">$([System.IO.Path]::Combine('$(_RegKeyWinSdk81A)', 'bin\NETFX 4.5.1 Tools\aspnet_merge.exe'))</_AspNetMergeWinSdk81A>
+
+    <_RegKeyNetFxSdk46Wow64>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\NETFXSDK\4.6@InstallationFolder)</_RegKeyNetFxSdk46Wow64>
+    <_AspNetMergeNetFxSdk46Wow64 Condition="'$(_RegKeyNetFxSdk46Wow64)' != ''">$([System.IO.Path]::Combine('$(_RegKeyNetFxSdk46Wow64)', 'bin\NETFX 4.6 Tools\aspnet_merge.exe'))</_AspNetMergeNetFxSdk46Wow64>
+    <_RegKeyNetFxSdk46>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\NETFXSDK\4.6@InstallationFolder)</_RegKeyNetFxSdk46>
     <_AspNetMergeNetFxSdk46 Condition="'$(_RegKeyNetFxSdk46)' != ''">$([System.IO.Path]::Combine('$(_RegKeyNetFxSdk46)', 'bin\NETFX 4.6 Tools\aspnet_merge.exe'))</_AspNetMergeNetFxSdk46>
+
+    <_RegKeyNetFxSdk461Wow64>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\NETFXSDK\4.6.1@InstallationFolder)</_RegKeyNetFxSdk461Wow64>
+    <_AspNetMergeNetFxSdk461Wow64 Condition="'$(_RegKeyNetFxSdk461Wow64)' != ''">$([System.IO.Path]::Combine('$(_RegKeyNetFxSdk461Wow64)', 'bin\NETFX 4.6.1 Tools\aspnet_merge.exe'))</_AspNetMergeNetFxSdk461Wow64>
+    <_RegKeyNetFxSdk461>$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\NETFXSDK\4.6.1@InstallationFolder)</_RegKeyNetFxSdk461>
+    <_AspNetMergeNetFxSdk461 Condition="'$(_RegKeyNetFxSdk461)' != ''">$([System.IO.Path]::Combine('$(_RegKeyNetFxSdk461)', 'bin\NETFX 4.6.1 Tools\aspnet_merge.exe'))</_AspNetMergeNetFxSdk461>
   </PropertyGroup>
   <Choose>
-    <When Condition="'$(_AspNetMergeNetFxSdk46)' != ''">
+    <When Condition="exists('$(_AspNetMergeNetFxSdk461)')">
+      <PropertyGroup>
+        <AspNetMerge>$(_AspNetMergeNetFxSdk461)</AspNetMerge>
+      </PropertyGroup>
+    </When>
+    <When Condition="exists('$(_AspNetMergeNetFxSdk461Wow64)')">
+      <PropertyGroup>
+        <AspNetMerge>$(_AspNetMergeNetFxSdk461Wow64)</AspNetMerge>
+      </PropertyGroup>
+    </When>
+    <When Condition="exists('$(_AspNetMergeNetFxSdk46)')">
       <PropertyGroup>
         <AspNetMerge>$(_AspNetMergeNetFxSdk46)</AspNetMerge>
       </PropertyGroup>
     </When>
-    <When Condition="'$(_AspNetMergeWinSdk81)' != ''">
+    <When Condition="exists('$(_AspNetMergeNetFxSdk46Wow64)')">
+      <PropertyGroup>
+        <AspNetMerge>$(_AspNetMergeNetFxSdk46Wow64)</AspNetMerge>
+      </PropertyGroup>
+    </When>
+    <When Condition="exists('$(_AspNetMergeWinSdk81A)')">
+      <PropertyGroup>
+        <AspNetMerge>$(_AspNetMergeWinSdk81A)</AspNetMerge>
+      </PropertyGroup>
+    </When>
+    <When Condition="exists('$(_AspNetMergeWinSdk81AWow64)')">
+      <PropertyGroup>
+        <AspNetMerge>$(_AspNetMergeWinSdk81AWow64)</AspNetMerge>
+      </PropertyGroup>
+    </When>
+    <When Condition="exists('$(_AspNetMergeWinSdk81)')">
       <PropertyGroup>
         <AspNetMerge>$(_AspNetMergeWinSdk81)</AspNetMerge>
       </PropertyGroup>
     </When>
-    <When Condition="'$(_AspNetMergeWinSdk80)' != ''">
+    <When Condition="exists('$(_AspNetMergeWinSdk81Wow64)')">
+      <PropertyGroup>
+        <AspNetMerge>$(_AspNetMergeWinSdk81Wow64)</AspNetMerge>
+      </PropertyGroup>
+    </When>
+    <When Condition="exists('$(_AspNetMergeWinSdk80A)')">
+      <PropertyGroup>
+        <AspNetMerge>$(_AspNetMergeWinSdk80A)</AspNetMerge>
+      </PropertyGroup>
+    </When>
+    <When Condition="exists('$(_AspNetMergeWinSdk80AWow64)')">
+      <PropertyGroup>
+        <AspNetMerge>$(_AspNetMergeWinSdk80AWow64)</AspNetMerge>
+      </PropertyGroup>
+    </When>
+    <When Condition="exists('$(_AspNetMergeWinSdk80)')">
       <PropertyGroup>
         <AspNetMerge>$(_AspNetMergeWinSdk80)</AspNetMerge>
       </PropertyGroup>
     </When>
+    <When Condition="exists('$(_AspNetMergeWinSdk80Wow64)')">
+      <PropertyGroup>
+        <AspNetMerge>$(_AspNetMergeWinSdk80Wow64)</AspNetMerge>
+      </PropertyGroup>
+    </When>
   </Choose>
+
+  <Target Name="AspNetMergeInfo">
+    <Message Importance="High" Text="_RegKeyWinSdk80Wow64:        '$(_RegKeyWinSdk80Wow64)'" />
+    <Message Importance="High" Text="_AspNetMergeWinSdk80Wow64:   '$(_AspNetMergeWinSdk80Wow64)'" />
+    <Message Importance="High" Text="_RegKeyWinSdk80:             '$(_RegKeyWinSdk80)'" />
+    <Message Importance="High" Text="_AspNetMergeWinSdk80:        '$(_AspNetMergeWinSdk80)'" />
+
+    <Message Importance="High" Text="_RegKeyWinSdk80AWow64:       '$(_RegKeyWinSdk80AWow64)'" />
+    <Message Importance="High" Text="_AspNetMergeWinSdk80AWow64:  '$(_AspNetMergeWinSdk80AWow64)'" />
+    <Message Importance="High" Text="_RegKeyWinSdk80A:            '$(_RegKeyWinSdk80A)'" />
+    <Message Importance="High" Text="_AspNetMergeWinSdk80A:       '$(_AspNetMergeWinSdk80A)'" />
+
+    <Message Importance="High" Text="_RegKeyWinSdk81Wow64:        '$(_RegKeyWinSdk81Wow64)'" />
+    <Message Importance="High" Text="_AspNetMergeWinSdk81Wow64:   '$(_AspNetMergeWinSdk81Wow64)'" />
+    <Message Importance="High" Text="_RegKeyWinSdk81:             '$(_RegKeyWinSdk81)'" />
+    <Message Importance="High" Text="_AspNetMergeWinSdk81:        '$(_AspNetMergeWinSdk81)'" />
+
+    <Message Importance="High" Text="_RegKeyWinSdk81AWow64:       '$(_RegKeyWinSdk81AWow64)'" />
+    <Message Importance="High" Text="_AspNetMergeWinSdk81AWow64:  '$(_AspNetMergeWinSdk81AWow64)'" />
+    <Message Importance="High" Text="_RegKeyWinSdk81A:            '$(_RegKeyWinSdk81A)'" />
+    <Message Importance="High" Text="_AspNetMergeWinSdk81A:       '$(_AspNetMergeWinSdk81A)'" />
+
+    <Message Importance="High" Text="_RegKeyNetFxSdk46Wow64:      '$(_RegKeyNetFxSdk46Wow64)'" />
+    <Message Importance="High" Text="_AspNetMergeNetFxSdk46Wow64: '$(_AspNetMergeNetFxSdk46Wow64)'" />
+    <Message Importance="High" Text="_RegKeyNetFxSdk46:           '$(_RegKeyNetFxSdk46)'" />
+    <Message Importance="High" Text="_AspNetMergeNetFxSdk46:      '$(_AspNetMergeNetFxSdk46)'" />
+
+    <Message Importance="High" Text="AspNetMerge:                 '$(AspNetMerge)'" />
+  </Target>
 
   <!--
     Build targets
@@ -163,6 +258,9 @@
     <ItemGroup>
       <DashWebProject Include="Log4JDash.Web" />
     </ItemGroup>
+
+    <Error Condition="'$(AspNetMerge)' == ''" Text="aspnet_merge.exe was not found." />
+
     <MSBuild Projects="%(DashWebProject.ProjPath)"
              ContinueOnError="false"
              Targets="_WPPCopyWebApplication"
