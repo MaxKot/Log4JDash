@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+</configuration>
+<!--
+   Please don't delete this file!
+   The install.ps1 and uninstall.ps1 are called only when content folder is *Not* empty.
+   Therefore, this empty xdt file would enable the uninstall.ps1 script; and it wouldn't 
+   pollute user's application.
+--> 

@@ -1,0 +1,354 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>aspnet_merge</name>
+    </assembly>
+    <members>
+        <member name="M:System.Web.Compilation.JScriptHelper.IsSetEngine(System.Compiler.Member)">
+            <summary>
+            Checks whether a method is the SetEngine method.
+            </summary>
+        </member>
+        <member name="M:System.Web.Compilation.JScriptHelper.IsGetEngine(System.Compiler.Member)">
+            <summary>
+            Checks whether a method is the SetEngine method.
+            </summary>
+        </member>
+        <member name="M:System.Web.Compilation.JScriptHelper.IsJScript(System.Compiler.Class)">
+            <summary>
+            Checks whether a class is a JScript type.
+            </summary>
+        </member>
+        <member name="M:System.Web.Compilation.JScriptHelper.IsJScript(System.Compiler.TypeNode)">
+            <summary>
+            Checks whether a class is a JScript type.
+            </summary>
+        </member>
+        <member name="M:System.Web.Compilation.JScriptHelper.FixJScriptAssemblies(System.String[],System.IO.DirectoryInfo,System.Boolean)">
+            <summary>
+            Renames JScript types "JScript N" to prevent duplicate types.
+            </summary>
+        </member>
+        <member name="T:System.Web.Compilation.JScriptVisitor">
+            <summary>
+            Visitor to visit classes within an assembly and rename "JScript N" types to avoid conflicts.
+            </summary>
+        </member>
+        <member name="T:aspnet_merge.SR">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.a_help">
+            <summary>
+              Looks up a localized string similar to Force merge the assemblies..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.allowattrs_help">
+            <summary>
+              Looks up a localized string similar to Use the specified text file which contains attributes to exclude when checking consistency of attributes in merged assemblies. Each line of the file can either be a fully qualified name of an attribute, or a namespace. If a namespace is specified, all attributes found in the namespace will be excluded..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.applicationPath_help">
+            <summary>
+              Looks up a localized string similar to The physical path of the precompiled application..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.brand_text">
+            <summary>
+              Looks up a localized string similar to Microsoft (R) ASP.NET Merge Tool version {0}.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.cannot_delete_assembly">
+            <summary>
+              Looks up a localized string similar to The assembly &apos;{0}&apos; cannot be deleted..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.cannot_read_file">
+            <summary>
+              Looks up a localized string similar to Error accessing file: {0}.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.cannotDeleteMainCodeCompileFile">
+            <summary>
+              Looks up a localized string similar to The -r option cannot be used when the main app code assembly contains an &quot;AppInitialize&quot; method..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.copyattrs_help">
+            <summary>
+              Looks up a localized string similar to Copy the assembly level attributes from the input assembly. If input assembly is not specified, the main App_Code assembly will be used instead..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.copyright">
+            <summary>
+              Looks up a localized string similar to Copyright (c) Microsoft Corporation. All rights reserved..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.debug_help">
+            <summary>
+              Looks up a localized string similar to Preserve debug information in the merged assembly. The default is to remove debug information..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.delaysign_help">
+            <summary>
+              Looks up a localized string similar to Delay sign the merged assemblies..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.errorstack_help">
+            <summary>
+              Looks up a localized string similar to Show additional information that can help debug certain conditions..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.example1">
+            <summary>
+              Looks up a localized string similar to The following command merges the assemblies in the precompiled application under C:\MyTarget:.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.example2">
+            <summary>
+              Looks up a localized string similar to The following command merges the assemblies in C:\MyTarget and signs the merged assemblies using the Keyfile.snk file:.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.example3">
+            <summary>
+              Looks up a localized string similar to The following command merges all Web application assemblies into a single assembly and names the resulting assembly MyApp.dll:.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.examples">
+            <summary>
+              Looks up a localized string similar to Examples:.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.failure">
+            <summary>
+              Looks up a localized string similar to An error occurred when merging assemblies: {0}.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.header_text">
+            <summary>
+              Looks up a localized string similar to Utility to merge precompiled ASP.NET assemblies..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.inconsistentAPTCA">
+            <summary>
+              Looks up a localized string similar to The assemblies cannot be merged because they contain different APTCA attributes. Use -a option to force merge, the result assembly might not have proper APTCA attribute..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.inconsistentAttrs">
+            <summary>
+              Looks up a localized string similar to The assemblies cannot be merged because some assemblies have inconsistent attributes: {0}. Use -a option to force merge. Use -allowattrs to specify the attributes to skip when checking for consistency..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.inconsistentAttrsWarning">
+            <summary>
+              Looks up a localized string similar to Some assemblies have inconsistent attributes: {0}. Use -a option to skip checking consistency of attributes. Use -allowattrs to specify the attributes to skip when checking for consistency..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.inconsistentKeyToken">
+            <summary>
+              Looks up a localized string similar to The assemblies cannot be merged because some of the input assemblies are not fully signed. Use -a option to force merge, the result assembly will not be signed..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.invalid_applicationPath">
+            <summary>
+              Looks up a localized string similar to The directory &apos;{0}&apos; does not exist..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.invalid_configFile">
+            <summary>
+              Looks up a localized string similar to An error occurred while loading the PrecompiledApp.config file. Make sure the application has been precompiled with the Aspnet_compiler.exe tool..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.invalid_delaysign">
+            <summary>
+              Looks up a localized string similar to The -delaysign option can be used only if a keyfile is specified..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.invalid_keyfile">
+            <summary>
+              Looks up a localized string similar to The keyfile &apos;{0}&apos; cannot be found..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.invalid_output_assembly">
+            <summary>
+              Looks up a localized string similar to The -o option cannot be used with the -prefix or -w options..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.invalid_path">
+            <summary>
+              Looks up a localized string similar to &apos;{0}&apos; is not a valid path..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.invalid_web_assembly">
+            <summary>
+              Looks up a localized string similar to The -w option cannot be used with the -prefix option..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.invalidAllowAttrsFileError">
+            <summary>
+              Looks up a localized string similar to The file for -allowattrs &apos;{0}&apos; cannot be found..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.invalidAssemblies">
+            <summary>
+              Looks up a localized string similar to The following files do not seem to be valid assemblies. Please recompile or verify that they are valid assemblies: {0}.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.invalidOutputAssemblyName">
+            <summary>
+              Looks up a localized string similar to The value for the -o option is invalid..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.invalidRemoveCompileFileError">
+            <summary>
+              Looks up a localized string similar to The -r option can only be used with -o option..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.invalidRuntimeVersion">
+            <summary>
+              Looks up a localized string similar to This web site was compiled for a previous version of ASP.NET. Please use the corresponding previous version of aspnet_merge to merge it..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.invalidWebAssemblyName">
+            <summary>
+              Looks up a localized string similar to The value for the -w option is invalid.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.keyfile_help">
+            <summary>
+              Looks up a localized string similar to The physical path to the strong name keyfile..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.log_help">
+            <summary>
+              Looks up a localized string similar to Log messages to the specified file..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.missing_applicationPath">
+            <summary>
+              Looks up a localized string similar to The application path parameter is missing..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.missing_arg">
+            <summary>
+              Looks up a localized string similar to The &apos;{0}&apos; option must be followed by an argument..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.missing_attributeAssembly">
+            <summary>
+              Looks up a localized string similar to The assembly &apos;{0}&apos; cannot be found..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.missing_binDirectory">
+            <summary>
+              Looks up a localized string similar to The Bin folder is missing in the application folder. Make sure the application has been precompiled with the Aspnet_compiler.exe tool..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.missing_configFile">
+            <summary>
+              Looks up a localized string similar to The PrecompiledApp.config file is missing. Make sure the application has been precompiled with the Aspnet_compiler tool..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.missingAssemblies">
+            <summary>
+              Looks up a localized string similar to Cannot find the following assemblies to be merged in the application bin folder: {0}.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.missingBinAssemblies">
+            <summary>
+              Looks up a localized string similar to Cannot find any assemblies that can be merged in the application bin folder..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.nologo_help">
+            <summary>
+              Looks up a localized string similar to Suppress the copyright message..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.outputassemblyname_help">
+            <summary>
+              Looks up a localized string similar to Merge the entire application into a single assembly with the given name. This option cannot be combined with the -prefix or -w options..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.possibleCircularReferences">
+            <summary>
+              Looks up a localized string similar to An error occurred when merging assemblies, possibly due to circular dependencies between two assemblies. The error reported is: {0}.
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.prefix_help">
+            <summary>
+              Looks up a localized string similar to Prefix the merged assembly names with a specified string. This option cannot be combined with the -o or -w options..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.questionmark_help">
+            <summary>
+              Looks up a localized string similar to Display this help text..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.r_help">
+            <summary>
+              Looks up a localized string similar to Remove the .compiled files for main code assembly. This option should not be used if your application contains any explicit type references to the main code assembly..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.Role_provider_not_found">
+            <summary>
+              Looks up a localized string similar to Role Provider could not be found..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.Roles_feature_not_enabled">
+            <summary>
+              Looks up a localized string similar to The Role Manager feature has not been enabled..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.short_usage_text">
+            <summary>
+              Looks up a localized string similar to Run &apos;aspnet_merge -?&apos; for a list of valid options..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.strong_name_removed">
+            <summary>
+              Looks up a localized string similar to The existing strong name has been removed from the input assemblies..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.unexpected_param">
+            <summary>
+              Looks up a localized string similar to Unexpected parameter: &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.Unhandled_Exception_Event_Log_Message">
+            <summary>
+              Looks up a localized string similar to An unhandled exception has occurred..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.unknown_switch">
+            <summary>
+              Looks up a localized string similar to Unknown option: &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.usage">
+            <summary>
+              Looks up a localized string similar to Usage: .
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.webassemblyname_help">
+            <summary>
+              Looks up a localized string similar to Merge the application Web files into a single assembly with the given name. This option cannot be combined with the -o or -prefix options..
+            </summary>
+        </member>
+        <member name="P:aspnet_merge.SR.xmldocs_help">
+            <summary>
+              Looks up a localized string similar to Merge the xml documentation files associated with the input assemblies..
+            </summary>
+        </member>
+    </members>
+</doc>
