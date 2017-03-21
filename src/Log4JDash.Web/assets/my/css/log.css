@@ -154,8 +154,7 @@ label[for^='log-item-collapsed'] .log-item-collapsed-open,
     display: inline;
 }
 
-.log-item-timestamp-date::after {
-    content: 'T';
+.log-item-timestamp-separator {
     -ms-opacity: 0.25;
     opacity: 0.25;
 }
