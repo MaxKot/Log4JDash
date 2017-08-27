@@ -15,7 +15,7 @@ namespace Log4JParserNet
         }
 
         public FilterTimestampBuilder (DateTime min, DateTime max)
-            : this (Timestamp.FromDateTime (min), Timestamp.FromDateTime (max))
+            : this (Log4JParserNet.Timestamp.FromDateTime (min), Log4JParserNet.Timestamp.FromDateTime (max))
         {
 
         }

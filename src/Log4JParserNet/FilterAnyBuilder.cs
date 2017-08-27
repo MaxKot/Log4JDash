@@ -7,11 +7,17 @@ namespace Log4JParserNet
     {
         private List<FilterBuilder> children_ = new List<FilterBuilder> ();
 
-        public void Add (FilterBuilder childFilter)
-            => children_.Add (childFilter);
+        public void Add (FilterBuilder child)
+            => children_.Add (child);
 
-        public void Remove (FilterBuilder childFilter)
-            => children_.Remove (childFilter);
+        public void AddRange (IEnumerable<FilterBuilder> children)
+            => children_.AddRange (children);
+
+        public void Remove (FilterBuilder child)
+            => children_.Remove (child);
+
+        public void Clear ()
+            => children_.Clear ();
 
         public override Filter Build ()
         {
