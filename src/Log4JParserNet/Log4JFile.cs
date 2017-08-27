@@ -48,7 +48,7 @@ namespace Log4JParserNet
                 return DoGetEnumerator ();
             }
 
-            public IEnumerableOfEvents Where (FilterBase filter)
+            public IEnumerableOfEvents Where (Filter filter)
             {
                 File.GuardNotDisposed ();
                 return new FilteredEventSource (this, filter);

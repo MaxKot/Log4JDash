@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Log4JParserNet.Tests
 {
     [TestFixture]
-    public class FilterLevelTests
+    public class FilterLoggerBuilderTests
     {
         private const string Sample = @"<?xml version=""1.0"" encoding=""windows-1251""?>
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message></log4j:event>
@@ -18,10 +18,20 @@ namespace Log4JParserNet.Tests
         private static readonly byte[] sampleBytes = Encoding.GetEncoding (1251).GetBytes (Sample);
 
         [Test]
-        public void FiltersEventsWithMinLevel ()
+        public void FiltersEventsWithLoggerStartingWithPrefix ()
         {
             var expected = new[]
             {
+                new EventExpectation
+                {
+                    Level = Level.Info,
+                    Logger = "Root.ChildA.LoggerA2",
+                    Thread = "Thread-1",
+                    Timestamp = 1411231353782L,
+                    Message = "#1. Test event A.",
+                    Throwable = null,
+                    Id = 0
+                },
                 new EventExpectation
                 {
                     Level = Level.Fatal,
@@ -54,78 +64,23 @@ namespace Log4JParserNet.Tests
                 }
             };
 
+            var subject = FilterBuilder.Logger ("Root.ChildA");
+
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
-            using (var subject = new FilterLevel (Level.Warn, Level.MaxValue))
+            using (var filter = subject.Build ())
             {
                 source.Encoding = Encoding.GetEncoding (1251);
-                var actual = source.GetEvents ().Where (subject);
+                var actual = source.GetEvents ().Where (filter);
                 Assert.That (actual, Is.EqualTo (expected));
             }
         }
 
         [Test]
-        public void FiltersEventsWithMaxLevel ()
+        public void FiltersEventsWithLoggerExactMatch ()
         {
             var expected = new[]
             {
-                new EventExpectation
-                {
-                    Level = Level.Info,
-                    Logger = "Root.ChildA.LoggerA2",
-                    Thread = "Thread-1",
-                    Timestamp = 1411231353782L,
-                    Message = "#1. Test event A.",
-                    Throwable = null,
-                    Id = 0
-                },
-                new EventExpectation
-                {
-                    Level = Level.Debug,
-                    Logger = "Root.ChildB.LoggerB2",
-                    Thread = "Thread-2",
-                    Timestamp = 1411231353792L,
-                    Message = "#2. Test event B.",
-                    Throwable = null,
-                    Id = 165
-                },
-                new EventExpectation
-                {
-                    Level = Level.Warn,
-                    Logger = "Root.ChildA.LoggerA1",
-                    Thread = "Thread-4",
-                    Timestamp = 1411231353793L,
-                    Message = "#4. Test event E.",
-                    Throwable = null,
-                    Id = 507
-                }
-            };
-
-            using (var sourceStream = new MemoryStream (sampleBytes))
-            using (var source = Log4JFile.Create (sourceStream))
-            using (var subject = new FilterLevel (Level.MinValue, Level.Warn))
-            {
-                source.Encoding = Encoding.GetEncoding (1251);
-                var actual = source.GetEvents ().Where (subject);
-                Assert.That (actual, Is.EqualTo (expected));
-            }
-        }
-
-        [Test]
-        public void FiltersEventsWithLevelInterval ()
-        {
-            var expected = new[]
-            {
-                new EventExpectation
-                {
-                    Level = Level.Info,
-                    Logger = "Root.ChildA.LoggerA2",
-                    Thread = "Thread-1",
-                    Timestamp = 1411231353782L,
-                    Message = "#1. Test event A.",
-                    Throwable = null,
-                    Id = 0
-                },
                 new EventExpectation
                 {
                     Level = Level.Warn,
@@ -148,39 +103,14 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            using (var sourceStream = new MemoryStream (sampleBytes))
-            using (var source = Log4JFile.Create (sourceStream))
-            using (var subject = new FilterLevel (Level.Info, Level.Error))
-            {
-                source.Encoding = Encoding.GetEncoding (1251);
-                var actual = source.GetEvents ().Where (subject);
-                Assert.That (actual, Is.EqualTo (expected));
-            }
-        }
-
-        [Test]
-        public void FiltersEventsWithLevelExactValue ()
-        {
-            var expected = new[]
-            {
-                new EventExpectation
-                {
-                    Level = Level.Error,
-                    Logger = "Root.ChildA.LoggerA1",
-                    Thread = "Thread-5",
-                    Timestamp = 1411231353795L,
-                    Message = "#5. Test event F.",
-                    Throwable = null,
-                    Id = 672
-                }
-            };
+            var subject = FilterBuilder.Logger ("Root.ChildA.LoggerA1");
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
-            using (var subject = new FilterLevel (Level.Error, Level.Error))
+            using (var filter = subject.Build ())
             {
                 source.Encoding = Encoding.GetEncoding (1251);
-                var actual = source.GetEvents ().Where (subject);
+                var actual = source.GetEvents ().Where (filter);
                 Assert.That (actual, Is.EqualTo (expected));
             }
         }

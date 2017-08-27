@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Log4JParserNet.Tests
 {
     [TestFixture]
-    public class FilterAllTests
+    public class FilterBuilderAllTests
     {
         private const string Sample = @"<?xml version=""1.0"" encoding=""windows-1251""?>
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message></log4j:event>
@@ -35,18 +35,19 @@ namespace Log4JParserNet.Tests
                 }
             };
 
+            var subject = FilterBuilder.All
+            (
+                FilterBuilder.Level (Level.MinValue, Level.Info),
+                FilterBuilder.Timestamp (1411231353792L, Int64.MaxValue)
+            );
+
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
-            using (var childFilter1 = new FilterLevel (Level.MinValue, Level.Info))
-            using (var childFilter2 = new FilterTimestamp (1411231353792L, Int64.MaxValue))
-            using (var subject = new FilterAll ())
+            using (var filter = subject.Build ())
             {
                 source.Encoding = Encoding.GetEncoding (1251);
 
-                subject.Add (childFilter1);
-                subject.Add (childFilter2);
-
-                var actual = source.GetEvents ().Where (subject);
+                var actual = source.GetEvents ().Where (filter);
                 Assert.That (actual, Is.EqualTo (expected));
             }
         }

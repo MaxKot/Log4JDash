@@ -11,25 +11,6 @@ namespace Log4JDash.Web.Models
     {
         private readonly LogSourceProvider logSourceProvider_ = new LogSourceProvider (KnownSections.LogSourceProvider ());
 
-        private static void AddFilter
-            (DisposableCollection<List<FilterBase>> filters, Func<FilterBase> filterFactory)
-        {
-            if (filters.Elements.Capacity < filters.Elements.Count + 1)
-            {
-                filters.Elements.Capacity = filters.Elements.Count + 1;
-            }
-
-            FilterBase filter = null;
-            try
-            {
-                filter = filterFactory ();
-            }
-            finally
-            {
-                filters.Elements.Add (filter);
-            }
-        }
-
         public IEnumerable<string> GetSources ()
         {
             return logSourceProvider_.GetSources ();
@@ -41,61 +22,54 @@ namespace Log4JDash.Web.Models
             var source = logSourceProvider_.GetSource (sourceModel?.Id);
 
             using (var logFile = source.Open (sourceModel?.Size))
-            using (var filters = new List<FilterBase> ().ToDisposable ())
             {
+                var filters = new List<FilterBuilder> ();
                 if (query.MinLevel.Value != Level.Debug)
                 {
-                    AddFilter (filters, () => new FilterLevel (query.MinLevel.Value, Level.MaxValue));
+                    var filter = FilterBuilder.Level (query.MinLevel.Value, Level.MaxValue);
+                    filters.Add (filter);
                 }
 
                 if (!String.IsNullOrWhiteSpace (query.Logger))
                 {
-                    AddFilter (filters, () => new FilterLogger (query.Logger));
+                    var filter = FilterBuilder.Logger (query.Logger);
+                    filters.Add (filter);
                 }
 
                 if (!String.IsNullOrWhiteSpace (query.Message))
                 {
-                    AddFilter (filters, () => new FilterMessage (query.Message));
+                    var filter = FilterBuilder.Message (query.Message);
+                    filters.Add (filter);
                 }
 
                 if (query.MinTime > DateTime.MinValue || query.MaxTime < DateTime.MaxValue)
                 {
-                    AddFilter (filters, () => new FilterTimestamp (query.MinTime, query.MaxTime));
+                    var filter = FilterBuilder.Timestamp (query.MinTime, query.MaxTime);
+                    filters.Add (filter);
                 }
 
+                IEnumerableOfEvents allEvents = logFile.GetEventsReverse ();
+
                 IEnumerable<Event> filteredEvents;
-                switch (filters.Elements.Count)
+                switch (filters.Count)
                 {
                     case 0:
-                        filteredEvents = logFile.GetEventsReverse ();
+                        filteredEvents = allEvents;
                         break;
 
                     case 1:
-                        filteredEvents = logFile
-                            .GetEventsReverse ()
-                            .Where (filters.Elements.Single ());
+                        using (var filter = filters.Single ().Build ())
+                        {
+                            filteredEvents = allEvents.Where (filter);
+                        }
                         break;
 
                     default:
-                        FilterAll rootFilter = null;
-                        try
+                        var rootFilter = FilterBuilder.All (filters);
+                        using (var filter = rootFilter.Build ())
                         {
-                            rootFilter = new FilterAll ();
-                            foreach (var filter in filters.Elements)
-                            {
-                                rootFilter.Add (filter);
-                            }
+                            filteredEvents = allEvents.Where (filter);
                         }
-                        finally
-                        {
-                            if (rootFilter != null)
-                            {
-                                filters.Elements.Add (rootFilter);
-                            }
-                        }
-                        filteredEvents = logFile
-                            .GetEventsReverse ()
-                            .Where (rootFilter);
                         break;
                 }
 

@@ -62,23 +62,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssociatedFiltersCollection.cs" />
+    <Compile Include="Disposable.cs" />
+    <Compile Include="Filter.cs" />
     <Compile Include="DisposableCollection.cs" />
+    <Compile Include="FilterAllBuilder.cs" />
+    <Compile Include="FilterAnyBuilder.cs" />
+    <Compile Include="FilterBuilder.cs" />
     <Compile Include="FilteredEventSource.cs" />
     <Compile Include="EnumeratorBase.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="EventHandle.cs" />
+    <Compile Include="FilterLevelBuilder.cs" />
+    <Compile Include="FilterLoggerBuilder.cs" />
+    <Compile Include="FilterMessageBuilder.cs" />
+    <Compile Include="FilterNotBuilder.cs" />
+    <Compile Include="FilterTimestampBuilder.cs" />
     <Compile Include="Log4JEventProperty.cs" />
     <Compile Include="Log4JFile.cs" />
     <Compile Include="EventSourceHandle.cs" />
-    <Compile Include="FilterAll.cs" />
-    <Compile Include="FilterAny.cs" />
-    <Compile Include="FilterBase.cs" />
     <Compile Include="FilterHandle.cs" />
-    <Compile Include="FilterLevel.cs" />
-    <Compile Include="FilterLogger.cs" />
-    <Compile Include="FilterMessage.cs" />
-    <Compile Include="FilterNot.cs" />
-    <Compile Include="FilterTimestamp.cs" />
     <Compile Include="IEnumerableEvents.cs" />
     <Compile Include="IEventSource.cs" />
     <Compile Include="IteratorHandle.cs" />
