@@ -81,15 +81,7 @@
     <Compile Include="Log4JEventProperty.cs" />
     <Compile Include="Log4JFile.cs" />
     <Compile Include="EventSourceHandle.cs" />
-    <Compile Include="FilterAll.cs" />
-    <Compile Include="FilterAny.cs" />
-    <Compile Include="FilterBase.cs" />
     <Compile Include="FilterHandle.cs" />
-    <Compile Include="FilterLevel.cs" />
-    <Compile Include="FilterLogger.cs" />
-    <Compile Include="FilterMessage.cs" />
-    <Compile Include="FilterNot.cs" />
-    <Compile Include="FilterTimestamp.cs" />
     <Compile Include="IEnumerableEvents.cs" />
     <Compile Include="IEventSource.cs" />
     <Compile Include="IteratorHandle.cs" />
