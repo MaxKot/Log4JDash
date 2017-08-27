@@ -62,11 +62,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssociatedFiltersCollection.cs" />
+    <Compile Include="Disposable.cs" />
+    <Compile Include="Filter.cs" />
     <Compile Include="DisposableCollection.cs" />
+    <Compile Include="FilterAllBuilder.cs" />
+    <Compile Include="FilterAnyBuilder.cs" />
+    <Compile Include="FilterBuilder.cs" />
     <Compile Include="FilteredEventSource.cs" />
     <Compile Include="EnumeratorBase.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="EventHandle.cs" />
+    <Compile Include="FilterLevelBuilder.cs" />
+    <Compile Include="FilterLoggerBuilder.cs" />
+    <Compile Include="FilterMessageBuilder.cs" />
+    <Compile Include="FilterNotBuilder.cs" />
+    <Compile Include="FilterTimestampBuilder.cs" />
     <Compile Include="Log4JEventProperty.cs" />
     <Compile Include="Log4JFile.cs" />
     <Compile Include="EventSourceHandle.cs" />
