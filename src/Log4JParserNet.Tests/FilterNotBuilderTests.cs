@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Log4JParserNet.Tests
 {
     [TestFixture]
-    public class FilterNotTests
+    public class FilterNotBuilderTests
     {
         private const string Sample = @"<?xml version=""1.0"" encoding=""windows-1251""?>
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message></log4j:event>
@@ -44,13 +44,15 @@ namespace Log4JParserNet.Tests
                 }
             };
 
+            var childFilter = FilterBuilder.Level (Level.Info, Level.Error);
+            var subject = FilterBuilder.Not (childFilter);
+
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
-            using (var childFilter = new FilterLevel (Level.Info, Level.Error))
-            using (var subject = new FilterNot (childFilter))
+            using (var filter = subject.Build ())
             {
                 source.Encoding = Encoding.GetEncoding (1251);
-                var actual = source.GetEvents ().Where (subject);
+                var actual = source.GetEvents ().Where (filter);
                 Assert.That (actual, Is.EqualTo (expected));
             }
         }

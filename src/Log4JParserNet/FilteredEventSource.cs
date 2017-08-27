@@ -13,7 +13,7 @@ namespace Log4JParserNet
         {
             private readonly EnumeratorBase inner_;
 
-            public Enumerator (EnumeratorBase inner, FilterBase filter)
+            public Enumerator (EnumeratorBase inner, Filter filter)
                 : base (Init (inner.Handle, filter.Handle), inner.Owner)
             {
                 inner_ = inner;
@@ -39,13 +39,13 @@ namespace Log4JParserNet
 
         private readonly IEventSource source_;
 
-        private readonly FilterBase filter_;
+        private readonly Filter filter_;
 
         bool IEventSource.IsInvalid => source_.IsInvalid;
 
         Encoding IEventSource.Encoding => source_.Encoding;
 
-        public FilteredEventSource (IEventSource source, FilterBase filter)
+        public FilteredEventSource (IEventSource source, Filter filter)
         {
             Debug.Assert (source != null, "FilteredEventSource.ctor: source is null.");
             Debug.Assert (filter != null, "FilteredEventSource.ctor: filter is null.");
@@ -74,7 +74,7 @@ namespace Log4JParserNet
             return GetEnumerator ();
         }
 
-        public IEnumerableOfEvents Where (FilterBase filter)
+        public IEnumerableOfEvents Where (Filter filter)
         {
             return new FilteredEventSource (this, filter);
         }

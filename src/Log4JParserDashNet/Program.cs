@@ -43,35 +43,34 @@ namespace Log4JParserDashNet
                 {
                     using (var eventSource = Log4JFile.Create (filename))
                     using (new TimeTrace ("process inner"))
-                    using (var filterTs = new FilterTimestamp (1411231371536L, 1411231371556L))
-                    using (var filterLvl = new FilterLevel ("INFO", "ERROR"))
-                    using (var filterLgr = new FilterLogger ("Root.ChildB"))
-                    using (var filterMsg1 = new FilterMessage ("#2"))
-                    using (var filterMsg2 = new FilterMessage ("#3"))
-                    using (var filterNot = new FilterNot (filterLvl))
-                    using (var filterAny = new FilterAny ())
-                    using (var filterAll = new FilterAll ())
                     {
-                        filterAny.Add (filterMsg1);
-                        filterAny.Add (filterMsg2);
+                        var filterAll = FilterBuilder.All
+                        (
+                            FilterBuilder.Timestamp (1411231371536L, 1411231371556L),
+                            FilterBuilder.Not (FilterBuilder.Level ("INFO", "ERROR")),
+                            FilterBuilder.Any
+                            (
+                                FilterBuilder.Message ("#2"),
+                                FilterBuilder.Message ("#3")
+                            ),
+                            FilterBuilder.Logger ("Root.ChildB")
+                        );
 
-                        filterAll.Add (filterTs);
-                        filterAll.Add (filterNot);
-                        filterAll.Add (filterAny);
-                        filterAll.Add (filterLgr);
-
-                        var matchingEvents = eventSource
-                            .GetEvents ()
-                            .Where (filterAll)
-                            .Take (20)
-                            .ToList ();
-
-                        foreach (var @event in matchingEvents)
+                        using (var filter = filterAll.Build ())
                         {
-                            PrintEvent (@event);
-                        }
+                            var matchingEvents = eventSource
+                                .GetEvents ()
+                                .Where (filter)
+                                .Take (20)
+                                .ToList ();
 
-                        Console.WriteLine ("Found events: {0}", matchingEvents.Count);
+                            foreach (var @event in matchingEvents)
+                            {
+                                PrintEvent (@event);
+                            }
+
+                            Console.WriteLine ("Found events: {0}", matchingEvents.Count);
+                        }
                     }
                 }
 
