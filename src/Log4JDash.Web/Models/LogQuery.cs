@@ -1,13 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Web.Routing;
 using Log4JDash.Web.Mvc;
+using Log4JParserNet;
 
 namespace Log4JDash.Web.Models
 {
     public sealed class LogQuery : ICloneable
     {
         public LogSourceInput Source { get; set; }
+
+        public string SourceId => Source.Value?.Id;
+
+        public long? SourceSize => Source.Value?.Size;
 
         private static readonly string DefaultMinLevel = LogLevelInput.DefaultLevels[0];
 
@@ -170,6 +177,53 @@ namespace Log4JDash.Web.Models
             if (Offset > DefaultOffset)
             {
                 result.Add (prefix + "Offset", Offset);
+            }
+
+            return result;
+        }
+
+        public FilterBuilder CreateFilter ()
+        {
+            var filters = new List<FilterBuilder> (4);
+
+            if (MinLevel.Value != Level.Debug)
+            {
+                var filter = FilterBuilder.Level (MinLevel.Value, Level.MaxValue);
+                filters.Add (filter);
+            }
+
+            if (!String.IsNullOrWhiteSpace (Logger))
+            {
+                var filter = FilterBuilder.Logger (Logger);
+                filters.Add (filter);
+            }
+
+            if (!String.IsNullOrWhiteSpace (Message))
+            {
+                var filter = FilterBuilder.Message (Message);
+                filters.Add (filter);
+            }
+
+            if (MinTime > DateTime.MinValue || MaxTime < DateTime.MaxValue)
+            {
+                var filter = FilterBuilder.Timestamp (MinTime, MaxTime);
+                filters.Add (filter);
+            }
+
+            FilterBuilder result;
+            switch (filters.Count)
+            {
+                case 0:
+                    result = null;
+                    break;
+
+                case 1:
+                    result = filters.Single ();
+                    break;
+
+                default:
+                    result = FilterBuilder.All (filters);
+                    break;
             }
 
             return result;
