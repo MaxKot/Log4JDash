@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Web.Hosting;
 
 namespace Log4JDash.Web.Domain
 {
@@ -22,53 +20,12 @@ namespace Log4JDash.Web.Domain
 
         private IReadOnlyDictionary<string, LogSource> DoGetSources ()
         {
-            var result = new Dictionary<string, LogSource> ();
-
-            foreach (var directory in config_.Directories)
-            {
-                var directoryPath = !Path.IsPathRooted (directory.DirectoryPath)
-                    ? Path.Combine (HostingEnvironment.MapPath ("~"), directory.DirectoryPath)
-                    : directory.DirectoryPath;
-                string[] files;
-                try
-                {
-                    files = Directory.GetFiles (directoryPath);
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    files = new string[0];
-                }
-                catch (PathTooLongException)
-                {
-                    files = new string[0];
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    files = new string[0];
-                }
-                catch (IOException)
-                {
-                    files = new string[0];
-                }
-                foreach (var fullPath in files)
-                {
-                    if (directory.FilenamePattern.IsMatch (fullPath))
-                    {
-                        var fileId = GetFileId (directory, fullPath);
-                        var source = new LogSource (fileId, fullPath, directory.Encoding);
-
-                        result.Add (fileId, source);
-                    }
-                }
-            }
+            var result = config_.Directories
+                .Select (d => new LogSource (d))
+                .Where (s => !s.IsEmpty ())
+                .ToDictionary (s => s.Name);
 
             return result;
-        }
-
-        private static string GetFileId (ILogDirectoryConfig directory, string fullPath)
-        {
-            var fileName = Path.GetFileName (fullPath);
-            return String.Format ("{0}-{1}", directory.Name, fileName).ToLower ();
         }
 
         public IEnumerable<string> GetSources ()

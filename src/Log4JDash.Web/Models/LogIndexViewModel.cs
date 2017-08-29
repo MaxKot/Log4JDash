@@ -6,6 +6,6 @@ namespace Log4JDash.Web.Models
     {
         public LogQuery Query { get; set; }
 
-        public ICollection<EventModel> Events { get; set; }
+        public IReadOnlyList<EventModel> Events { get; set; }
     }
 }
