@@ -65,7 +65,6 @@
     <Compile Include="AssociatedFiltersCollection.cs" />
     <Compile Include="Disposable.cs" />
     <Compile Include="Filter.cs" />
-    <Compile Include="DisposableCollection.cs" />
     <Compile Include="FilterAllBuilder.cs" />
     <Compile Include="FilterAnyBuilder.cs" />
     <Compile Include="FilterBuilder.cs" />
