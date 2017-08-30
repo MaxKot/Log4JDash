@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Log4JDash", "Log4JDash\Log4JDash.vcxproj", "{5CD45FCF-BF8A-44E4-95D0-CEEE6450E4E5}"
 EndProject
@@ -22,6 +22,24 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4JDash.Web", "Log4JDash.Web\Log4JDash.Web.csproj", "{B60B7826-889B-454D-B58F-C68DD1EC0E91}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log4JParserNet.Tests", "Log4JParserNet.Tests\Log4JParserNet.Tests.csproj", "{CCEDAF04-93BE-4E67-872F-B713F82FB3CE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SampleLogs", "_SampleLogs", "{40886A5D-8473-4523-AB59-5A9204CD5DEA}"
+	ProjectSection(SolutionItems) = preProject
+		_SampleLogs\_a_log-s+1.1.xml = _SampleLogs\_a_log-s+1.1.xml
+		_SampleLogs\_a_log-s+1.xml = _SampleLogs\_a_log-s+1.xml
+		_SampleLogs\_b_log-d+1.0.xml = _SampleLogs\_b_log-d+1.0.xml
+		_SampleLogs\_b_log-d+1.1.xml = _SampleLogs\_b_log-d+1.1.xml
+		_SampleLogs\_c_log-s-1.1.xml = _SampleLogs\_c_log-s-1.1.xml
+		_SampleLogs\_c_log-s-1.xml = _SampleLogs\_c_log-s-1.xml
+		_SampleLogs\_d_log-d-1.1.xml = _SampleLogs\_d_log-d-1.1.xml
+		_SampleLogs\_d_log-d-1.xml = _SampleLogs\_d_log-d-1.xml
+		_SampleLogs\e_log_2017-08-30.0.xml = _SampleLogs\e_log_2017-08-30.0.xml
+		_SampleLogs\e_log_2017-08-30.1.xml = _SampleLogs\e_log_2017-08-30.1.xml
+		_SampleLogs\e_log_2017-08-30.2.xml = _SampleLogs\e_log_2017-08-30.2.xml
+		_SampleLogs\e_log_2017-08-31.0.xml = _SampleLogs\e_log_2017-08-31.0.xml
+		_SampleLogs\e_log_2017-08-31.1.xml = _SampleLogs\e_log_2017-08-31.1.xml
+		_SampleLogs\e_log_2017-08-31.2.xml = _SampleLogs\e_log_2017-08-31.2.xml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,5 +108,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {44AC0D1F-15F1-4E1C-BFA1-B2C2447E2CD4}
 	EndGlobalSection
 EndGlobal

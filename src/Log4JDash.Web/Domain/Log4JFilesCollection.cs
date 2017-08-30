@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Log4JParserNet;
 
@@ -73,6 +74,7 @@ namespace Log4JDash.Web.Domain
                 }
 
                 var fileName = filesEnumerator_.Current;
+                Trace.WriteLine ($"Opening log4j file. File name: '{fileName}'.", "Log4JDash.Web.Domain.Log4JFilesCollection");
                 var file = Log4JFile.Create (fileName, remainingSize_);
                 file.Encoding = encoding_;
                 remainingSize_ -= file.Size;
