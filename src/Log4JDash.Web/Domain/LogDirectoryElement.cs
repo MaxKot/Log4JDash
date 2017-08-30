@@ -18,8 +18,8 @@ namespace Log4JDash.Web.Domain
         [ConfigurationProperty (NameAttribute, IsRequired = true)]
         public string Name
         {
-            get { return (string) base[NameAttribute]; }
-            set { base[NameAttribute] = value; }
+            get => (string) base[NameAttribute];
+            set => base[NameAttribute] = value;
         }
 
         #endregion
@@ -33,8 +33,8 @@ namespace Log4JDash.Web.Domain
         [ConfigurationProperty (DirectoryPathAttribute, IsRequired = true)]
         public string DirectoryPath
         {
-            get { return (string) base[DirectoryPathAttribute]; }
-            set { base[DirectoryPathAttribute] = value; }
+            get => (string) base[DirectoryPathAttribute];
+            set => base[DirectoryPathAttribute] = value;
         }
 
         #endregion
@@ -49,8 +49,23 @@ namespace Log4JDash.Web.Domain
         [TypeConverter (typeof (RegexConverter))]
         public Regex FilenamePattern
         {
-            get { return (Regex) base[FilenamePatternAttribute]; }
-            set { base[FilenamePatternAttribute] = value; }
+            get => (Regex) base[FilenamePatternAttribute];
+            set => base[FilenamePatternAttribute] = value;
+        }
+
+        #endregion
+
+        #region DateFormat
+
+        /// <summary>The name of the configuration tag attribute defining <see cref="DateFormat" />.</summary>
+        private const string DateFormatAttribute = "dateFormat";
+
+        /// <inheritdoc />
+        [ConfigurationProperty (DateFormatAttribute, IsRequired = false, DefaultValue = null)]
+        public string DateFormat
+        {
+            get => (string) base[DateFormatAttribute];
+            set => base[DateFormatAttribute] = value;
         }
 
         #endregion
@@ -65,8 +80,8 @@ namespace Log4JDash.Web.Domain
         [TypeConverter (typeof (EncodingConverter))]
         public Encoding Encoding
         {
-            get { return (Encoding) base[EncodingAttribute]; }
-            set { base[EncodingAttribute] = value; }
+            get => (Encoding) base[EncodingAttribute];
+            set => base[EncodingAttribute] = value;
         }
 
         #endregion

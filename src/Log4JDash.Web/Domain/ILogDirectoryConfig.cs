@@ -11,6 +11,8 @@ namespace Log4JDash.Web.Domain
 
         Regex FilenamePattern { get; }
 
+        string DateFormat { get; }
+
         Encoding Encoding { get; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -10,6 +11,14 @@ namespace Log4JDash.Web.Domain
 {
     internal sealed class LogSource
     {
+        public const string PatternGroupDate = "date";
+
+        public const string PatternGroupRolloverAsc = "roll_asc";
+
+        public const string PatternGroupRolloverDesc = "roll_desc";
+
+        public static IFormatProvider Format = CultureInfo.InvariantCulture;
+
         private readonly ILogDirectoryConfig config_;
 
         public string Name => config_.Name;
@@ -62,12 +71,6 @@ namespace Log4JDash.Web.Domain
             var files = GetFiles (false);
             return files.Count <= 0;
         }
-
-        public const string PatternGroupDate = "date";
-
-        public const string PatternGroupRolloverAsc = "roll_asc";
-
-        public const string PatternGroupRolloverDesc = "roll_desc";
 
         private IReadOnlyCollection<string> GetFiles (bool ordered)
         {
@@ -122,17 +125,41 @@ namespace Log4JDash.Web.Domain
         private DateTime GetDate (Match filenameMatch)
         {
             var dateMatch = filenameMatch.Groups[PatternGroupDate];
-            var result = dateMatch.Success && DateTime.TryParse (dateMatch.Value, out var date)
+            var result = TryParseDate (dateMatch, out var date)
                 ? date
                 : DateTime.MinValue;
 
             return result;
         }
 
+        private bool TryParseDate (Group dateMatch, out DateTime result)
+        {
+            const DateTimeStyles styles = DateTimeStyles.None;
+            var dateFormat = config_.DateFormat;
+
+            bool success;
+            if (!dateMatch.Success)
+            {
+                success = false;
+                result = default (DateTime);
+            }
+            else if (string.IsNullOrWhiteSpace (dateFormat))
+            {
+                success = DateTime.TryParse (dateMatch.Value, Format, styles, out result);
+            }
+            else
+            {
+                success = DateTime.TryParseExact
+                    (dateMatch.Value, dateFormat, Format, styles, out result);
+            }
+
+            return success;
+        }
+
         private long GetRolloverAsc (Match filenameMatch)
         {
             var rolloverMatch = filenameMatch.Groups[PatternGroupRolloverAsc];
-            var result = rolloverMatch.Success && Int64.TryParse (rolloverMatch.Value, out var rollover)
+            var result = TryParseRollover (rolloverMatch, out var rollover)
                 ? rollover
                 : Int64.MinValue;
 
@@ -142,11 +169,18 @@ namespace Log4JDash.Web.Domain
         private long GetRolloverDesc (Match filenameMatch)
         {
             var rolloverMatch = filenameMatch.Groups[PatternGroupRolloverDesc];
-            var result = rolloverMatch.Success && Int64.TryParse (rolloverMatch.Value, out var rollover)
+            var result = TryParseRollover (rolloverMatch, out var rollover)
                 ? rollover
                 : Int64.MaxValue;
 
             return result;
+        }
+
+        private bool TryParseRollover (Group rolloverMatch, out long result)
+        {
+            result = default (long);
+            return rolloverMatch.Success &&
+                   Int64.TryParse (rolloverMatch.Value, NumberStyles.Integer, Format, out result);
         }
     }
 }
