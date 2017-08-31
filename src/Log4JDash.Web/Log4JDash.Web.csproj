@@ -20,6 +20,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -91,7 +92,7 @@
     <Content Include="assets\my\js\suppressDefaults.js" />
     <Content Include="assets\reset-css-2.0\reset.css" />
     <Content Include="Global.asax" />
-    <Content Include="Log4JDash.Web.wpp.targets" />
+    <None Include="Log4JDash.Web.wpp.targets" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
