@@ -13,9 +13,9 @@ namespace Log4JDash.Web.Domain
     {
         public const string PatternGroupDate = "date";
 
-        public const string PatternGroupRolloverAsc = "roll_asc";
+        public const string PatternGroupRolloverNeg = "roll_neg";
 
-        public const string PatternGroupRolloverDesc = "roll_desc";
+        public const string PatternGroupRolloverPos = "roll_pos";
 
         public static IFormatProvider Format = CultureInfo.InvariantCulture;
 
@@ -158,7 +158,7 @@ namespace Log4JDash.Web.Domain
 
         private long GetRolloverAsc (Match filenameMatch)
         {
-            var rolloverMatch = filenameMatch.Groups[PatternGroupRolloverAsc];
+            var rolloverMatch = filenameMatch.Groups[PatternGroupRolloverNeg];
             var result = TryParseRollover (rolloverMatch, out var rollover)
                 ? rollover
                 : Int64.MinValue;
@@ -168,7 +168,7 @@ namespace Log4JDash.Web.Domain
 
         private long GetRolloverDesc (Match filenameMatch)
         {
-            var rolloverMatch = filenameMatch.Groups[PatternGroupRolloverDesc];
+            var rolloverMatch = filenameMatch.Groups[PatternGroupRolloverPos];
             var result = TryParseRollover (rolloverMatch, out var rollover)
                 ? rollover
                 : Int64.MaxValue;
