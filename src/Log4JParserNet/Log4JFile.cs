@@ -130,6 +130,14 @@ namespace Log4JParserNet
             }
         }
 
+        public static long GetSize (string fileName)
+        {
+            using (var fileStream = File.Open (fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                return fileStream.Length;
+            }
+        }
+
         public static Log4JFile Create (string fileName, long? maxSize = null)
         {
             using (var fileStream = File.Open (fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))

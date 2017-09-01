@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Hosting;
 using Log4JDash.Web.Models;
+using Log4JParserNet;
 
 namespace Log4JDash.Web.Domain
 {
@@ -36,7 +37,7 @@ namespace Log4JDash.Web.Domain
         {
             var files = GetFiles (true);
 
-            var size = query.SourceSize ?? files.Sum (f => GetFileSize (f));
+            var size = query.SourceSize ?? files.Sum (f => Log4JFile.GetSize (f));
 
             var encoding = config_.Encoding;
 
@@ -55,14 +56,6 @@ namespace Log4JDash.Web.Domain
                 events.Reverse ();
 
                 return new EventsCollection (events, Name, size);
-            }
-        }
-
-        private long GetFileSize (string fileName)
-        {
-            using (var file = File.OpenRead (fileName))
-            {
-                return file.Length;
             }
         }
 
