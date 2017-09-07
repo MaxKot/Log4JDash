@@ -10,14 +10,14 @@ namespace Log4JParserNet
         private static readonly IEqualityComparer<string> LevelComparer
             = StringComparer.Ordinal;
 
-        private readonly string min_;
+        public string Min { get; }
 
-        private readonly string max_;
+        public string Max { get; }
 
         public FilterLevelBuilder (string min, string max)
         {
-            min_ = min;
-            max_ = max;
+            Min = min;
+            Max = max;
         }
 
         public override bool Equals (object obj)
@@ -25,14 +25,14 @@ namespace Log4JParserNet
 
         public bool Equals (FilterLevelBuilder other)
             => other != null &&
-               LevelComparer.Equals (min_, other.min_) &&
-               LevelComparer.Equals (max_, other.max_);
+               LevelComparer.Equals (Min, other.Min) &&
+               LevelComparer.Equals (Max, other.Max);
 
         public override int GetHashCode ()
         {
             var hashCode = -320226678;
-            hashCode = hashCode * -1521134295 + LevelComparer.GetHashCode (min_);
-            hashCode = hashCode * -1521134295 + LevelComparer.GetHashCode (max_);
+            hashCode = hashCode * -1521134295 + LevelComparer.GetHashCode (Min);
+            hashCode = hashCode * -1521134295 + LevelComparer.GetHashCode (Max);
             return hashCode;
         }
 
@@ -41,7 +41,7 @@ namespace Log4JParserNet
             FilterHandle result = null;
             try
             {
-                Log4JParserC.Log4JFilterInitLevelC (out result, min_, max_);
+                Log4JParserC.Log4JFilterInitLevelC (out result, Min, Max);
                 return Filter.Simple (result);
             }
             catch (Exception ex)
@@ -50,5 +50,8 @@ namespace Log4JParserNet
                 throw;
             }
         }
+
+        public override void AcceptVisitor (IFilterBuilderVisitor visitor)
+            => (visitor ?? throw new ArgumentNullException (nameof (visitor))).Visit (this);
     }
 }

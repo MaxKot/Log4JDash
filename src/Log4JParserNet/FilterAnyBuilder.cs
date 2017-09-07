@@ -10,6 +10,9 @@ namespace Log4JParserNet
     {
         private HashSet<FilterBuilder> children_ = new HashSet<FilterBuilder> ();
 
+        public IReadOnlyCollection<FilterBuilder> Children
+            => new ReadOnlyCollectionAdapter<FilterBuilder> (children_);
+
         public override bool Equals (object obj)
             => obj is FilterAnyBuilder other && Equals (other);
 
@@ -81,5 +84,8 @@ namespace Log4JParserNet
                 throw;
             }
         }
+
+        public override void AcceptVisitor (IFilterBuilderVisitor visitor)
+            => (visitor ?? throw new ArgumentNullException (nameof (visitor))).Visit (this);
     }
 }
