@@ -52,7 +52,7 @@ namespace Log4JParserNet.Tests
                 var eventData = new LoggingEventData
                 {
                     LoggerName = "TestLogger",
-                    TimeStamp = dateTime,
+                    TimeStampUtc = dateTime.ToUniversalTime (),
                     Level = log4net.Core.Level.Debug,
                     ThreadName = "TestThread",
                     Message = "Test message."
