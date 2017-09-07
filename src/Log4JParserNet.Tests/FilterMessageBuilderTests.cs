@@ -45,5 +45,29 @@ namespace Log4JParserNet.Tests
                 Assert.That (actual, Is.EqualTo (expected));
             }
         }
+
+        [Test]
+        public void IsEqualToSameFilterBuilder ()
+        {
+            var subjectA = FilterBuilder.Message ("nt E");
+            var subjectB = FilterBuilder.Message ("nt E");
+
+            var actualEquals = Equals (subjectA, subjectB);
+            var actualHashCodeEquals = subjectA.GetHashCode () == subjectB.GetHashCode ();
+
+            Assert.That (actualEquals, Is.True);
+            Assert.That (actualHashCodeEquals, Is.True);
+        }
+
+        [Test]
+        public void IsNotEqualToDifferentFilterBuilder ()
+        {
+            var subjectA = FilterBuilder.Message ("nt E");
+            var subjectB = FilterBuilder.Message ("nt");
+
+            var actualEquals = Equals (subjectA, subjectB);
+
+            Assert.That (actualEquals, Is.False);
+        }
     }
 }

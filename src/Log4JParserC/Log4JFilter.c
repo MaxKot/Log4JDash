@@ -280,6 +280,8 @@ static bool Log4JFilterTimestampApply_ (void *context, const Log4JEvent event)
 
 // Composite filters
 
+#pragma region Log4JFilterList
+
 typedef struct Log4JFilterEntry_
 {
     const Log4JFilter *Filter;
@@ -326,6 +328,8 @@ static Log4JFilterEntry_ *Log4JFilterListRemove_ (Log4JFilterEntry_ *head, const
 
     return head;
 }
+
+#pragma endregion
 
 #pragma region All filter
 

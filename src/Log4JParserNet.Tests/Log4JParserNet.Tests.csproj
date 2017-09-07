@@ -90,8 +90,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="EventExpectation.cs" />
+    <Compile Include="FilterAllBuilderTests.cs" />
     <Compile Include="FilterAnyBuilderTests.cs" />
-    <Compile Include="FilterBuilderAllTests.cs" />
     <Compile Include="FilterLevelBuilderTests.cs" />
     <Compile Include="FilterLoggerBuilderTests.cs" />
     <Compile Include="FilterMessageBuilderTests.cs" />

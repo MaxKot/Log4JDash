@@ -1,17 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Log4JParserNet
 {
-    public sealed class FilterAnyBuilder : FilterBuilder
+    public sealed class FilterAnyBuilder
+        : FilterBuilder
+        , IEquatable<FilterAnyBuilder>
     {
-        private List<FilterBuilder> children_ = new List<FilterBuilder> ();
+        private HashSet<FilterBuilder> children_ = new HashSet<FilterBuilder> ();
+
+        public override bool Equals (object obj)
+            => obj is FilterAnyBuilder other && Equals (other);
+
+        public bool Equals (FilterAnyBuilder other)
+            => other != null && children_.SetEquals (other.children_);
+
+        public override int GetHashCode ()
+            => children_
+                .Select (e => e.GetHashCode ())
+                .OrderBy (hc => hc)
+                .Aggregate (-1313666667, (a, hc) => a * -1521134295 + hc);
 
         public void Add (FilterBuilder child)
-            => children_.Add (child);
+            => children_.Add (child ?? throw new ArgumentNullException (nameof (child)));
 
         public void AddRange (IEnumerable<FilterBuilder> children)
-            => children_.AddRange (children);
+        {
+            if (children == null)
+            {
+                throw new ArgumentNullException (nameof (children));
+            }
+
+            foreach (var child in children)
+            {
+                Add (child);
+            }
+        }
 
         public void Remove (FilterBuilder child)
             => children_.Remove (child);
@@ -32,7 +57,7 @@ namespace Log4JParserNet
 
             try
             {
-                children = AssociatedFiltersCollection.Build (children_);
+                children = AssociatedFiltersCollection.Build (children_.ToArray ());
 
                 Log4JParserC.Log4JFilterInitAny (out primaryFilter);
                 foreach (var child in children)
