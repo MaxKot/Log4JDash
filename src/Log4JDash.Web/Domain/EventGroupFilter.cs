@@ -10,16 +10,19 @@ namespace Log4JDash.Web.Domain
     {
         private sealed class Level : EventGroupFilter
         {
-            private readonly string level_;
+            private readonly string min_;
 
-            public Level (string level)
+            private readonly string max_;
+
+            public Level (string min, string max)
             {
-                level_ = level;
-                throw new NotImplementedException ();
+                min_ = min;
+                max_ = max;
             }
 
             public override bool Apply (LogFileStats.EventGroupKey groupKey)
-                => FilterLevelBuilder.LevelComparer.Equals (groupKey.Level, level_);
+                => FilterLevelBuilder.LevelComparer.Compare (min_, groupKey.Level) <= 0 &&
+                   FilterLevelBuilder.LevelComparer.Compare(groupKey.Level, max_) <= 0;
         }
 
         private sealed class Logger : EventGroupFilter
@@ -152,7 +155,7 @@ namespace Log4JDash.Web.Domain
             }
 
             void IFilterBuilderVisitor.Visit (FilterLevelBuilder filter)
-                => throw new NotImplementedException ();
+                => lastResult_ = new Level (filter.Min, filter.Max);
 
             void IFilterBuilderVisitor.Visit (FilterLoggerBuilder filter)
                 => lastResult_ = new Logger (filter.Logger);

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
@@ -215,6 +216,40 @@ namespace Log4JParserNet.Tests
             var actualEquals = Equals (subjectA, subjectB);
 
             Assert.That (actualEquals, Is.False);
+        }
+
+        [Test]
+        public void ComparerSortsLevelCorrectly ()
+        {
+            var input = new[]
+            {
+                Level.All,
+                Level.Debug,
+                Level.Error,
+                Level.Fatal,
+                Level.Info,
+                Level.MaxValue,
+                Level.MinValue,
+                Level.Off,
+                Level.Warn
+            };
+            var expected = new[]
+            {
+                Level.All,
+                Level.MinValue,
+                Level.Debug,
+                Level.Info,
+                Level.Warn,
+                Level.Error,
+                Level.Fatal,
+                Level.MaxValue,
+                Level.Off
+            };
+
+            var subject = FilterLevelBuilder.LevelComparer;
+            var actual = input.OrderBy (s => s, subject);
+
+            Assert.That (actual, Is.EqualTo (expected));
         }
     }
 }

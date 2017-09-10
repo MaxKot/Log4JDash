@@ -136,6 +136,10 @@ namespace Log4JParserNet
             (out IteratorHandle self, IteratorHandle inner, FilterHandle filter);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static Int32 Log4JGetLevelValueNt
+            ([MarshalAs (UnmanagedType.LPStr)] string value);
+
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JLevelAll (out IntPtr value);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]

@@ -122,6 +122,11 @@ LOG4JPARSERC_API void Log4JIteratorInitEventSourceReverse (Log4JIterator **self,
 
 LOG4JPARSERC_API void Log4JIteratorInitFilter (Log4JIterator **self, Log4JIterator *inner, const Log4JFilter *filter);
 
+// Utilities
+
+LOG4JPARSERC_API int32_t Log4JGetLevelValueFs (const char *level, size_t levelSize);
+LOG4JPARSERC_API int32_t Log4JGetLevelValueNt (const char *level);
+
 // Constants
 
 LOG4JPARSERC_API void Log4JLevelAlert (const char **value);

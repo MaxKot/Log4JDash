@@ -45,10 +45,5 @@ namespace Log4JParserNet
                 ? Marshal.PtrToStringAnsi (value)
                 : null;
         }
-
-        public static bool Equals (string x, string y)
-        {
-            return String.Equals (x, y, StringComparison.OrdinalIgnoreCase);
-        }
     }
 }

@@ -1,6 +1,5 @@
 ﻿#include <limits.h>
 #include "Log4JParserC.h"
-#include "LevelParser.h"
 
 #define LTN_CHILD_COUNT 26
 
@@ -48,6 +47,8 @@ static int LtnGet_ (const LevelTreeNode_ *root, const char *value, size_t valueS
 }
 
 #pragma region Levels definition
+
+#define MAX_LEVEL_NAME_LENGTH 9
 
 static const char Log4JLevelAlertValue_[] = "ALERT";
 LOG4JPARSERC_API void Log4JLevelAlert (const char **value)
@@ -628,7 +629,12 @@ static const LevelTreeNode_ Levels_ =
 
 #pragma endregion
 
-int GetLevelValue (const char *level, size_t levelSize)
+LOG4JPARSERC_API int32_t Log4JGetLevelValueFs (const char *level, size_t levelSize)
 {
     return LtnGet_ (&Levels_, level, levelSize);
+}
+
+LOG4JPARSERC_API int32_t Log4JGetLevelValueNt (const char *level)
+{
+    return LtnGet_ (&Levels_, level, MAX_LEVEL_NAME_LENGTH + 1);
 }

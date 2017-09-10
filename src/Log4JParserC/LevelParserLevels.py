@@ -23,7 +23,7 @@ class PrefixTreeNode(object):
     def __init__(self):
         self.Value = -1;
         self.Children = [None for _ in range(26)];
-
+    
     def add(self, name, value):
         if len(name) == 0:
             self.Value = value
@@ -77,7 +77,7 @@ def print_tree(tree_node, node_name = ''):
     print('{')
     
     print('    {},'.format(tree_node.Value))
-
+    
     slot_names = [tree_node_slot_name(tree_node, node_name, i) for i in range(len(tree_node.Children))]
     childrefs = [tree_node_ref(tree_node, node_name, i) for i in range(len(tree_node.Children))]
     print('    //{}'.format('  '.join(slot_names)))
@@ -86,13 +86,17 @@ def print_tree(tree_node, node_name = ''):
     print('};')
 
 for (name, _) in log4JLevels:
-    print('LOG4JPARSERC_API void Log4JLevel{} (const char **value);'.format(name.title()))
+    print('LOG4JPARSERC_API int Log4JLevel{} (const char **value);'.format(name.title()))
 print()
- 
+
 print('#pragma region Levels definition')
 print()
 
-for (name, _) in log4JLevels:
+max_length = max([len(name) for (name, _) in log4JLevels])
+print('#define MAX_LEVEL_NAME_LENGTH {}'.format(max_length))
+print()
+
+for (name, value) in log4JLevels:
     print('static const char Log4JLevel{}Value_[] = "{}";'.format(name.title(), name.upper()))
     print('LOG4JPARSERC_API void Log4JLevel{} (const char **value)'.format(name.title()))
     print('{')
