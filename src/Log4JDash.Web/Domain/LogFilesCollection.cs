@@ -3,14 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Log4JParserNet;
 
 namespace Log4JDash.Web.Domain
 {
-    internal sealed class Log4JFilesCollection
-         : IEnumerable<Log4JFile>
+    internal sealed class LogFilesCollection
+         : IEnumerable<LazyLogFile>
     {
-        private sealed class Enumerator : IEnumerator<Log4JFile>
+        private sealed class Enumerator : IEnumerator<LazyLogFile>
         {
             private readonly IEnumerator<string> filesEnumerator_;
 
@@ -18,9 +17,9 @@ namespace Log4JDash.Web.Domain
 
             private readonly long? maxSize_;
 
-            private Log4JFile current_;
+            private LazyLogFile current_;
 
-            public Log4JFile Current => current_;
+            public LazyLogFile Current => current_;
 
             object IEnumerator.Current => Current;
 
@@ -28,6 +27,9 @@ namespace Log4JDash.Web.Domain
 
             public Enumerator (IEnumerator<string> filesEnumerator, Encoding encoding, long? maxSize)
             {
+                Debug.Assert (filesEnumerator != null, "LogFilesCollection.Enumerator.ctor: filesEnumerator is null.");
+                Debug.Assert (encoding != null, "LogFilesCollection.Enumerator.ctor: encoding is null.");
+
                 filesEnumerator_ = filesEnumerator;
                 encoding_ = encoding;
                 maxSize_ = maxSize;
@@ -73,14 +75,19 @@ namespace Log4JDash.Web.Domain
                     return false;
                 }
 
-                var fileName = filesEnumerator_.Current;
-                Trace.WriteLine ($"Opening log4j file. File name: '{fileName}'.", "Log4JDash.Web.Domain.Log4JFilesCollection");
-                var file = Log4JFile.Create (fileName, remainingSize_);
-                file.Encoding = encoding_;
+                var file = OpenFile (filesEnumerator_.Current, remainingSize_);
                 remainingSize_ -= file.Size;
 
                 current_ = file;
                 return true;
+            }
+
+            private LazyLogFile OpenFile (string fileName, long? maxSize)
+            {
+                Trace.WriteLine ($"Opening log4j file. File name: '{fileName}'.", "Log4JDash.Web.Domain.Log4JFilesCollection");
+                var file = new LazyLogFile (fileName, maxSize, encoding_);
+
+                return file;
             }
 
             public void Reset ()
@@ -99,23 +106,17 @@ namespace Log4JDash.Web.Domain
 
         private readonly long? maxSize_;
 
-        public Log4JFilesCollection (IEnumerable<string> files, Encoding encoding, long? maxSize = null)
+        public LogFilesCollection (IEnumerable<string> files, Encoding encoding, long? maxSize = null)
         {
-            if (files == null)
-            {
-                throw new ArgumentNullException (nameof (files));
-            }
-            if (encoding == null)
-            {
-                throw new ArgumentNullException (nameof (encoding));
-            }
+            Debug.Assert (files != null, "LogFilesCollection.ctor: files is null.");
+            Debug.Assert (encoding != null, "LogFilesCollection.ctor: encoding is null.");
 
             files_ = files;
             encoding_ = encoding;
             maxSize_ = maxSize;
         }
 
-        public IEnumerator<Log4JFile> GetEnumerator ()
+        public IEnumerator<LazyLogFile> GetEnumerator ()
             => new Enumerator (files_.GetEnumerator (), encoding_, maxSize_);
 
         IEnumerator IEnumerable.GetEnumerator ()

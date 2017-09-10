@@ -7,8 +7,11 @@ namespace Log4JParserNet
         : FilterBuilder
         , IEquatable<FilterLevelBuilder>
     {
-        private static readonly IEqualityComparer<string> LevelComparer
+        public static readonly IEqualityComparer<string> LevelComparer
             = StringComparer.Ordinal;
+
+        public const StringComparison LevelComparison
+            = StringComparison.Ordinal;
 
         public string Min { get; }
 

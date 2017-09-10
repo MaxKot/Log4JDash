@@ -7,8 +7,11 @@ namespace Log4JParserNet
         : FilterBuilder
         , IEquatable<FilterLoggerBuilder>
     {
-        private static readonly IEqualityComparer<string> LoggerComparer
+        public static readonly IEqualityComparer<string> LoggerComparer
             = StringComparer.OrdinalIgnoreCase;
+
+        public const StringComparison LoggerComparison
+            = StringComparison.OrdinalIgnoreCase;
 
         new public string Logger { get; }
 

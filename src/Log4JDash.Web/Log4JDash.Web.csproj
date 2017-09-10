@@ -100,11 +100,16 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Configuration\KnownSections.cs" />
+    <Compile Include="Domain\EventGroupFilter.cs" />
     <Compile Include="Domain\ILogDirectoryConfig.cs" />
-    <Compile Include="Domain\Log4JFilesCollection.cs" />
+    <Compile Include="Domain\LazyLogFile.cs" />
+    <Compile Include="Domain\LogAccumulator.cs" />
     <Compile Include="Domain\LogDirectoryElement.cs" />
     <Compile Include="Domain\ILogSourceProviderConfig.cs" />
     <Compile Include="Domain\LogDirectoryElementCollection.cs" />
+    <Compile Include="Domain\LogFilesCollection.cs" />
+    <Compile Include="Domain\LogFileStats.cs" />
+    <Compile Include="Domain\LogFileStatsCache.cs" />
     <Compile Include="Domain\LogSource.cs" />
     <Compile Include="Domain\LogSourceProvider.cs" />
     <Compile Include="Domain\LogSourceProviderSection.cs" />

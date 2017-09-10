@@ -7,8 +7,11 @@ namespace Log4JParserNet
         : FilterBuilder
         , IEquatable<FilterMessageBuilder>
     {
-        private static readonly IEqualityComparer<string> MessageComparer
+        public static readonly IEqualityComparer<string> MessageComparer
             = StringComparer.Ordinal;
+
+        public const StringComparison MessageComparison
+            = StringComparison.Ordinal;
 
         new public string Message { get; }
 

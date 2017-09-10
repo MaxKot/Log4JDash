@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Hosting;
 using Log4JDash.Web.Models;
-using Log4JParserNet;
 
 namespace Log4JDash.Web.Domain
 {
@@ -28,35 +28,31 @@ namespace Log4JDash.Web.Domain
             ? Path.Combine (HostingEnvironment.MapPath ("~"), config_.DirectoryPath)
             : config_.DirectoryPath;
 
-        public LogSource (ILogDirectoryConfig config)
+        private LogFileStatsCache statsCache_;
+
+        public LogSource (ILogDirectoryConfig config, LogFileStatsCache statsCache)
         {
+            Debug.Assert (config != null, "LogSource.ctor: config is null.");
+            Debug.Assert (statsCache != null, "LogSource.ctor: statsCache is null.");
             config_ = config;
+            statsCache_ = statsCache;
         }
 
         public EventsCollection GetEvents (LogQuery query)
         {
             var files = GetFiles (true);
-
-            var size = query.SourceSize ?? files.Sum (f => Log4JFile.GetSize (f));
-
             var encoding = config_.Encoding;
 
-            var filterBuilder = query.CreateFilter ();
-            using (var filter = filterBuilder?.Build ())
-            {
-                var log4JFiles = new Log4JFilesCollection (files, encoding, size);
+            var logFiles = new LogFilesCollection (files, encoding, query.SourceSize);
+            var size = query.SourceSize ?? logFiles.Sum (f => f.Size);
 
-                var events = log4JFiles
-                    .Select (f => f.GetEventsReverse ())
-                    .SelectMany (es => filter != null ? es.Where (filter) : es)
-                    .Skip (query.Offset)
-                    .Take (query.Quantity)
-                    .Select (x => new EventModel (x))
-                    .ToList ();
-                events.Reverse ();
+            var events = logFiles
+                .Aggregate (new LogAccumulator (statsCache_, query), (a, f) => a.Consume (f))
+                .Events
+                .ToList ();
+            events.Reverse ();
 
-                return new EventsCollection (events, Name, size);
-            }
+            return new EventsCollection (events, Name, size);
         }
 
         public bool IsEmpty ()
