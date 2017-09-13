@@ -174,15 +174,16 @@ namespace Log4JParserNet
             }
 
             long bufferSize;
-            if (maxSize == null)
+            if (maxSize != null)
             {
-                var sourceSize = source.Seek (0, SeekOrigin.End);
-                bufferSize = checked (sourceSize + 1L);
-                source.Seek (0, SeekOrigin.Begin);
+                var maxBufferSize = checked((long) maxSize + 1);
+                bufferSize = source.CanSeek
+                    ? Math.Min (source.Length + 1, maxBufferSize)
+                    : maxBufferSize;
             }
             else
             {
-                bufferSize = checked ((long) maxSize + 1);
+                bufferSize = source.Length + 1;
             }
 
             UnmanagedMemoryHandle buffer = null;
