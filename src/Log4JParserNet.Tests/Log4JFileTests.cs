@@ -982,5 +982,28 @@ namespace Log4JParserNet.Tests
                 }
             }
         }
+
+        [Test]
+        public void HandlesExcessiveMaxLogSize ()
+        {
+            var maxSignedValue = checked((1UL << 8 * IntPtr.Size - 1) - 1);
+
+            Warn.If (IntPtr.Size, Is.Not.EqualTo (4).And.Not.EqualTo (8));
+            Assume.That (maxSignedValue == Int64.MaxValue || IntPtr.Size != 8);
+            Assume.That (maxSignedValue == Int32.MaxValue || IntPtr.Size != 4);
+
+            var maxCStringSize = (long) maxSignedValue - 1;
+
+            using (var source = new MemoryStream (sample1Bytes))
+            {
+                Assert.That (() =>
+                {
+                    using (Log4JFile.Create (source, maxCStringSize))
+                    {
+
+                    }
+                }, Throws.Nothing);
+            }
+        }
     }
 }
