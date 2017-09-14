@@ -41,11 +41,15 @@ namespace Log4JDash.Web.Models
         [DisplayFormat (ApplyFormatInEditMode = true, DataFormatString = DateFormatSting)]
         public DateTime MinTime { get; set; }
 
+        public Int64 MinTimestamp => Timestamp.FromDateTime (MinTime);
+
         private static readonly DateTime DefaultMaxTime = DateTime.MaxValue;
 
         [DefaultValueSource ("DefaultMaxTime")]
         [DisplayFormat (ApplyFormatInEditMode = true, DataFormatString = DateFormatSting)]
         public DateTime MaxTime { get; set; }
+
+        public Int64 MaxTimestamp => Timestamp.FromDateTime (MaxTime);
 
         private const string DefaultMessage = null;
 

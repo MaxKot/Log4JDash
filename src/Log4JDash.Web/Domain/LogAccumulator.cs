@@ -42,7 +42,9 @@ namespace Log4JDash.Web.Domain
             }
 
             var stats = statsCache_.GetOrAdd (logFile, query_);
-            if (stats.LatestTimestamp < query_.MinTime || stats.EarliestTimestamp > query_.MaxTime)
+            var matchesTimeWindow = query_.MinTimestamp <= stats.LatestTimestamp &&
+                                    stats.EarliestTimestamp <= query_.MaxTimestamp;
+            if (!matchesTimeWindow)
             {
                 return this;
             }

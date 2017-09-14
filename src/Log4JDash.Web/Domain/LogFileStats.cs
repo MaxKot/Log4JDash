@@ -51,9 +51,9 @@ namespace Log4JDash.Web.Domain
 
         public IReadOnlyDictionary<EventGroupKey, int> GroupStats { get; }
 
-        public DateTime EarliestTimestamp { get; }
+        public Int64 EarliestTimestamp { get; }
 
-        public DateTime LatestTimestamp { get; }
+        public Int64 LatestTimestamp { get; }
 
         private LogFileStats
         (
@@ -61,8 +61,8 @@ namespace Log4JDash.Web.Domain
             long size,
             int eventCount,
             IReadOnlyDictionary<EventGroupKey, int> groupStats,
-            DateTime earliestTimestamp,
-            DateTime latestTimestamp
+            Int64 earliestTimestamp,
+            Int64 latestTimestamp
         )
         {
             Debug.Assert (groupStats != null, "LogFileStats.ctor: groupStats is null.");
@@ -85,12 +85,12 @@ namespace Log4JDash.Web.Domain
                     {
                         EventCount = 0,
                         GroupStats = new Dictionary<EventGroupKey, int> (),
-                        EarliestTimestamp = DateTime.MaxValue,
-                        LatestTimestamp = DateTime.MinValue
+                        EarliestTimestamp = Timestamp.MaxValue,
+                        LatestTimestamp = Timestamp.MinValue
                     },
                     (a, e) =>
                     {
-                        var ts = e.Time;
+                        var ts = e.Timestamp;
 
                         var gs = a.GroupStats;
                         var groupKey = new EventGroupKey (e);
@@ -115,8 +115,8 @@ namespace Log4JDash.Web.Domain
 
             var eventCount = stats.EventCount;
             var groupStats = stats.GroupStats;
-            DateTime earliestTimestamp;
-            DateTime latestTimestamp;
+            Int64 earliestTimestamp;
+            Int64 latestTimestamp;
             if (eventCount > 0)
             {
                 earliestTimestamp = stats.EarliestTimestamp;
@@ -124,8 +124,8 @@ namespace Log4JDash.Web.Domain
             }
             else
             {
-                earliestTimestamp = DateTime.MinValue;
-                latestTimestamp = DateTime.MaxValue;
+                earliestTimestamp = Timestamp.MinValue;
+                latestTimestamp = Timestamp.MaxValue;
             }
 
             var result = new LogFileStats
