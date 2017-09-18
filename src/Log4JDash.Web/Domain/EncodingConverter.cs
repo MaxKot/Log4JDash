@@ -2,9 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
 using System.Globalization;
-using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Log4JDash.Web.Domain
 {

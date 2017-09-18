@@ -117,6 +117,7 @@
     <Compile Include="Domain\EncodingConverter.cs" />
     <Compile Include="Domain\RegexConverter.cs" />
     <Compile Include="Models\EventsQuantityConverter.cs" />
+    <Compile Include="Domain\ILogQuery.cs" />
     <Compile Include="Models\LogSourceInputConverter.cs" />
     <Compile Include="Mvc\ConfigurableRequireHttpsAttribute.cs" />
     <Compile Include="Mvc\DefaultValueAttribute.cs" />

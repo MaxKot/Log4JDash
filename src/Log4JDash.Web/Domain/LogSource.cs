@@ -38,8 +38,10 @@ namespace Log4JDash.Web.Domain
             statsCache_ = statsCache;
         }
 
-        public EventsCollection GetEvents (LogQuery query)
+        public EventsCollection GetEvents (ILogQuery query)
         {
+            Debug.Assert (query != null, "LogSource.GetEvents: query is null.");
+
             var files = GetFiles (true);
             var encoding = config_.Encoding;
 

@@ -9,7 +9,7 @@ namespace Log4JDash.Web.Domain
     {
         private readonly LogFileStatsCache statsCache_;
 
-        private readonly LogQuery query_;
+        private readonly ILogQuery query_;
 
         private readonly EventGroupFilter groupFilter_;
 
@@ -21,7 +21,7 @@ namespace Log4JDash.Web.Domain
 
         public bool IsComplete => events_.Count == query_.Quantity;
 
-        public LogAccumulator (LogFileStatsCache statsCache, LogQuery query)
+        public LogAccumulator (LogFileStatsCache statsCache, ILogQuery query)
         {
             Debug.Assert (statsCache != null, "LogAccumulator.ctor: statsCache is null.");
             Debug.Assert (query != null, "LogAccumulator.ctor: query is null.");
@@ -41,7 +41,9 @@ namespace Log4JDash.Web.Domain
                 return this;
             }
 
-            var stats = statsCache_.GetOrAdd (logFile, query_);
+            var filterBuilder = query_.CreateFilter ();
+
+            var stats = statsCache_.GetOrAdd (logFile, filterBuilder);
             var matchesTimeWindow = query_.MinTimestamp <= stats.LatestTimestamp &&
                                     stats.EarliestTimestamp <= query_.MaxTimestamp;
             if (!matchesTimeWindow)
@@ -55,7 +57,6 @@ namespace Log4JDash.Web.Domain
 
             if (matchingEvents > skipRemaining_)
             {
-                var filterBuilder = query_.CreateFilter ();
                 using (var filter = filterBuilder?.Build ())
                 {
                     var fileEvents = logFile.GetEventsReverse ();
