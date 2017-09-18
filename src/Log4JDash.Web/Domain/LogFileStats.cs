@@ -55,7 +55,7 @@ namespace Log4JDash.Web.Domain
 
         public Int64 LatestTimestamp { get; }
 
-        private LogFileStats
+        public LogFileStats
         (
             string fileName,
             long size,

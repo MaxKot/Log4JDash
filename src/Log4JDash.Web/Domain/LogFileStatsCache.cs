@@ -2,12 +2,11 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Log4JDash.Web.Models;
 using Log4JParserNet;
 
 namespace Log4JDash.Web.Domain
 {
-    internal sealed class LogFileStatsCache
+    internal sealed class LogFileStatsCache : ILogFileStatsProvider
     {
         private sealed class FindUnstatable
             : IFilterBuilderVisitor
@@ -151,7 +150,7 @@ namespace Log4JDash.Web.Domain
         private ConcurrentDictionary<Key, LogFileStats> impl_
             = new ConcurrentDictionary<Key, LogFileStats> (KeyComparer.Instance);
 
-        public LogFileStats GetOrAdd (LazyLogFile logFile, FilterBuilder filter)
+        public LogFileStats GetStats (LazyLogFile logFile, FilterBuilder filter)
             => impl_.GetOrAdd (new Key (logFile, filter), _ => LogFileStats.GatherStats (logFile));
 
         public static LogFileStatsCache Default { get; } = new LogFileStatsCache ();

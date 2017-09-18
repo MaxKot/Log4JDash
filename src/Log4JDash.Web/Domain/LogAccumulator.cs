@@ -7,7 +7,7 @@ namespace Log4JDash.Web.Domain
 {
     internal sealed class LogAccumulator
     {
-        private readonly LogFileStatsCache statsCache_;
+        private readonly ILogFileStatsProvider statsProvider_;
 
         private readonly ILogQuery query_;
 
@@ -21,11 +21,11 @@ namespace Log4JDash.Web.Domain
 
         public bool IsComplete => events_.Count == query_.Quantity;
 
-        public LogAccumulator (LogFileStatsCache statsCache, ILogQuery query)
+        public LogAccumulator (ILogFileStatsProvider statsProvider, ILogQuery query)
         {
-            Debug.Assert (statsCache != null, "LogAccumulator.ctor: statsCache is null.");
+            Debug.Assert (statsProvider != null, "LogAccumulator.ctor: statsProvider is null.");
             Debug.Assert (query != null, "LogAccumulator.ctor: query is null.");
-            statsCache_ = statsCache;
+            statsProvider_ = statsProvider;
             query_ = query;
 
             var filter = query_.CreateFilter ();
@@ -43,7 +43,7 @@ namespace Log4JDash.Web.Domain
 
             var filterBuilder = query_.CreateFilter ();
 
-            var stats = statsCache_.GetOrAdd (logFile, filterBuilder);
+            var stats = statsProvider_.GetStats (logFile, filterBuilder);
             var matchesTimeWindow = query_.MinTimestamp <= stats.LatestTimestamp &&
                                     stats.EarliestTimestamp <= query_.MaxTimestamp;
             if (!matchesTimeWindow)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Log4JDash.Web.Domain
@@ -8,28 +9,21 @@ namespace Log4JDash.Web.Domain
     {
         private readonly ILogSourceProviderConfig config_;
 
-        private readonly LogFileStatsCache statsCache_;
+        private readonly ILogFileStatsProvider statsProvider_;
 
-        public LogSourceProvider (ILogSourceProviderConfig config, LogFileStatsCache statsCache)
+        public LogSourceProvider (ILogSourceProviderConfig config, ILogFileStatsProvider statsProvider)
         {
-            if (config == null)
-            {
-                throw new ArgumentNullException (nameof (config));
-            }
-
-            if (statsCache == null)
-            {
-                throw new ArgumentNullException (nameof (statsCache));
-            }
+            Debug.Assert (config != null, "LogSourceProvider.ctor: config is null.");
+            Debug.Assert (statsProvider != null, "LogSourceProvider.ctor: statsProvider is null.");
 
             config_ = config;
-            statsCache_ = statsCache;
+            statsProvider_ = statsProvider;
         }
 
         private IReadOnlyDictionary<string, LogSource> DoGetSources ()
         {
             var result = config_.Directories
-                .Select (d => new LogSource (d, statsCache_))
+                .Select (d => new LogSource (d, statsProvider_))
                 .Where (s => !s.IsEmpty ())
                 .ToDictionary (s => s.Name);
 
