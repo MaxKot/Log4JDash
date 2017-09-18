@@ -100,7 +100,7 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Configuration\KnownSections.cs" />
-    <Compile Include="Domain\Enumerable.cs" />
+    <Compile Include="Enumerable.cs" />
     <Compile Include="Domain\EventGroupFilter.cs" />
     <Compile Include="Domain\ILogDirectoryConfig.cs" />
     <Compile Include="Domain\LazyLogFile.cs" />
@@ -114,8 +114,8 @@
     <Compile Include="Domain\LogSource.cs" />
     <Compile Include="Domain\LogSourceProvider.cs" />
     <Compile Include="Domain\LogSourceProviderSection.cs" />
-    <Compile Include="Domain\EncodingConverter.cs" />
-    <Compile Include="Domain\RegexConverter.cs" />
+    <Compile Include="EncodingConverter.cs" />
+    <Compile Include="RegexConverter.cs" />
     <Compile Include="Models\EventsQuantityConverter.cs" />
     <Compile Include="Domain\ILogQuery.cs" />
     <Compile Include="Models\LogSourceInputConverter.cs" />

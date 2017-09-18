@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Log4JDash.Web.Domain
+namespace Log4JDash.Web
 {
     internal static class Enumerable
     {
