@@ -8,9 +8,9 @@ namespace Log4JDash.Web.Domain
 
         long? SourceSize { get; }
 
-        long MaxTimestamp { get; }
-
         long MinTimestamp { get; }
+
+        long MaxTimestamp { get; }
 
         int Offset { get; }
 

@@ -105,7 +105,7 @@ namespace Log4JDash.Web.Domain
                 unstatableFilter_ = FindUnstatable.Apply (filter);
             }
 
-            public Key (LazyLogFile logFile, FilterBuilder filter)
+            public Key (ILogFile logFile, FilterBuilder filter)
                 : this (logFile.FileName, logFile.Size, filter)
             {
 
@@ -150,7 +150,7 @@ namespace Log4JDash.Web.Domain
         private ConcurrentDictionary<Key, LogFileStats> impl_
             = new ConcurrentDictionary<Key, LogFileStats> (KeyComparer.Instance);
 
-        public LogFileStats GetStats (LazyLogFile logFile, FilterBuilder filter)
+        public LogFileStats GetStats (ILogFile logFile, FilterBuilder filter)
             => impl_.GetOrAdd (new Key (logFile, filter), _ => LogFileStats.GatherStats (logFile));
 
         public static LogFileStatsCache Default { get; } = new LogFileStatsCache ();

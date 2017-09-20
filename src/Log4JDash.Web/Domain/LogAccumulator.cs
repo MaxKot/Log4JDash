@@ -34,7 +34,7 @@ namespace Log4JDash.Web.Domain
             skipRemaining_ = query_.Offset;
         }
 
-        public LogAccumulator Consume (LazyLogFile logFile)
+        public LogAccumulator Consume (ILogFile logFile)
         {
             if (IsComplete)
             {

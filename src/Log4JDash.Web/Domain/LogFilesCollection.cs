@@ -7,9 +7,9 @@ using System.Text;
 namespace Log4JDash.Web.Domain
 {
     internal sealed class LogFilesCollection
-         : IEnumerable<LazyLogFile>
+         : IEnumerable<LogFile>
     {
-        private sealed class Enumerator : IEnumerator<LazyLogFile>
+        private sealed class Enumerator : IEnumerator<LogFile>
         {
             private readonly IEnumerator<string> filesEnumerator_;
 
@@ -17,9 +17,9 @@ namespace Log4JDash.Web.Domain
 
             private readonly long? maxSize_;
 
-            private LazyLogFile current_;
+            private LogFile current_;
 
-            public LazyLogFile Current => current_;
+            public LogFile Current => current_;
 
             object IEnumerator.Current => Current;
 
@@ -82,10 +82,10 @@ namespace Log4JDash.Web.Domain
                 return true;
             }
 
-            private LazyLogFile OpenFile (string fileName, long? maxSize)
+            private LogFile OpenFile (string fileName, long? maxSize)
             {
                 Trace.WriteLine ($"Opening log4j file. File name: '{fileName}'.", "Log4JDash.Web.Domain.Log4JFilesCollection");
-                var file = new LazyLogFile (fileName, maxSize, encoding_);
+                var file = new LogFile (fileName, maxSize, encoding_);
 
                 return file;
             }
@@ -116,7 +116,7 @@ namespace Log4JDash.Web.Domain
             maxSize_ = maxSize;
         }
 
-        public IEnumerator<LazyLogFile> GetEnumerator ()
+        public IEnumerator<LogFile> GetEnumerator ()
             => new Enumerator (files_.GetEnumerator (), encoding_, maxSize_);
 
         IEnumerator IEnumerable.GetEnumerator ()

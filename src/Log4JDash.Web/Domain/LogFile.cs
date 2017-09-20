@@ -7,7 +7,7 @@ using Log4JParserNet;
 
 namespace Log4JDash.Web.Domain
 {
-    internal sealed class LazyLogFile : IDisposable
+    internal sealed class LogFile : IDisposable, ILogFile
     {
         public string FileName => fileStream_.Name;
 
@@ -25,7 +25,7 @@ namespace Log4JDash.Web.Domain
 
         private readonly FileStream fileStream_;
 
-        public LazyLogFile (string fileName, long? maxSize, Encoding encoding)
+        public LogFile (string fileName, long? maxSize, Encoding encoding)
         {
             maxSize_ = maxSize;
             encoding_ = encoding;

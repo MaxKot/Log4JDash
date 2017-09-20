@@ -100,11 +100,12 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Configuration\KnownSections.cs" />
+    <Compile Include="Domain\ILogFile.cs" />
     <Compile Include="Domain\ILogFileStatsProvider.cs" />
+    <Compile Include="Domain\LogFile.cs" />
     <Compile Include="Enumerable.cs" />
     <Compile Include="Domain\EventGroupFilter.cs" />
     <Compile Include="Domain\ILogDirectoryConfig.cs" />
-    <Compile Include="Domain\LazyLogFile.cs" />
     <Compile Include="Domain\LogAccumulator.cs" />
     <Compile Include="Domain\LogDirectoryElement.cs" />
     <Compile Include="Domain\ILogSourceProviderConfig.cs" />

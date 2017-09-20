@@ -75,7 +75,7 @@ namespace Log4JDash.Web.Domain
             LatestTimestamp = latestTimestamp;
         }
 
-        public static LogFileStats GatherStats (LazyLogFile logFile)
+        public static LogFileStats GatherStats (ILogFile logFile)
         {
             var stats = logFile
                 .GetEvents ()
