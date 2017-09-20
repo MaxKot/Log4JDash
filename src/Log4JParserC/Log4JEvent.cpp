@@ -162,7 +162,7 @@ void GetNodeValue_ (rapidxml::xml_node<char> *source, const char **value, size_t
         }
         else
         {
-            auto bufferLength = 0U;
+            size_t bufferLength = 0U;
             for (auto node = firstChild; node; node = node->next_sibling ())
             {
                 bufferLength += node->value_size ();
