@@ -84,6 +84,7 @@
     <Compile Include="Formatter.cs" />
     <Compile Include="FormattersSetup.cs" />
     <Compile Include="LogAccumulatorTest.cs" />
+    <Compile Include="LogFileStatsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleLogQuery.cs" />
     <Compile Include="StringLogFile.cs" />
