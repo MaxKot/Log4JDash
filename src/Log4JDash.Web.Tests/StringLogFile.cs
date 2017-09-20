@@ -47,17 +47,17 @@ namespace Log4JDash.Web.Tests
         object ICloneable.Clone ()
             => Clone ();
 
-        public void InitializeDefaultStats (ILogFileStatsProvider statsProvider)
-            => InitializeStats ((FilterBuilder) null, statsProvider);
+        public void InitializeDefaultStats (LogFileStatsCache statsCache)
+            => InitializeStats ((FilterBuilder) null, statsCache);
 
-        public void InitializeStats (ILogQuery query, ILogFileStatsProvider statsProvider)
-            => InitializeStats (query.CreateFilter (), statsProvider);
+        public void InitializeStats (ILogQuery query, LogFileStatsCache statsCache)
+            => InitializeStats (query.CreateFilter (), statsCache);
 
-        public void InitializeStats (FilterBuilder filter, ILogFileStatsProvider statsProvider)
+        public void InitializeStats (FilterBuilder filter, LogFileStatsCache statsCache)
         {
             using (var copy = Clone ())
             {
-                statsProvider.GetStats (copy, filter);
+                statsCache.GetStats (copy, filter);
             }
         }
 

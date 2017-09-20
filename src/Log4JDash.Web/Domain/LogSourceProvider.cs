@@ -9,21 +9,21 @@ namespace Log4JDash.Web.Domain
     {
         private readonly ILogSourceProviderConfig config_;
 
-        private readonly ILogFileStatsProvider statsProvider_;
+        private readonly LogFileStatsCache statsCache_;
 
-        public LogSourceProvider (ILogSourceProviderConfig config, ILogFileStatsProvider statsProvider)
+        public LogSourceProvider (ILogSourceProviderConfig config, LogFileStatsCache statsCache)
         {
             Debug.Assert (config != null, "LogSourceProvider.ctor: config is null.");
-            Debug.Assert (statsProvider != null, "LogSourceProvider.ctor: statsProvider is null.");
+            Debug.Assert (statsCache != null, "LogSourceProvider.ctor: statsCache is null.");
 
             config_ = config;
-            statsProvider_ = statsProvider;
+            statsCache_ = statsCache;
         }
 
         private IReadOnlyDictionary<string, LogSource> DoGetSources ()
         {
             var result = config_.Directories
-                .Select (d => new LogSource (d, statsProvider_))
+                .Select (d => new LogSource (d, statsCache_))
                 .Where (s => !s.IsEmpty ())
                 .ToDictionary (s => s.Name);
 

@@ -6,7 +6,7 @@ using Log4JParserNet;
 
 namespace Log4JDash.Web.Domain
 {
-    internal sealed class LogFileStatsCache : ILogFileStatsProvider
+    internal sealed class LogFileStatsCache
     {
         private sealed class FindUnstatable
             : IFilterBuilderVisitor

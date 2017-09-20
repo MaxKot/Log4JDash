@@ -28,14 +28,14 @@ namespace Log4JDash.Web.Domain
             ? Path.Combine (HostingEnvironment.MapPath ("~"), config_.DirectoryPath)
             : config_.DirectoryPath;
 
-        private ILogFileStatsProvider statsProvider_;
+        private LogFileStatsCache statsCache_;
 
-        public LogSource (ILogDirectoryConfig config, ILogFileStatsProvider statsProvider)
+        public LogSource (ILogDirectoryConfig config, LogFileStatsCache statsCache)
         {
             Debug.Assert (config != null, "LogSource.ctor: config is null.");
-            Debug.Assert (statsProvider != null, "LogSource.ctor: statsProvider is null.");
+            Debug.Assert (statsCache != null, "LogSource.ctor: statsCache is null.");
             config_ = config;
-            statsProvider_ = statsProvider;
+            statsCache_ = statsCache;
         }
 
         public EventsCollection GetEvents (ILogQuery query)
@@ -49,7 +49,7 @@ namespace Log4JDash.Web.Domain
             var size = query.SourceSize ?? logFiles.Sum (f => f.Size);
 
             var events = logFiles
-                .Scan (new LogAccumulator (statsProvider_, query), (a, f) => a.Consume (f))
+                .Scan (new LogAccumulator (statsCache_, query), (a, f) => a.Consume (f))
                 .TakeWhile (a => !a.IsComplete)
                 .Last ()
                 .Events
