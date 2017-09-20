@@ -4,7 +4,7 @@ using System.ComponentModel.Design.Serialization;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Log4JDash.Web.Domain
+namespace Log4JDash.Web
 {
     public class RegexConverter : TypeConverter
     {

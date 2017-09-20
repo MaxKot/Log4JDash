@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Log4JParserNet.Tests
 {
     [TestFixture]
-    public class FilterBuilderAllTests
+    public class FilterAllBuilderTests
     {
         private const string Sample = @"<?xml version=""1.0"" encoding=""windows-1251""?>
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message></log4j:event>
@@ -50,6 +50,46 @@ namespace Log4JParserNet.Tests
                 var actual = source.GetEvents ().Where (filter);
                 Assert.That (actual, Is.EqualTo (expected));
             }
+        }
+
+        [Test]
+        public void IsEqualToSameFilterBuilder ()
+        {
+            var subjectA = FilterBuilder.All
+            (
+                FilterBuilder.Level (Level.MinValue, Level.Info),
+                FilterBuilder.Timestamp (1411231353792L, 1411231353792L)
+            );
+            var subjectB = FilterBuilder.All
+            (
+                FilterBuilder.Level (Level.MinValue, Level.Info),
+                FilterBuilder.Timestamp (1411231353792L, 1411231353792L)
+            );
+
+            var actualEquals = Equals (subjectA, subjectB);
+            var actualHashCodeEquals = subjectA.GetHashCode () == subjectB.GetHashCode ();
+
+            Assert.That (actualEquals, Is.True);
+            Assert.That (actualHashCodeEquals, Is.True);
+        }
+
+        [Test]
+        public void IsNotEqualToDifferentFilterBuilder ()
+        {
+            var subjectA = FilterBuilder.All
+            (
+                FilterBuilder.Level (Level.MinValue, Level.Info),
+                FilterBuilder.Timestamp (1411231353792L, 1411231353792L)
+            );
+            var subjectB = FilterBuilder.All
+            (
+                FilterBuilder.Level (Level.MinValue, Level.Error),
+                FilterBuilder.Timestamp (1411231353792L, 1411231353792L)
+            );
+
+            var actualEquals = Equals (subjectA, subjectB);
+
+            Assert.That (actualEquals, Is.False);
         }
     }
 }

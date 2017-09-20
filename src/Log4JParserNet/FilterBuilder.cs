@@ -12,6 +12,8 @@ namespace Log4JParserNet
 
         public abstract Filter Build ();
 
+        public abstract void AcceptVisitor (IFilterBuilderVisitor visitor);
+
         public static FilterAllBuilder All (params FilterBuilder[] filters)
             => All ((IEnumerable<FilterBuilder>) filters);
 

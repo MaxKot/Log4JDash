@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Routing;
+using Log4JDash.Web.Domain;
 using Log4JDash.Web.Mvc;
 using Log4JParserNet;
 
 namespace Log4JDash.Web.Models
 {
-    public sealed class LogQuery : ICloneable
+    public sealed class LogQuery
+        : ICloneable
+        , ILogQuery
     {
         public LogSourceInput Source { get; set; }
 
@@ -41,11 +44,15 @@ namespace Log4JDash.Web.Models
         [DisplayFormat (ApplyFormatInEditMode = true, DataFormatString = DateFormatSting)]
         public DateTime MinTime { get; set; }
 
+        public Int64 MinTimestamp => Timestamp.FromDateTime (MinTime);
+
         private static readonly DateTime DefaultMaxTime = DateTime.MaxValue;
 
         [DefaultValueSource ("DefaultMaxTime")]
         [DisplayFormat (ApplyFormatInEditMode = true, DataFormatString = DateFormatSting)]
         public DateTime MaxTime { get; set; }
+
+        public Int64 MaxTimestamp => Timestamp.FromDateTime (MaxTime);
 
         private const string DefaultMessage = null;
 
@@ -62,6 +69,8 @@ namespace Log4JDash.Web.Models
         [Display (Name = "")]
         [DefaultValue (DefaultQuantity)]
         public EventsQuantity Quantity { get; set; }
+
+        int ILogQuery.Quantity => Quantity;
 
         private const int DefaultOffset = 0;
 

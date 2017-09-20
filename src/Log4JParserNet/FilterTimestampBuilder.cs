@@ -2,16 +2,22 @@
 
 namespace Log4JParserNet
 {
-    public sealed class FilterTimestampBuilder : FilterBuilder
+    public sealed class FilterTimestampBuilder
+        : FilterBuilder
+        , IEquatable<FilterTimestampBuilder>
     {
-        private readonly Int64 min_;
+        public Int64 Min { get; }
 
-        private readonly Int64 max_;
+        public Int64 Max { get; }
+
+        public DateTime MinDateTime => Log4JParserNet.Timestamp.ToDateTime (Min);
+
+        public DateTime MaxDateTime => Log4JParserNet.Timestamp.ToDateTime (Max);
 
         public FilterTimestampBuilder (Int64 min, Int64 max)
         {
-            min_ = min;
-            max_ = max;
+            Min = min;
+            Max = max;
         }
 
         public FilterTimestampBuilder (DateTime min, DateTime max)
@@ -20,12 +26,26 @@ namespace Log4JParserNet
 
         }
 
+        public override bool Equals (object obj)
+            => obj is FilterTimestampBuilder other && Equals (other);
+
+        public bool Equals (FilterTimestampBuilder other)
+            => other != null && Min == other.Min && Max == other.Max;
+
+        public override int GetHashCode ()
+        {
+            var hashCode = -320226678;
+            hashCode = hashCode * -1521134295 + Min.GetHashCode ();
+            hashCode = hashCode * -1521134295 + Max.GetHashCode ();
+            return hashCode;
+        }
+
         public override Filter Build ()
         {
             FilterHandle result = null;
             try
             {
-                Log4JParserC.Log4JFilterInitTimestamp (out result, min_, max_);
+                Log4JParserC.Log4JFilterInitTimestamp (out result, Min, Max);
                 return Filter.Simple (result);
             }
             catch (Exception ex)
@@ -34,5 +54,8 @@ namespace Log4JParserNet
                 throw;
             }
         }
+
+        public override void AcceptVisitor (IFilterBuilderVisitor visitor)
+            => (visitor ?? throw new ArgumentNullException (nameof (visitor))).Visit (this);
     }
 }

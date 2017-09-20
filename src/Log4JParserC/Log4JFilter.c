@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include "Log4JParserC.h"
-#include "LevelParser.h"
 
 typedef bool Log4JFilterApplyCb_ (void *context, const Log4JEvent event);
 
@@ -72,8 +71,8 @@ static void Log4JFilterInitLevelI (Log4JFilter **self, int32_t min, int32_t max)
 
 LOG4JPARSERC_API void Log4JFilterInitLevelC (Log4JFilter **self, const char *min, const char *max)
 {
-    int minI = GetLevelValue (min, INT_MAX);
-    int maxI = GetLevelValue (max, INT_MAX);
+    int minI = Log4JGetLevelValueNt (min);
+    int maxI = Log4JGetLevelValueNt (max);
 
     Log4JFilterInitLevelI (self, minI, maxI);
 }
@@ -93,7 +92,7 @@ static bool Log4JFilterLevelApply_ (void *context, const Log4JEvent event)
     const char *level;
     size_t levelSize;
     Log4JEventLevel (event, &level, &levelSize);
-    int32_t value = GetLevelValue (level, levelSize);
+    int32_t value = Log4JGetLevelValueFs (level, levelSize);
 
     return contextL->Min <= value && value <= contextL->Max;
 }
@@ -280,6 +279,8 @@ static bool Log4JFilterTimestampApply_ (void *context, const Log4JEvent event)
 
 // Composite filters
 
+#pragma region Log4JFilterList
+
 typedef struct Log4JFilterEntry_
 {
     const Log4JFilter *Filter;
@@ -326,6 +327,8 @@ static Log4JFilterEntry_ *Log4JFilterListRemove_ (Log4JFilterEntry_ *head, const
 
     return head;
 }
+
+#pragma endregion
 
 #pragma region All filter
 

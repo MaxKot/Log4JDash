@@ -3,14 +3,30 @@ using System.Collections.Generic;
 
 namespace Log4JParserNet
 {
-    public sealed class FilterNotBuilder : FilterBuilder
+    public sealed class FilterNotBuilder
+        : FilterBuilder
+        , IEquatable<FilterNotBuilder>
     {
-        private readonly FilterBuilder child_;
+        public FilterBuilder Child { get; }
 
         public FilterNotBuilder (FilterBuilder child)
         {
-            child_ = child;
+            if (child == null)
+            {
+                throw new ArgumentNullException (nameof (child));
+            }
+
+            Child = child;
         }
+
+        public override bool Equals (object obj)
+            => obj is FilterNotBuilder other && Equals (other);
+
+        public bool Equals (FilterNotBuilder other)
+            => other != null && Equals (Child, other.Child);
+
+        public override int GetHashCode ()
+            => -1938063594 + Child.GetHashCode ();
 
         public override Filter Build ()
         {
@@ -25,7 +41,7 @@ namespace Log4JParserNet
 
             try
             {
-                child = child_.Build ();
+                child = Child.Build ();
 
                 Log4JParserC.Log4JFilterInitNot (out primaryFilter, child.Handle);
 
@@ -45,5 +61,8 @@ namespace Log4JParserNet
                 throw;
             }
         }
+
+        public override void AcceptVisitor (IFilterBuilderVisitor visitor)
+            => (visitor ?? throw new ArgumentNullException (nameof (visitor))).Visit (this);
     }
 }

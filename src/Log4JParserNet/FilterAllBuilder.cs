@@ -1,17 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Log4JParserNet
 {
-    public sealed class FilterAllBuilder : FilterBuilder
+    public sealed class FilterAllBuilder
+        : FilterBuilder
+        , IEquatable<FilterAllBuilder>
     {
-        private List<FilterBuilder> children_ = new List<FilterBuilder> ();
+        private HashSet<FilterBuilder> children_ = new HashSet<FilterBuilder> ();
+
+        public IReadOnlyCollection<FilterBuilder> Children
+            => new ReadOnlyCollectionAdapter<FilterBuilder> (children_);
+
+        public override bool Equals (object obj)
+            => obj is FilterAllBuilder other && Equals (other);
+
+        public bool Equals (FilterAllBuilder other)
+            => other != null && children_.SetEquals (other.children_);
+
+        public override int GetHashCode ()
+            => children_
+                .Select (e => e.GetHashCode ())
+                .OrderBy (hc => hc)
+                .Aggregate (-422695531, (a, hc) => a * -1521134295 + hc);
 
         public void Add (FilterBuilder child)
-            => children_.Add (child);
+            => children_.Add (child ?? throw new ArgumentNullException (nameof (child)));
 
         public void AddRange (IEnumerable<FilterBuilder> children)
-            => children_.AddRange (children);
+        {
+            if (children == null)
+            {
+                throw new ArgumentNullException (nameof (children));
+            }
+
+            foreach (var child in children)
+            {
+                Add (child);
+            }
+        }
 
         public void Remove (FilterBuilder child)
             => children_.Remove (child);
@@ -32,7 +60,7 @@ namespace Log4JParserNet
 
             try
             {
-                children = AssociatedFiltersCollection.Build (children_);
+                children = AssociatedFiltersCollection.Build (children_.ToArray ());
 
                 Log4JParserC.Log4JFilterInitAll (out primaryFilter);
                 foreach (var child in children)
@@ -56,5 +84,8 @@ namespace Log4JParserNet
                 throw;
             }
         }
+
+        public override void AcceptVisitor (IFilterBuilderVisitor visitor)
+            => (visitor ?? throw new ArgumentNullException (nameof (visitor))).Visit (this);
     }
 }

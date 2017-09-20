@@ -6,7 +6,7 @@ namespace Log4JDash.Web.Models
 {
     public sealed class LogRepository
     {
-        private readonly LogSourceProvider logSourceProvider_ = new LogSourceProvider (KnownSections.LogSourceProvider ());
+        private readonly LogSourceProvider logSourceProvider_ = new LogSourceProvider (KnownSections.LogSourceProvider (), LogFileStatsCache.Default);
 
         public IEnumerable<string> GetSources ()
         {

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
@@ -191,6 +192,64 @@ namespace Log4JParserNet.Tests
                 var actual = source.GetEvents ().Where (filter);
                 Assert.That (actual, Is.EqualTo (expected));
             }
+        }
+
+        [Test]
+        public void IsEqualToSameFilterBuilder ()
+        {
+            var subjectA = FilterBuilder.Level (Level.Info, Level.Error);
+            var subjectB = FilterBuilder.Level (Level.Info, Level.Error);
+
+            var actualEquals = Equals (subjectA, subjectB);
+            var actualHashCodeEquals = subjectA.GetHashCode () == subjectB.GetHashCode ();
+
+            Assert.That (actualEquals, Is.True);
+            Assert.That (actualHashCodeEquals, Is.True);
+        }
+
+        [Test]
+        public void IsNotEqualToDifferentFilterBuilder ()
+        {
+            var subjectA = FilterBuilder.Level (Level.Info, Level.Error);
+            var subjectB = FilterBuilder.Level (Level.Info, Level.Warn);
+
+            var actualEquals = Equals (subjectA, subjectB);
+
+            Assert.That (actualEquals, Is.False);
+        }
+
+        [Test]
+        public void ComparerSortsLevelCorrectly ()
+        {
+            var input = new[]
+            {
+                Level.All,
+                Level.Debug,
+                Level.Error,
+                Level.Fatal,
+                Level.Info,
+                Level.MaxValue,
+                Level.MinValue,
+                Level.Off,
+                Level.Warn
+            };
+            var expected = new[]
+            {
+                Level.All,
+                Level.MinValue,
+                Level.Debug,
+                Level.Info,
+                Level.Warn,
+                Level.Error,
+                Level.Fatal,
+                Level.MaxValue,
+                Level.Off
+            };
+
+            var subject = FilterLevelBuilder.LevelComparer;
+            var actual = input.OrderBy (s => s, subject);
+
+            Assert.That (actual, Is.EqualTo (expected));
         }
     }
 }
