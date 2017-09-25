@@ -42,25 +42,33 @@
                 </div>
                 <div>
                     <input type="submit" value="Искать" />
-                    @if (@Model.Events.Count >= Model.Query.Quantity)
-                    {
+                    @{
                         var prevPageQuery = Model.Query.Clone ();
                         prevPageQuery.Offset += Model.Query.Quantity;
                         var prevPageRouteValues = prevPageQuery.GetRouteValues ();
-                        <text>@Html.ActionLink("<", "List", prevPageRouteValues)</text>
-                    }
-                    @if (Model.Query.Offset > 0)
-                    {
+                        var prevPageAttributes = new Dictionary<string, object> ();
+                        if (Model.Events.Count < Model.Query.Quantity)
+                        {
+                            prevPageAttributes.Add ("class", "log-page-missing");
+                        }
+
                         var nextPageQuery = Model.Query.Clone ();
                         nextPageQuery.Offset -= Model.Query.Quantity;
                         var nextPageRouteValues = nextPageQuery.GetRouteValues ();
-                        <text>@Html.ActionLink(">", "List", nextPageRouteValues)</text>
+                        var nextPageAttributes = new Dictionary<string, object> ();
+                        if (Model.Query.Offset <= 0)
+                        {
+                            nextPageAttributes.Add ("class", "log-page-missing");
+                        }
 
                         var lastPageQuery = Model.Query.Clone ();
                         lastPageQuery.Offset = 0;
                         var lastPageRouteValues = lastPageQuery.GetRouteValues ();
-                        <text>@Html.ActionLink("Последняя", "List", lastPageRouteValues)</text>
+                        var lastPageAttributes = nextPageAttributes;
                     }
+                    @Html.ActionLink("<", "List", prevPageRouteValues, prevPageAttributes)
+                    @Html.ActionLink(">", "List", nextPageRouteValues, nextPageAttributes)
+                    @Html.ActionLink("Последняя", "List", lastPageRouteValues, lastPageAttributes)
                     @Html.EditorFor(m => m.Query.Source, null, "Source")
                 </div>
             }

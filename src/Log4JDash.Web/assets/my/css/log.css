@@ -50,6 +50,10 @@ main {
     float: right;
 }
 
+.log-page-missing {
+    visibility: hidden;
+}
+
 .log-list {
     list-style-type: none;
     padding-left: 0;
