@@ -75,17 +75,16 @@
         </header>
 
         <main>
-            <ol class="log-list">
-                @{
-                    var isEmpty = true;
-                    foreach (var @event in Model.Events)
+            @if (Model.Events.Any ())
+            {
+                <ol class="log-list">
+                    @foreach (var @event in Model.Events)
                     {
-                        isEmpty = false;
                         @Html.DisplayFor(_ => @event)
                     }
-                }
-            </ol>
-            @if (isEmpty)
+                </ol>
+            }
+            else
             {
                 <div>Empty!</div>
             }
