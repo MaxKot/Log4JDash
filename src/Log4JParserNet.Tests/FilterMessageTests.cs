@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Log4JParserNet.Tests
 {
     [TestFixture]
-    public class FilterMessageBuilderTests
+    public class FilterMessageTests
     {
         private const string Sample = @"<?xml version=""1.0"" encoding=""windows-1251""?>
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message></log4j:event>
@@ -34,7 +34,7 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            var subject = FilterBuilder.Message ("nt E");
+            var subject = Filter.Message ("nt E");
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
@@ -46,10 +46,10 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
-        public void IsEqualToSameFilterBuilder ()
+        public void IsEqualToSameFilter ()
         {
-            var subjectA = FilterBuilder.Message ("nt E");
-            var subjectB = FilterBuilder.Message ("nt E");
+            var subjectA = Filter.Message ("nt E");
+            var subjectB = Filter.Message ("nt E");
 
             var actualEquals = Equals (subjectA, subjectB);
             var actualHashCodeEquals = subjectA.GetHashCode () == subjectB.GetHashCode ();
@@ -59,10 +59,10 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
-        public void IsNotEqualToDifferentFilterBuilder ()
+        public void IsNotEqualToDifferentFilter ()
         {
-            var subjectA = FilterBuilder.Message ("nt E");
-            var subjectB = FilterBuilder.Message ("nt");
+            var subjectA = Filter.Message ("nt E");
+            var subjectB = Filter.Message ("nt");
 
             var actualEquals = Equals (subjectA, subjectB);
 

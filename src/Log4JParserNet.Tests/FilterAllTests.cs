@@ -1,11 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using NUnit.Framework;
 
 namespace Log4JParserNet.Tests
 {
     [TestFixture]
-    public class FilterNotBuilderTests
+    public class FilterAllTests
     {
         private const string Sample = @"<?xml version=""1.0"" encoding=""windows-1251""?>
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message></log4j:event>
@@ -18,7 +19,7 @@ namespace Log4JParserNet.Tests
         private static readonly byte[] sampleBytes = Encoding.GetEncoding (1251).GetBytes (Sample);
 
         [Test]
-        public void NegatesInnerFilter ()
+        public void MatchesAllInnerFilters ()
         {
             var expected = new[]
             {
@@ -31,41 +32,37 @@ namespace Log4JParserNet.Tests
                     Message = "#2. Test event B.",
                     Throwable = null,
                     Id = 164
-                },
-                new EventExpectation
-                {
-                    Level = Level.Fatal,
-                    Logger = "Root.ChildA.LoggerA2",
-                    Thread = "Thread-3",
-                    Timestamp = 1411231353792L,
-                    Message = "#3. Test event C. С кирилицей.",
-                    Throwable = null,
-                    Id = 329
                 }
             };
 
-            var childFilter = FilterBuilder.Level (Level.Info, Level.Error);
-            var subject = FilterBuilder.Not (childFilter);
+            var subject = Filter.All
+            (
+                Filter.Level (Level.MinValue, Level.Info),
+                Filter.Timestamp (1411231353792L, Int64.MaxValue)
+            );
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
             {
                 source.Encoding = Encoding.GetEncoding (1251);
+
                 var actual = source.GetEvents ().Where (subject);
                 Assert.That (actual, Is.EqualTo (expected));
             }
         }
 
         [Test]
-        public void IsEqualToSameFilterBuilder ()
+        public void IsEqualToSameFilter ()
         {
-            var subjectA = FilterBuilder.Not
+            var subjectA = Filter.All
             (
-                FilterBuilder.Level (Level.MinValue, Level.Info)
+                Filter.Level (Level.MinValue, Level.Info),
+                Filter.Timestamp (1411231353792L, 1411231353792L)
             );
-            var subjectB = FilterBuilder.Not
+            var subjectB = Filter.All
             (
-                FilterBuilder.Level (Level.MinValue, Level.Info)
+                Filter.Level (Level.MinValue, Level.Info),
+                Filter.Timestamp (1411231353792L, 1411231353792L)
             );
 
             var actualEquals = Equals (subjectA, subjectB);
@@ -76,15 +73,17 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
-        public void IsNotEqualToDifferentFilterBuilder ()
+        public void IsNotEqualToDifferentFilter ()
         {
-            var subjectA = FilterBuilder.Not
+            var subjectA = Filter.All
             (
-                FilterBuilder.Level (Level.MinValue, Level.Info)
+                Filter.Level (Level.MinValue, Level.Info),
+                Filter.Timestamp (1411231353792L, 1411231353792L)
             );
-            var subjectB = FilterBuilder.Not
+            var subjectB = Filter.All
             (
-                FilterBuilder.Level (Level.MinValue, Level.Error)
+                Filter.Level (Level.MinValue, Level.Error),
+                Filter.Timestamp (1411231353792L, 1411231353792L)
             );
 
             var actualEquals = Equals (subjectA, subjectB);

@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Log4JParserNet.Tests
 {
     [TestFixture]
-    public class FilterLoggerBuilderTests
+    public class FilterLoggerTests
     {
         private const string Sample = @"<?xml version=""1.0"" encoding=""windows-1251""?>
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message></log4j:event>
@@ -64,7 +64,7 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            var subject = FilterBuilder.Logger ("Root.ChildA");
+            var subject = Filter.Logger ("Root.ChildA");
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
@@ -102,7 +102,7 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            var subject = FilterBuilder.Logger ("Root.ChildA.LoggerA1");
+            var subject = Filter.Logger ("Root.ChildA.LoggerA1");
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
@@ -114,10 +114,10 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
-        public void IsEqualToSameFilterBuilder ()
+        public void IsEqualToSameFilter ()
         {
-            var subjectA = FilterBuilder.Logger ("Root.ChildA.LoggerA1");
-            var subjectB = FilterBuilder.Logger ("Root.ChildA.LoggerA1");
+            var subjectA = Filter.Logger ("Root.ChildA.LoggerA1");
+            var subjectB = Filter.Logger ("Root.ChildA.LoggerA1");
 
             var actualEquals = Equals (subjectA, subjectB);
             var actualHashCodeEquals = subjectA.GetHashCode () == subjectB.GetHashCode ();
@@ -127,10 +127,10 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
-        public void IsNotEqualToDifferentFilterBuilder ()
+        public void IsNotEqualToDifferentFilter ()
         {
-            var subjectA = FilterBuilder.Logger ("Root.ChildA.LoggerA1");
-            var subjectB = FilterBuilder.Logger ("Root.ChildA");
+            var subjectA = Filter.Logger ("Root.ChildA.LoggerA1");
+            var subjectB = Filter.Logger ("Root.ChildA");
 
             var actualEquals = Equals (subjectA, subjectB);
 

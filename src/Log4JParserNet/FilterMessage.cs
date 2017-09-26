@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Log4JParserNet
 {
-    public sealed class FilterMessageBuilder
-        : FilterBuilder
-        , IEquatable<FilterMessageBuilder>
+    public sealed class FilterMessage
+        : Filter
+        , IEquatable<FilterMessage>
     {
         public static readonly IEqualityComparer<string> MessageComparer
             = StringComparer.Ordinal;
@@ -15,15 +15,15 @@ namespace Log4JParserNet
 
         new public string Message { get; }
 
-        public FilterMessageBuilder (string message)
+        public FilterMessage (string message)
         {
             Message = message;
         }
 
         public override bool Equals (object obj)
-            => obj is FilterMessageBuilder other && Equals (other);
+            => obj is FilterMessage other && Equals (other);
 
-        public bool Equals (FilterMessageBuilder other)
+        public bool Equals (FilterMessage other)
             => other != null && MessageComparer.Equals (Message, other.Message);
 
         public override int GetHashCode ()
@@ -44,7 +44,7 @@ namespace Log4JParserNet
             }
         }
 
-        public override void AcceptVisitor (IFilterBuilderVisitor visitor)
+        public override void AcceptVisitor (IFilterVisitor visitor)
             => (visitor ?? throw new ArgumentNullException (nameof (visitor))).Visit (this);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Log4JParserNet
 {
-    public sealed class FilterTimestampBuilder
-        : FilterBuilder
-        , IEquatable<FilterTimestampBuilder>
+    public sealed class FilterTimestamp
+        : Filter
+        , IEquatable<FilterTimestamp>
     {
         public Int64 Min { get; }
 
@@ -14,22 +14,22 @@ namespace Log4JParserNet
 
         public DateTime MaxDateTime => Log4JParserNet.Timestamp.ToDateTime (Max);
 
-        public FilterTimestampBuilder (Int64 min, Int64 max)
+        public FilterTimestamp (Int64 min, Int64 max)
         {
             Min = min;
             Max = max;
         }
 
-        public FilterTimestampBuilder (DateTime min, DateTime max)
+        public FilterTimestamp (DateTime min, DateTime max)
             : this (Log4JParserNet.Timestamp.FromDateTime (min), Log4JParserNet.Timestamp.FromDateTime (max))
         {
 
         }
 
         public override bool Equals (object obj)
-            => obj is FilterTimestampBuilder other && Equals (other);
+            => obj is FilterTimestamp other && Equals (other);
 
-        public bool Equals (FilterTimestampBuilder other)
+        public bool Equals (FilterTimestamp other)
             => other != null && Min == other.Min && Max == other.Max;
 
         public override int GetHashCode ()
@@ -55,7 +55,7 @@ namespace Log4JParserNet
             }
         }
 
-        public override void AcceptVisitor (IFilterBuilderVisitor visitor)
+        public override void AcceptVisitor (IFilterVisitor visitor)
             => (visitor ?? throw new ArgumentNullException (nameof (visitor))).Visit (this);
     }
 }

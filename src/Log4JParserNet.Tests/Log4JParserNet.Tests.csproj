@@ -90,13 +90,13 @@
   </Choose>
   <ItemGroup>
     <Compile Include="EventExpectation.cs" />
-    <Compile Include="FilterAllBuilderTests.cs" />
-    <Compile Include="FilterAnyBuilderTests.cs" />
-    <Compile Include="FilterLevelBuilderTests.cs" />
-    <Compile Include="FilterLoggerBuilderTests.cs" />
-    <Compile Include="FilterMessageBuilderTests.cs" />
-    <Compile Include="FilterNotBuilderTests.cs" />
-    <Compile Include="FilterTimestampBuilderTests.cs" />
+    <Compile Include="FilterAllTests.cs" />
+    <Compile Include="FilterAnyTests.cs" />
+    <Compile Include="FilterLevelTests.cs" />
+    <Compile Include="FilterLoggerTests.cs" />
+    <Compile Include="FilterMessageTests.cs" />
+    <Compile Include="FilterNotTests.cs" />
+    <Compile Include="FilterTimestampTests.cs" />
     <Compile Include="Formatter.cs" />
     <Compile Include="FormattersSetup.cs" />
     <Compile Include="Log4JFileTests.cs" />

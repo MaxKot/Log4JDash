@@ -49,13 +49,13 @@ namespace Log4JParserNet
 
         private readonly IEventSource source_;
 
-        private readonly FilterBuilder filter_;
+        private readonly Filter filter_;
 
         bool IEventSource.IsInvalid => source_.IsInvalid;
 
         Encoding IEventSource.Encoding => source_.Encoding;
 
-        public FilteredEventSource (IEventSource source, FilterBuilder filter)
+        public FilteredEventSource (IEventSource source, Filter filter)
         {
             Debug.Assert (source != null, "FilteredEventSource.ctor: source is null.");
             Debug.Assert (filter != null, "FilteredEventSource.ctor: filter is null.");
@@ -94,7 +94,7 @@ namespace Log4JParserNet
             return GetEnumerator ();
         }
 
-        public IEnumerableOfEvents Where (FilterBuilder filter)
+        public IEnumerableOfEvents Where (Filter filter)
         {
             return new FilteredEventSource (this, filter);
         }

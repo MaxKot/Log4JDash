@@ -30,15 +30,15 @@ namespace Log4JDash.Web.Domain
                 => obj is EventGroupKey other && Equals (other);
 
             public bool Equals (EventGroupKey other)
-                => FilterLevelBuilder.LevelComparer.Equals (Level, other.Level) &&
-                   FilterLoggerBuilder.LoggerComparer.Equals (Logger, other.Logger);
+                => FilterLevel.LevelComparer.Equals (Level, other.Level) &&
+                   FilterLogger.LoggerComparer.Equals (Logger, other.Logger);
 
             public override int GetHashCode ()
             {
                 var hashCode = 726632474;
                 hashCode = hashCode * -1521134295 + base.GetHashCode ();
-                hashCode = hashCode * -1521134295 + FilterLevelBuilder.LevelComparer.GetHashCode (Level);
-                hashCode = hashCode * -1521134295 + FilterLoggerBuilder.LoggerComparer.GetHashCode (Logger);
+                hashCode = hashCode * -1521134295 + FilterLevel.LevelComparer.GetHashCode (Level);
+                hashCode = hashCode * -1521134295 + FilterLogger.LoggerComparer.GetHashCode (Logger);
                 return hashCode;
             }
         }

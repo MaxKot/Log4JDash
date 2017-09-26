@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Log4JParserNet.Tests
 {
     [TestFixture]
-    public class FilterAnyBuilderTests
+    public class FilterAnyTests
     {
         private const string Sample = @"<?xml version=""1.0"" encoding=""windows-1251""?>
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message><log4j:properties></log4j:properties></log4j:event>
@@ -54,10 +54,10 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            var subject = FilterBuilder.Any
+            var subject = Filter.Any
             (
-                FilterBuilder.Level (Level.MinValue, Level.Info),
-                FilterBuilder.Timestamp (1411231353792L, 1411231353792L)
+                Filter.Level (Level.MinValue, Level.Info),
+                Filter.Timestamp (1411231353792L, 1411231353792L)
             );
 
             using (var sourceStream = new MemoryStream (sampleBytes))
@@ -71,17 +71,17 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
-        public void IsEqualToSameFilterBuilder ()
+        public void IsEqualToSameFilter ()
         {
-            var subjectA = FilterBuilder.Any
+            var subjectA = Filter.Any
             (
-                FilterBuilder.Level (Level.MinValue, Level.Info),
-                FilterBuilder.Timestamp (1411231353792L, 1411231353792L)
+                Filter.Level (Level.MinValue, Level.Info),
+                Filter.Timestamp (1411231353792L, 1411231353792L)
             );
-            var subjectB = FilterBuilder.Any
+            var subjectB = Filter.Any
             (
-                FilterBuilder.Level (Level.MinValue, Level.Info),
-                FilterBuilder.Timestamp (1411231353792L, 1411231353792L)
+                Filter.Level (Level.MinValue, Level.Info),
+                Filter.Timestamp (1411231353792L, 1411231353792L)
             );
 
             var actualEquals = Equals (subjectA, subjectB);
@@ -92,17 +92,17 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
-        public void IsNotEqualToDifferentFilterBuilder ()
+        public void IsNotEqualToDifferentFilter ()
         {
-            var subjectA = FilterBuilder.Any
+            var subjectA = Filter.Any
             (
-                FilterBuilder.Level (Level.MinValue, Level.Info),
-                FilterBuilder.Timestamp (1411231353792L, 1411231353792L)
+                Filter.Level (Level.MinValue, Level.Info),
+                Filter.Timestamp (1411231353792L, 1411231353792L)
             );
-            var subjectB = FilterBuilder.Any
+            var subjectB = Filter.Any
             (
-                FilterBuilder.Level (Level.MinValue, Level.Error),
-                FilterBuilder.Timestamp (1411231353792L, 1411231353792L)
+                Filter.Level (Level.MinValue, Level.Error),
+                Filter.Timestamp (1411231353792L, 1411231353792L)
             );
 
             var actualEquals = Equals (subjectA, subjectB);

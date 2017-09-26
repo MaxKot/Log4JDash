@@ -191,35 +191,35 @@ namespace Log4JDash.Web.Models
             return result;
         }
 
-        public FilterBuilder CreateFilter ()
+        public Filter CreateFilter ()
         {
-            var filters = new List<FilterBuilder> (4);
+            var filters = new List<Filter> (4);
 
             if (MinLevel.Value != Level.Debug)
             {
-                var filter = FilterBuilder.Level (MinLevel.Value, Level.MaxValue);
+                var filter = Filter.Level (MinLevel.Value, Level.MaxValue);
                 filters.Add (filter);
             }
 
             if (!String.IsNullOrWhiteSpace (Logger))
             {
-                var filter = FilterBuilder.Logger (Logger);
+                var filter = Filter.Logger (Logger);
                 filters.Add (filter);
             }
 
             if (!String.IsNullOrWhiteSpace (Message))
             {
-                var filter = FilterBuilder.Message (Message);
+                var filter = Filter.Message (Message);
                 filters.Add (filter);
             }
 
             if (MinTime > DateTime.MinValue || MaxTime < DateTime.MaxValue)
             {
-                var filter = FilterBuilder.Timestamp (MinTime, MaxTime);
+                var filter = Filter.Timestamp (MinTime, MaxTime);
                 filters.Add (filter);
             }
 
-            FilterBuilder result;
+            Filter result;
             switch (filters.Count)
             {
                 case 0:
@@ -231,7 +231,7 @@ namespace Log4JDash.Web.Models
                     break;
 
                 default:
-                    result = FilterBuilder.All (filters);
+                    result = Filter.All (filters);
                     break;
             }
 

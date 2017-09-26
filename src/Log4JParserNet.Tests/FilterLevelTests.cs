@@ -1,12 +1,12 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
 namespace Log4JParserNet.Tests
 {
     [TestFixture]
-    public class FilterTimestampBuilderTests
+    public class FilterLevelTests
     {
         private const string Sample = @"<?xml version=""1.0"" encoding=""windows-1251""?>
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message></log4j:event>
@@ -19,20 +19,10 @@ namespace Log4JParserNet.Tests
         private static readonly byte[] sampleBytes = Encoding.GetEncoding (1251).GetBytes (Sample);
 
         [Test]
-        public void FiltersEventsWithMinTimestamp ()
+        public void FiltersEventsWithMinLevel ()
         {
             var expected = new[]
             {
-                new EventExpectation
-                {
-                    Level = Level.Debug,
-                    Logger = "Root.ChildB.LoggerB2",
-                    Thread = "Thread-2",
-                    Timestamp = 1411231353792L,
-                    Message = "#2. Test event B.",
-                    Throwable = null,
-                    Id = 164
-                },
                 new EventExpectation
                 {
                     Level = Level.Fatal,
@@ -65,7 +55,7 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            var subject = FilterBuilder.Timestamp (1411231353792L, Int64.MaxValue);
+            var subject = Filter.Level (Level.Warn, Level.MaxValue);
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
@@ -77,7 +67,7 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
-        public void FiltersEventsWithMaxTimestamp ()
+        public void FiltersEventsWithMaxLevel ()
         {
             var expected = new[]
             {
@@ -103,54 +93,6 @@ namespace Log4JParserNet.Tests
                 },
                 new EventExpectation
                 {
-                    Level = Level.Fatal,
-                    Logger = "Root.ChildA.LoggerA2",
-                    Thread = "Thread-3",
-                    Timestamp = 1411231353792L,
-                    Message = "#3. Test event C. С кирилицей.",
-                    Throwable = null,
-                    Id = 329
-                }
-            };
-
-            var subject = FilterBuilder.Timestamp (Int64.MinValue, 1411231353792L);
-
-            using (var sourceStream = new MemoryStream (sampleBytes))
-            using (var source = Log4JFile.Create (sourceStream))
-            {
-                source.Encoding = Encoding.GetEncoding (1251);
-                var actual = source.GetEvents ().Where (subject);
-                Assert.That (actual, Is.EqualTo (expected));
-            }
-        }
-
-        [Test]
-        public void FiltersEventsWithTimestampInterval ()
-        {
-            var expected = new[]
-            {
-                new EventExpectation
-                {
-                    Level = Level.Debug,
-                    Logger = "Root.ChildB.LoggerB2",
-                    Thread = "Thread-2",
-                    Timestamp = 1411231353792L,
-                    Message = "#2. Test event B.",
-                    Throwable = null,
-                    Id = 164
-                },
-                new EventExpectation
-                {
-                    Level = Level.Fatal,
-                    Logger = "Root.ChildA.LoggerA2",
-                    Thread = "Thread-3",
-                    Timestamp = 1411231353792L,
-                    Message = "#3. Test event C. С кирилицей.",
-                    Throwable = null,
-                    Id = 329
-                },
-                new EventExpectation
-                {
                     Level = Level.Warn,
                     Logger = "Root.ChildA.LoggerA1",
                     Thread = "Thread-4",
@@ -161,7 +103,7 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            var subject = FilterBuilder.Timestamp (1411231353792L, 1411231353793L);
+            var subject = Filter.Level (Level.MinValue, Level.Warn);
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
@@ -173,10 +115,20 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
-        public void FiltersEventsWithTimestampExactValue ()
+        public void FiltersEventsWithLevelInterval ()
         {
             var expected = new[]
             {
+                new EventExpectation
+                {
+                    Level = Level.Info,
+                    Logger = "Root.ChildA.LoggerA2",
+                    Thread = "Thread-1",
+                    Timestamp = 1411231353782L,
+                    Message = "#1. Test event A.",
+                    Throwable = null,
+                    Id = 0
+                },
                 new EventExpectation
                 {
                     Level = Level.Warn,
@@ -186,10 +138,20 @@ namespace Log4JParserNet.Tests
                     Message = "#4. Test event E.",
                     Throwable = null,
                     Id = 507
+                },
+                new EventExpectation
+                {
+                    Level = Level.Error,
+                    Logger = "Root.ChildA.LoggerA1",
+                    Thread = "Thread-5",
+                    Timestamp = 1411231353795L,
+                    Message = "#5. Test event F.",
+                    Throwable = null,
+                    Id = 671
                 }
             };
 
-            var subject = FilterBuilder.Timestamp (1411231353793L, 1411231353793L);
+            var subject = Filter.Level (Level.Info, Level.Error);
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
@@ -201,10 +163,38 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
-        public void IsEqualToSameFilterBuilder ()
+        public void FiltersEventsWithLevelExactValue ()
         {
-            var subjectA = FilterBuilder.Timestamp (1411231353792L, 1411231353793L);
-            var subjectB = FilterBuilder.Timestamp (1411231353792L, 1411231353793L);
+            var expected = new[]
+            {
+                new EventExpectation
+                {
+                    Level = Level.Error,
+                    Logger = "Root.ChildA.LoggerA1",
+                    Thread = "Thread-5",
+                    Timestamp = 1411231353795L,
+                    Message = "#5. Test event F.",
+                    Throwable = null,
+                    Id = 671
+                }
+            };
+
+            var subject = Filter.Level (Level.Error, Level.Error);
+
+            using (var sourceStream = new MemoryStream (sampleBytes))
+            using (var source = Log4JFile.Create (sourceStream))
+            {
+                source.Encoding = Encoding.GetEncoding (1251);
+                var actual = source.GetEvents ().Where (subject);
+                Assert.That (actual, Is.EqualTo (expected));
+            }
+        }
+
+        [Test]
+        public void IsEqualToSameFilter ()
+        {
+            var subjectA = Filter.Level (Level.Info, Level.Error);
+            var subjectB = Filter.Level (Level.Info, Level.Error);
 
             var actualEquals = Equals (subjectA, subjectB);
             var actualHashCodeEquals = subjectA.GetHashCode () == subjectB.GetHashCode ();
@@ -214,14 +204,48 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
-        public void IsNotEqualToDifferentFilterBuilder ()
+        public void IsNotEqualToDifferentFilter ()
         {
-            var subjectA = FilterBuilder.Timestamp (1411231353792L, 1411231353793L);
-            var subjectB = FilterBuilder.Timestamp (0, 1411231353793L);
+            var subjectA = Filter.Level (Level.Info, Level.Error);
+            var subjectB = Filter.Level (Level.Info, Level.Warn);
 
             var actualEquals = Equals (subjectA, subjectB);
 
             Assert.That (actualEquals, Is.False);
+        }
+
+        [Test]
+        public void ComparerSortsLevelCorrectly ()
+        {
+            var input = new[]
+            {
+                Level.All,
+                Level.Debug,
+                Level.Error,
+                Level.Fatal,
+                Level.Info,
+                Level.MaxValue,
+                Level.MinValue,
+                Level.Off,
+                Level.Warn
+            };
+            var expected = new[]
+            {
+                Level.All,
+                Level.MinValue,
+                Level.Debug,
+                Level.Info,
+                Level.Warn,
+                Level.Error,
+                Level.Fatal,
+                Level.MaxValue,
+                Level.Off
+            };
+
+            var subject = FilterLevel.LevelComparer;
+            var actual = input.OrderBy (s => s, subject);
+
+            Assert.That (actual, Is.EqualTo (expected));
         }
     }
 }

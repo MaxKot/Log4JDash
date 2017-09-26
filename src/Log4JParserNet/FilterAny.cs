@@ -4,19 +4,19 @@ using System.Linq;
 
 namespace Log4JParserNet
 {
-    public sealed class FilterAnyBuilder
-        : FilterBuilder
-        , IEquatable<FilterAnyBuilder>
+    public sealed class FilterAny
+        : Filter
+        , IEquatable<FilterAny>
     {
-        private HashSet<FilterBuilder> children_ = new HashSet<FilterBuilder> ();
+        private HashSet<Filter> children_ = new HashSet<Filter> ();
 
-        public IReadOnlyCollection<FilterBuilder> Children
-            => new ReadOnlyCollectionAdapter<FilterBuilder> (children_);
+        public IReadOnlyCollection<Filter> Children
+            => new ReadOnlyCollectionAdapter<Filter> (children_);
 
         public override bool Equals (object obj)
-            => obj is FilterAnyBuilder other && Equals (other);
+            => obj is FilterAny other && Equals (other);
 
-        public bool Equals (FilterAnyBuilder other)
+        public bool Equals (FilterAny other)
             => other != null && children_.SetEquals (other.children_);
 
         public override int GetHashCode ()
@@ -25,10 +25,10 @@ namespace Log4JParserNet
                 .OrderBy (hc => hc)
                 .Aggregate (-1313666667, (a, hc) => a * -1521134295 + hc);
 
-        public void Add (FilterBuilder child)
+        public void Add (Filter child)
             => children_.Add (child ?? throw new ArgumentNullException (nameof (child)));
 
-        public void AddRange (IEnumerable<FilterBuilder> children)
+        public void AddRange (IEnumerable<Filter> children)
         {
             if (children == null)
             {
@@ -41,7 +41,7 @@ namespace Log4JParserNet
             }
         }
 
-        public void Remove (FilterBuilder child)
+        public void Remove (Filter child)
             => children_.Remove (child);
 
         public void Clear ()
@@ -85,7 +85,7 @@ namespace Log4JParserNet
             }
         }
 
-        public override void AcceptVisitor (IFilterBuilderVisitor visitor)
+        public override void AcceptVisitor (IFilterVisitor visitor)
             => (visitor ?? throw new ArgumentNullException (nameof (visitor))).Visit (this);
     }
 }
