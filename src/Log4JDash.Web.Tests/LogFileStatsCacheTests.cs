@@ -1,10 +1,11 @@
 ﻿using Log4JDash.Web.Domain;
+using Log4JParserNet;
 using NUnit.Framework;
 
 namespace Log4JDash.Web.Tests
 {
     [TestFixture]
-    public class LogFileStatsTests
+    public class LogFileStatsCacheTests
     {
         private const string Sample = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1500000001000"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message></log4j:event>
@@ -16,11 +17,12 @@ namespace Log4JDash.Web.Tests
 ";
 
         [Test]
-        public void DoesNotConsumeEventsZeroQuantity ()
+        public void GathersStatsFromFile ()
         {
             using (var file = new StringLogFile ("sample", Sample))
             {
-                var actual = LogFileStats.GatherStats (file);
+                var subject = new LogFileStatsCache ();
+                var actual = subject.GetStats (file, null);
 
                 Assert.That (actual.EventCount, Is.EqualTo (6));
                 Assert.That (actual.GroupStats.Count, Is.EqualTo (5));
@@ -30,6 +32,28 @@ namespace Log4JDash.Web.Tests
                 Assert.That (actual.GroupStats[new LogFileStats.EventGroupKey ("WARN", "Root.ChildA.LoggerA1")], Is.EqualTo (1));
                 Assert.That (actual.GroupStats[new LogFileStats.EventGroupKey ("ERROR", "Root.ChildA.LoggerA1")], Is.EqualTo (1));
                 Assert.That (actual.EarliestTimestamp, Is.EqualTo (1500000001000L));
+                Assert.That (actual.LatestTimestamp, Is.EqualTo (1500000006000L));
+            }
+        }
+
+        [Test]
+        public void GatheredStatsRespectUnstatableFilters ()
+        {
+            using (var file = new StringLogFile ("sample", Sample))
+            {
+                var filter = Filter.All
+                (
+                    Filter.Logger ("Root.ChildA.LoggerA2"),
+                    Filter.Timestamp (1500000003000L, 1500000003000L),
+                    Filter.Message ("Test event B.")
+                );
+                var subject = new LogFileStatsCache ();
+                var actual = subject.GetStats (file, filter);
+
+                Assert.That (actual.EventCount, Is.EqualTo (2));
+                Assert.That (actual.GroupStats.Count, Is.EqualTo (1));
+                Assert.That (actual.GroupStats[new LogFileStats.EventGroupKey ("DEBUG", "Root.ChildB.LoggerB2")], Is.EqualTo (2));
+                Assert.That (actual.EarliestTimestamp, Is.EqualTo (1500000002000L));
                 Assert.That (actual.LatestTimestamp, Is.EqualTo (1500000006000L));
             }
         }

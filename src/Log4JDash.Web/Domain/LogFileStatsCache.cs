@@ -96,13 +96,13 @@ namespace Log4JDash.Web.Domain
 
             private readonly long size_;
 
-            private readonly Filter unstatableFilter_;
+            public Filter UnstatableFilter { get; }
 
             public Key (string fileName, long size, Filter filter)
             {
                 fileName_ = fileName;
                 size_ = size;
-                unstatableFilter_ = FindUnstatable.Apply (filter);
+                UnstatableFilter = FindUnstatable.Apply (filter);
             }
 
             public Key (ILogFile logFile, Filter filter)
@@ -117,7 +117,7 @@ namespace Log4JDash.Web.Domain
             public bool Equals (Key other)
                 => FileNameComparer.Equals (fileName_, other.fileName_) &&
                    size_ == other.size_ &&
-                   Equals (unstatableFilter_, other.unstatableFilter_);
+                   Equals (UnstatableFilter, other.UnstatableFilter);
 
             public override int GetHashCode ()
             {
@@ -125,7 +125,7 @@ namespace Log4JDash.Web.Domain
                 hashCode = hashCode * -1521134295 + base.GetHashCode ();
                 hashCode = hashCode * -1521134295 + (fileName_ != null ? FileNameComparer.GetHashCode (fileName_) : 0);
                 hashCode = hashCode * -1521134295 + size_.GetHashCode ();
-                hashCode = hashCode * -1521134295 + (unstatableFilter_ != null ? unstatableFilter_.GetHashCode () : 0);
+                hashCode = hashCode * -1521134295 + (UnstatableFilter != null ? UnstatableFilter.GetHashCode () : 0);
                 return hashCode;
             }
         }
@@ -151,7 +151,7 @@ namespace Log4JDash.Web.Domain
             = new ConcurrentDictionary<Key, LogFileStats> (KeyComparer.Instance);
 
         public LogFileStats GetStats (ILogFile logFile, Filter filter)
-            => impl_.GetOrAdd (new Key (logFile, filter), _ => LogFileStats.GatherStats (logFile));
+            => impl_.GetOrAdd (new Key (logFile, filter), k => LogFileStats.GatherStats (logFile, k.UnstatableFilter));
 
         public static LogFileStatsCache Default { get; } = new LogFileStatsCache ();
     }

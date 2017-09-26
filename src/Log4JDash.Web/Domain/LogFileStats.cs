@@ -75,43 +75,46 @@ namespace Log4JDash.Web.Domain
             LatestTimestamp = latestTimestamp;
         }
 
-        public static LogFileStats GatherStats (ILogFile logFile)
+        public static LogFileStats GatherStats (ILogFile logFile, Filter filter)
         {
-            var stats = logFile
-                .GetEvents ()
-                .Aggregate
-                (
-                    new
-                    {
-                        EventCount = 0,
-                        GroupStats = new Dictionary<EventGroupKey, int> (),
-                        EarliestTimestamp = Timestamp.MaxValue,
-                        LatestTimestamp = Timestamp.MinValue
-                    },
-                    (a, e) =>
-                    {
-                        var ts = e.Timestamp;
+            var events = logFile.GetEvents ();
+            var filteredEvents = filter != null
+                ? events.Where (filter)
+                : events;
 
-                        var gs = a.GroupStats;
-                        var groupKey = new EventGroupKey (e);
-                        if (gs.TryGetValue (groupKey, out var groupCount))
-                        {
-                            gs[groupKey] = groupCount + 1;
-                        }
-                        else
-                        {
-                            gs.Add (groupKey, 1);
-                        }
+            var stats = filteredEvents.Aggregate
+            (
+                new
+                {
+                    EventCount = 0,
+                    GroupStats = new Dictionary<EventGroupKey, int> (),
+                    EarliestTimestamp = Timestamp.MaxValue,
+                    LatestTimestamp = Timestamp.MinValue
+                },
+                (a, e) =>
+                {
+                    var ts = e.Timestamp;
 
-                        return new
-                        {
-                            EventCount = a.EventCount + 1,
-                            GroupStats = gs,
-                            EarliestTimestamp = ts < a.EarliestTimestamp ? ts : a.EarliestTimestamp,
-                            LatestTimestamp = ts > a.LatestTimestamp ? ts : a.LatestTimestamp
-                        };
+                    var gs = a.GroupStats;
+                    var groupKey = new EventGroupKey (e);
+                    if (gs.TryGetValue (groupKey, out var groupCount))
+                    {
+                        gs[groupKey] = groupCount + 1;
                     }
-                );
+                    else
+                    {
+                        gs.Add (groupKey, 1);
+                    }
+
+                    return new
+                    {
+                        EventCount = a.EventCount + 1,
+                        GroupStats = gs,
+                        EarliestTimestamp = ts < a.EarliestTimestamp ? ts : a.EarliestTimestamp,
+                        LatestTimestamp = ts > a.LatestTimestamp ? ts : a.LatestTimestamp
+                    };
+                }
+            );
 
             var eventCount = stats.EventCount;
             var groupStats = stats.GroupStats;
