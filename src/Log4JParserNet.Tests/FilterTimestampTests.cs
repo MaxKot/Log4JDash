@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Log4JParserNet.Tests
 {
     [TestFixture]
-    public class FilterTimestampBuilderTests
+    public class FilterTimestampTests
     {
         private const string Sample = @"<?xml version=""1.0"" encoding=""windows-1251""?>
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message></log4j:event>
@@ -65,14 +65,13 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            var subject = FilterBuilder.Timestamp (1411231353792L, Int64.MaxValue);
+            var subject = Filter.Timestamp (1411231353792L, Int64.MaxValue);
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
-            using (var filter = subject.Build ())
             {
                 source.Encoding = Encoding.GetEncoding (1251);
-                var actual = source.GetEvents ().Where (filter);
+                var actual = source.GetEvents ().Where (subject);
                 Assert.That (actual, Is.EqualTo (expected));
             }
         }
@@ -114,14 +113,13 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            var subject = FilterBuilder.Timestamp (Int64.MinValue, 1411231353792L);
+            var subject = Filter.Timestamp (Int64.MinValue, 1411231353792L);
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
-            using (var filter = subject.Build ())
             {
                 source.Encoding = Encoding.GetEncoding (1251);
-                var actual = source.GetEvents ().Where (filter);
+                var actual = source.GetEvents ().Where (subject);
                 Assert.That (actual, Is.EqualTo (expected));
             }
         }
@@ -163,14 +161,13 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            var subject = FilterBuilder.Timestamp (1411231353792L, 1411231353793L);
+            var subject = Filter.Timestamp (1411231353792L, 1411231353793L);
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
-            using (var filter = subject.Build ())
             {
                 source.Encoding = Encoding.GetEncoding (1251);
-                var actual = source.GetEvents ().Where (filter);
+                var actual = source.GetEvents ().Where (subject);
                 Assert.That (actual, Is.EqualTo (expected));
             }
         }
@@ -192,23 +189,22 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            var subject = FilterBuilder.Timestamp (1411231353793L, 1411231353793L);
+            var subject = Filter.Timestamp (1411231353793L, 1411231353793L);
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
-            using (var filter = subject.Build ())
             {
                 source.Encoding = Encoding.GetEncoding (1251);
-                var actual = source.GetEvents ().Where (filter);
+                var actual = source.GetEvents ().Where (subject);
                 Assert.That (actual, Is.EqualTo (expected));
             }
         }
 
         [Test]
-        public void IsEqualToSameFilterBuilder ()
+        public void IsEqualToSameFilter ()
         {
-            var subjectA = FilterBuilder.Timestamp (1411231353792L, 1411231353793L);
-            var subjectB = FilterBuilder.Timestamp (1411231353792L, 1411231353793L);
+            var subjectA = Filter.Timestamp (1411231353792L, 1411231353793L);
+            var subjectB = Filter.Timestamp (1411231353792L, 1411231353793L);
 
             var actualEquals = Equals (subjectA, subjectB);
             var actualHashCodeEquals = subjectA.GetHashCode () == subjectB.GetHashCode ();
@@ -218,10 +214,10 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
-        public void IsNotEqualToDifferentFilterBuilder ()
+        public void IsNotEqualToDifferentFilter ()
         {
-            var subjectA = FilterBuilder.Timestamp (1411231353792L, 1411231353793L);
-            var subjectB = FilterBuilder.Timestamp (0, 1411231353793L);
+            var subjectA = Filter.Timestamp (1411231353792L, 1411231353793L);
+            var subjectB = Filter.Timestamp (0, 1411231353793L);
 
             var actualEquals = Equals (subjectA, subjectB);
 

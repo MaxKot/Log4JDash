@@ -48,12 +48,12 @@ namespace Log4JDash.Web.Tests
             => Clone ();
 
         public void InitializeDefaultStats (LogFileStatsCache statsCache)
-            => InitializeStats ((FilterBuilder) null, statsCache);
+            => InitializeStats ((Filter) null, statsCache);
 
         public void InitializeStats (ILogQuery query, LogFileStatsCache statsCache)
             => InitializeStats (query.CreateFilter (), statsCache);
 
-        public void InitializeStats (FilterBuilder filter, LogFileStatsCache statsCache)
+        public void InitializeStats (Filter filter, LogFileStatsCache statsCache)
         {
             using (var copy = Clone ())
             {

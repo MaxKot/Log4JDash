@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Log4JParserNet.Tests
 {
     [TestFixture]
-    public class FilterNotBuilderTests
+    public class FilterNotTests
     {
         private const string Sample = @"<?xml version=""1.0"" encoding=""windows-1251""?>
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message></log4j:event>
@@ -44,29 +44,28 @@ namespace Log4JParserNet.Tests
                 }
             };
 
-            var childFilter = FilterBuilder.Level (Level.Info, Level.Error);
-            var subject = FilterBuilder.Not (childFilter);
+            var childFilter = Filter.Level (Level.Info, Level.Error);
+            var subject = Filter.Not (childFilter);
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
-            using (var filter = subject.Build ())
             {
                 source.Encoding = Encoding.GetEncoding (1251);
-                var actual = source.GetEvents ().Where (filter);
+                var actual = source.GetEvents ().Where (subject);
                 Assert.That (actual, Is.EqualTo (expected));
             }
         }
 
         [Test]
-        public void IsEqualToSameFilterBuilder ()
+        public void IsEqualToSameFilter ()
         {
-            var subjectA = FilterBuilder.Not
+            var subjectA = Filter.Not
             (
-                FilterBuilder.Level (Level.MinValue, Level.Info)
+                Filter.Level (Level.MinValue, Level.Info)
             );
-            var subjectB = FilterBuilder.Not
+            var subjectB = Filter.Not
             (
-                FilterBuilder.Level (Level.MinValue, Level.Info)
+                Filter.Level (Level.MinValue, Level.Info)
             );
 
             var actualEquals = Equals (subjectA, subjectB);
@@ -77,15 +76,15 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
-        public void IsNotEqualToDifferentFilterBuilder ()
+        public void IsNotEqualToDifferentFilter ()
         {
-            var subjectA = FilterBuilder.Not
+            var subjectA = Filter.Not
             (
-                FilterBuilder.Level (Level.MinValue, Level.Info)
+                Filter.Level (Level.MinValue, Level.Info)
             );
-            var subjectB = FilterBuilder.Not
+            var subjectB = Filter.Not
             (
-                FilterBuilder.Level (Level.MinValue, Level.Error)
+                Filter.Level (Level.MinValue, Level.Error)
             );
 
             var actualEquals = Equals (subjectA, subjectB);

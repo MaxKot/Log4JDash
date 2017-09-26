@@ -20,8 +20,8 @@ namespace Log4JDash.Web.Domain
             }
 
             public override bool Apply (LogFileStats.EventGroupKey groupKey)
-                => FilterLevelBuilder.LevelComparer.Compare (min_, groupKey.Level) <= 0 &&
-                   FilterLevelBuilder.LevelComparer.Compare(groupKey.Level, max_) <= 0;
+                => FilterLevel.LevelComparer.Compare (min_, groupKey.Level) <= 0 &&
+                   FilterLevel.LevelComparer.Compare(groupKey.Level, max_) <= 0;
         }
 
         private sealed class Logger : EventGroupFilter
@@ -34,7 +34,7 @@ namespace Log4JDash.Web.Domain
             }
 
             public override bool Apply (LogFileStats.EventGroupKey groupKey)
-                => groupKey.Logger.StartsWith (logger_, FilterLoggerBuilder.LoggerComparison);
+                => groupKey.Logger.StartsWith (logger_, FilterLogger.LoggerComparison);
         }
 
         private sealed class Not : EventGroupFilter
@@ -93,9 +93,9 @@ namespace Log4JDash.Web.Domain
         }
 
         private sealed class DoConvert
-            : IFilterBuilderVisitor
+            : IFilterVisitor
         {
-            public static EventGroupFilter Apply (FilterBuilder filter)
+            public static EventGroupFilter Apply (Filter filter)
             {
                 EventGroupFilter result;
                 if (filter != null)
@@ -120,7 +120,7 @@ namespace Log4JDash.Web.Domain
 
             }
 
-            void IFilterBuilderVisitor.Visit (FilterAllBuilder filter)
+            void IFilterVisitor.Visit (FilterAll filter)
             {
                 var childrenFilters = filter.Children
                     .Select (Apply)
@@ -132,7 +132,7 @@ namespace Log4JDash.Web.Domain
                     : null;
             }
 
-            void IFilterBuilderVisitor.Visit (FilterAnyBuilder filter)
+            void IFilterVisitor.Visit (FilterAny filter)
             {
                 var childrenFilters = filter.Children
                     .Select (Apply)
@@ -144,7 +144,7 @@ namespace Log4JDash.Web.Domain
                     : null;
             }
 
-            void IFilterBuilderVisitor.Visit (FilterNotBuilder filter)
+            void IFilterVisitor.Visit (FilterNot filter)
             {
                 var childResult = Apply (filter.Child);
 
@@ -153,16 +153,16 @@ namespace Log4JDash.Web.Domain
                     : null;
             }
 
-            void IFilterBuilderVisitor.Visit (FilterLevelBuilder filter)
+            void IFilterVisitor.Visit (FilterLevel filter)
                 => lastResult_ = new Level (filter.Min, filter.Max);
 
-            void IFilterBuilderVisitor.Visit (FilterLoggerBuilder filter)
+            void IFilterVisitor.Visit (FilterLogger filter)
                 => lastResult_ = new Logger (filter.Logger);
 
-            void IFilterBuilderVisitor.Visit (FilterMessageBuilder filter)
+            void IFilterVisitor.Visit (FilterMessage filter)
                 => lastResult_ = null;
 
-            void IFilterBuilderVisitor.Visit (FilterTimestampBuilder filter)
+            void IFilterVisitor.Visit (FilterTimestamp filter)
                 => lastResult_ = null;
         }
 
@@ -173,7 +173,7 @@ namespace Log4JDash.Web.Domain
 
         public abstract bool Apply (LogFileStats.EventGroupKey groupKey);
 
-        public static EventGroupFilter Convert (FilterBuilder filter)
+        public static EventGroupFilter Convert (Filter filter)
             => DoConvert.Apply (filter) ?? MatchAll.Instance;
     }
 }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Log4JParserNet
 {
-    public sealed class FilterLevelBuilder
-        : FilterBuilder
-        , IEquatable<FilterLevelBuilder>
+    public sealed class FilterLevel
+        : Filter
+        , IEquatable<FilterLevel>
     {
         public sealed class LevelComparerImpl
             : IComparer<string>
@@ -54,16 +54,16 @@ namespace Log4JParserNet
 
         public string Max { get; }
 
-        public FilterLevelBuilder (string min, string max)
+        public FilterLevel (string min, string max)
         {
             Min = min;
             Max = max;
         }
 
         public override bool Equals (object obj)
-            => obj is FilterLevelBuilder other && Equals (other);
+            => obj is FilterLevel other && Equals (other);
 
-        public bool Equals (FilterLevelBuilder other)
+        public bool Equals (FilterLevel other)
             => other != null &&
                LevelComparer.Equals (Min, other.Min) &&
                LevelComparer.Equals (Max, other.Max);
@@ -76,13 +76,13 @@ namespace Log4JParserNet
             return hashCode;
         }
 
-        public override Filter Build ()
+        internal override HandleGraph<FilterHandle> Build ()
         {
             FilterHandle result = null;
             try
             {
                 Log4JParserC.Log4JFilterInitLevelC (out result, Min, Max);
-                return Filter.Simple (result);
+                return HandleGraph.Simple (result);
             }
             catch (Exception ex)
             {
@@ -91,7 +91,7 @@ namespace Log4JParserNet
             }
         }
 
-        public override void AcceptVisitor (IFilterBuilderVisitor visitor)
+        public override void AcceptVisitor (IFilterVisitor visitor)
             => (visitor ?? throw new ArgumentNullException (nameof (visitor))).Visit (this);
     }
 }

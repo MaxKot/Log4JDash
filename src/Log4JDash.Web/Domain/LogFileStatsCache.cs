@@ -9,11 +9,11 @@ namespace Log4JDash.Web.Domain
     internal sealed class LogFileStatsCache
     {
         private sealed class FindUnstatable
-            : IFilterBuilderVisitor
+            : IFilterVisitor
         {
-            public static FilterBuilder Apply (FilterBuilder filter)
+            public static Filter Apply (Filter filter)
             {
-                FilterBuilder result;
+                Filter result;
                 if (filter != null)
                 {
                     var finder = new FindUnstatable ();
@@ -29,14 +29,14 @@ namespace Log4JDash.Web.Domain
                 return result;
             }
 
-            private FilterBuilder lastResult_;
+            private Filter lastResult_;
 
             private FindUnstatable ()
             {
 
             }
 
-            void IFilterBuilderVisitor.Visit (FilterAllBuilder filter)
+            void IFilterVisitor.Visit (FilterAll filter)
             {
                 var childrenFilters = filter.Children
                     .Select (Apply)
@@ -44,11 +44,11 @@ namespace Log4JDash.Web.Domain
                     .ToList ();
 
                 lastResult_ = childrenFilters.Any ()
-                    ? FilterBuilder.All (childrenFilters)
+                    ? Filter.All (childrenFilters)
                     : null;
             }
 
-            void IFilterBuilderVisitor.Visit (FilterAnyBuilder filter)
+            void IFilterVisitor.Visit (FilterAny filter)
             {
                 var childrenFilters = filter.Children
                     .Select (Apply)
@@ -56,29 +56,29 @@ namespace Log4JDash.Web.Domain
                     .ToList ();
 
                 lastResult_ = childrenFilters.Any ()
-                    ? FilterBuilder.Any (childrenFilters)
+                    ? Filter.Any (childrenFilters)
                     : null;
             }
 
-            void IFilterBuilderVisitor.Visit (FilterNotBuilder filter)
+            void IFilterVisitor.Visit (FilterNot filter)
             {
                 var childResult = Apply (filter.Child);
 
                 lastResult_ = childResult != null
-                    ? FilterBuilder.Not (childResult)
+                    ? Filter.Not (childResult)
                     : null;
             }
 
-            void IFilterBuilderVisitor.Visit (FilterLevelBuilder filter)
+            void IFilterVisitor.Visit (FilterLevel filter)
                 => lastResult_ = null;
 
-            void IFilterBuilderVisitor.Visit (FilterLoggerBuilder filter)
+            void IFilterVisitor.Visit (FilterLogger filter)
                 => lastResult_ = null;
 
-            void IFilterBuilderVisitor.Visit (FilterMessageBuilder filter)
+            void IFilterVisitor.Visit (FilterMessage filter)
                 => lastResult_ = filter;
 
-            void IFilterBuilderVisitor.Visit (FilterTimestampBuilder filter)
+            void IFilterVisitor.Visit (FilterTimestamp filter)
                 => lastResult_ = null;
         }
 
@@ -96,16 +96,16 @@ namespace Log4JDash.Web.Domain
 
             private readonly long size_;
 
-            private readonly FilterBuilder unstatableFilter_;
+            private readonly Filter unstatableFilter_;
 
-            public Key (string fileName, long size, FilterBuilder filter)
+            public Key (string fileName, long size, Filter filter)
             {
                 fileName_ = fileName;
                 size_ = size;
                 unstatableFilter_ = FindUnstatable.Apply (filter);
             }
 
-            public Key (ILogFile logFile, FilterBuilder filter)
+            public Key (ILogFile logFile, Filter filter)
                 : this (logFile.FileName, logFile.Size, filter)
             {
 
@@ -150,7 +150,7 @@ namespace Log4JDash.Web.Domain
         private ConcurrentDictionary<Key, LogFileStats> impl_
             = new ConcurrentDictionary<Key, LogFileStats> (KeyComparer.Instance);
 
-        public LogFileStats GetStats (ILogFile logFile, FilterBuilder filter)
+        public LogFileStats GetStats (ILogFile logFile, Filter filter)
             => impl_.GetOrAdd (new Key (logFile, filter), _ => LogFileStats.GatherStats (logFile));
 
         public static LogFileStatsCache Default { get; } = new LogFileStatsCache ();

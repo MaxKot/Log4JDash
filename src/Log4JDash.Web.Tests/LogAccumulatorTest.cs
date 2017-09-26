@@ -396,7 +396,7 @@ namespace Log4JDash.Web.Tests
                     Quantity = expected.Count,
                     MinTimestamp = Timestamp.FromDateTime (minTime),
                     MaxTimestamp = Timestamp.FromDateTime (maxTime),
-                    Filter = FilterBuilder.Timestamp (minTime, maxTime)
+                    Filter = Filter.Timestamp (minTime, maxTime)
                 };
 
                 var subject = new LogAccumulator (statsProvider, query);
@@ -451,7 +451,7 @@ namespace Log4JDash.Web.Tests
                 {
                     Offset = sample1Matching.Count,
                     Quantity = expected.Count,
-                    Filter = FilterBuilder.Logger (logger)
+                    Filter = Filter.Logger (logger)
                 };
 
                 var subject = new LogAccumulator (statsProvider, query);

@@ -16,6 +16,6 @@ namespace Log4JDash.Web.Domain
 
         int Quantity { get; }
 
-        FilterBuilder CreateFilter ();
+        Filter CreateFilter ();
     }
 }

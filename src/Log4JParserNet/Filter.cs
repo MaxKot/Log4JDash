@@ -1,117 +1,86 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Log4JParserNet
 {
-    public abstract class Filter : IDisposable
+    public abstract class Filter
     {
-        private sealed class SimpleFilter : Filter
+        internal Filter ()
         {
-            public SimpleFilter (FilterHandle impl)
-                : base (impl)
-            {
 
-            }
-
-            protected override void DisposeChildren ()
-            {
-
-            }
         }
 
-        private sealed class CompositeFilter : Filter
-        {
-            private readonly AssociatedFiltersCollection children_;
+        internal abstract HandleGraph<FilterHandle> Build ();
 
-            public CompositeFilter (FilterHandle impl, AssociatedFiltersCollection children)
-                : base (impl)
+        public abstract void AcceptVisitor (IFilterVisitor visitor);
+
+        public static FilterAll All (params Filter[] filters)
+            => All ((IEnumerable<Filter>) filters);
+
+        public static FilterAll All (IEnumerable<Filter> filters)
+        {
+            var result = new FilterAll ();
+            result.AddRange (filters);
+
+            return result;
+        }
+
+        public static FilterAny Any (params Filter[] filters)
+            => Any ((IEnumerable<Filter>) filters);
+
+        public static FilterAny Any (IEnumerable<Filter> filters)
+        {
+            var result = new FilterAny ();
+            result.AddRange (filters);
+
+            return result;
+        }
+
+        public static FilterLevel Level (string min, string max)
+            => new FilterLevel (min, max);
+
+        public static FilterLogger Logger (string logger)
+            => new FilterLogger (logger);
+
+        public static FilterMessage Message (string message)
+            => new FilterMessage (message);
+
+        public static FilterNot Not (Filter child)
+            => new FilterNot (child);
+
+        public static FilterTimestamp Timestamp (Int64 min, Int64 max)
+            => new FilterTimestamp (min, max);
+
+        public static FilterTimestamp Timestamp (DateTime min, DateTime max)
+            => new FilterTimestamp (min, max);
+
+        internal static AssociatedHandlesCollection<HandleGraph<FilterHandle>> Build (IReadOnlyList<Filter> filters)
+        {
+            var result = new AssociatedHandlesCollection<HandleGraph<FilterHandle>> (filters.Count);
+
+            try
             {
-                if (children == null)
+                foreach (var filter in filters)
                 {
-                    throw new ArgumentNullException (nameof (children));
+                    var filterHandle = filter.Build ();
+                    result.Add (filterHandle);
                 }
 
-                children_ = children;
+                return result;
             }
-
-            protected override void DisposeChildren () => children_.Dispose ();
-        }
-
-        private sealed class CompositeOfTwoFilter : Filter
-        {
-            private readonly Filter child_;
-
-            public CompositeOfTwoFilter (FilterHandle impl, Filter child)
-                : base (impl)
+            catch (Exception initEx)
             {
-                if (child == null)
+                try
                 {
-                    throw new ArgumentNullException (nameof (child));
+                    result.Dispose ();
+                }
+                catch (Exception cleanupEx)
+                {
+                    throw new AggregateException (initEx, cleanupEx);
                 }
 
-                child_ = child;
-            }
-
-            protected override void DisposeChildren () => child_.Dispose ();
-        }
-
-        private readonly FilterHandle impl_;
-
-        internal FilterHandle Handle
-        {
-            get
-            {
-                GuardState ();
-                return impl_;
+                throw;
             }
         }
-
-        private Filter (FilterHandle impl)
-        {
-            if (impl == null)
-            {
-                throw new ArgumentNullException (nameof (impl));
-            }
-
-            impl_ = impl;
-        }
-
-        public bool Apply (Event @event)
-            => Log4JParserC.Log4JFilterApply (Handle, @event.Handle);
-
-        internal static Filter Simple (FilterHandle impl)
-            => new SimpleFilter (impl);
-
-        internal static Filter Composite (FilterHandle impl, AssociatedFiltersCollection children)
-            => new CompositeFilter (impl, children);
-
-        internal static Filter Composite (FilterHandle impl, Filter child)
-            => new CompositeOfTwoFilter (impl, child);
-
-        #region IDisposable Support
-
-        private bool disposedValue_ = false;
-
-        public void Dispose ()
-        {
-            if (!disposedValue_)
-            {
-                // TODO: Ensure no inconsistent state if impl_ is disposed and DisposeChildren fails.
-                impl_.Dispose ();
-                DisposeChildren ();
-                disposedValue_ = true;
-            }
-        }
-
-        protected abstract void DisposeChildren ();
-
-        private void GuardState ()
-        {
-            if (disposedValue_)
-            {
-                throw new ObjectDisposedException ("FilterBase");
-            }
-        }
-
-        #endregion
     }
 }

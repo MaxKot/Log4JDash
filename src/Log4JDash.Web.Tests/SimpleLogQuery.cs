@@ -18,8 +18,8 @@ namespace Log4JDash.Web.Tests
 
         public int Quantity { get; set; }
 
-        public FilterBuilder Filter { get; set; }
+        public Filter Filter { get; set; }
 
-        FilterBuilder ILogQuery.CreateFilter () => Filter;
+        Filter ILogQuery.CreateFilter () => Filter;
     }
 }

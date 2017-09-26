@@ -44,33 +44,30 @@ namespace Log4JParserDashNet
                     using (var eventSource = Log4JFile.Create (filename))
                     using (new TimeTrace ("process inner"))
                     {
-                        var filterAll = FilterBuilder.All
+                        var filterAll = Filter.All
                         (
-                            FilterBuilder.Timestamp (1411231371536L, 1411231371556L),
-                            FilterBuilder.Not (FilterBuilder.Level ("INFO", "ERROR")),
-                            FilterBuilder.Any
+                            Filter.Timestamp (1411231371536L, 1411231371556L),
+                            Filter.Not (Filter.Level ("INFO", "ERROR")),
+                            Filter.Any
                             (
-                                FilterBuilder.Message ("#2"),
-                                FilterBuilder.Message ("#3")
+                                Filter.Message ("#2"),
+                                Filter.Message ("#3")
                             ),
-                            FilterBuilder.Logger ("Root.ChildB")
+                            Filter.Logger ("Root.ChildB")
                         );
 
-                        using (var filter = filterAll.Build ())
+                        var matchingEvents = eventSource
+                            .GetEvents ()
+                            .Where (filterAll)
+                            .Take (20)
+                            .ToList ();
+
+                        foreach (var @event in matchingEvents)
                         {
-                            var matchingEvents = eventSource
-                                .GetEvents ()
-                                .Where (filter)
-                                .Take (20)
-                                .ToList ();
-
-                            foreach (var @event in matchingEvents)
-                            {
-                                PrintEvent (@event);
-                            }
-
-                            Console.WriteLine ("Found events: {0}", matchingEvents.Count);
+                            PrintEvent (@event);
                         }
+
+                        Console.WriteLine ("Found events: {0}", matchingEvents.Count);
                     }
                 }
 
