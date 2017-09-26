@@ -47,9 +47,9 @@ namespace Log4JParserNet
         public void Clear ()
             => children_.Clear ();
 
-        public override Filter Build ()
+        internal override HandleGraph<FilterHandle> Build ()
         {
-            AssociatedFiltersCollection children = null;
+            AssociatedHandlesCollection<HandleGraph<FilterHandle>> children = null;
             FilterHandle primaryFilter = null;
 
             // There can be a maximum of 3 exceptions if filter initialization fails:
@@ -60,7 +60,7 @@ namespace Log4JParserNet
 
             try
             {
-                children = AssociatedFiltersCollection.Build (children_.ToArray ());
+                children = Build (children_.ToArray ());
 
                 Log4JParserC.Log4JFilterInitAll (out primaryFilter);
                 foreach (var child in children)
@@ -68,7 +68,7 @@ namespace Log4JParserNet
                     Log4JParserC.Log4JFilterAllAdd (primaryFilter, child.Handle);
                 }
 
-                return Filter.Composite (primaryFilter, children);
+                return HandleGraph.Composite (primaryFilter, children);
             }
             catch (Exception initEx)
             {

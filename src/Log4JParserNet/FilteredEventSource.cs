@@ -13,16 +13,19 @@ namespace Log4JParserNet
         {
             private readonly EnumeratorBase inner_;
 
-            public Enumerator (EnumeratorBase inner, Filter filter)
-                : base (Init (inner.Handle, filter.Handle), inner.Owner)
+            private readonly HandleGraph<FilterHandle> filterHandle_;
+
+            public Enumerator (EnumeratorBase inner, HandleGraph<FilterHandle> filterHandle)
+                : base (Init (inner.Handle, filterHandle), inner.Owner)
             {
                 inner_ = inner;
+                filterHandle_ = filterHandle;
             }
 
-            private static IteratorHandle Init (IteratorHandle inner, FilterHandle filter)
+            private static IteratorHandle Init (IteratorHandle inner, HandleGraph<FilterHandle> filterHandle)
             {
                 IteratorHandle result;
-                Log4JParserC.Log4JIteratorInitFilter (out result, inner, filter);
+                Log4JParserC.Log4JIteratorInitFilter (out result, inner, filterHandle.Handle);
 
                 return result;
             }
@@ -31,7 +34,14 @@ namespace Log4JParserNet
             {
                 if (disposing)
                 {
-                    inner_.Dispose ();
+                    try
+                    {
+                        filterHandle_.Dispose ();
+                    }
+                    finally
+                    {
+                        inner_.Dispose ();
+                    }
                 }
                 base.Dispose (disposing);
             }
@@ -39,13 +49,13 @@ namespace Log4JParserNet
 
         private readonly IEventSource source_;
 
-        private readonly Filter filter_;
+        private readonly FilterBuilder filter_;
 
         bool IEventSource.IsInvalid => source_.IsInvalid;
 
         Encoding IEventSource.Encoding => source_.Encoding;
 
-        public FilteredEventSource (IEventSource source, Filter filter)
+        public FilteredEventSource (IEventSource source, FilterBuilder filter)
         {
             Debug.Assert (source != null, "FilteredEventSource.ctor: source is null.");
             Debug.Assert (filter != null, "FilteredEventSource.ctor: filter is null.");
@@ -56,7 +66,17 @@ namespace Log4JParserNet
 
         internal EnumeratorBase GetEnumerator ()
         {
-            return new Enumerator (source_.GetEnumerator (), filter_);
+            HandleGraph<FilterHandle> filterHandle = null;
+            try
+            {
+                filterHandle = filter_.Build ();
+                return new Enumerator (source_.GetEnumerator (), filterHandle);
+            }
+            catch
+            {
+                filterHandle?.Dispose ();
+                throw;
+            }
         }
 
         EnumeratorBase IEventSource.GetEnumerator ()
@@ -74,7 +94,7 @@ namespace Log4JParserNet
             return GetEnumerator ();
         }
 
-        public IEnumerableOfEvents Where (Filter filter)
+        public IEnumerableOfEvents Where (FilterBuilder filter)
         {
             return new FilteredEventSource (this, filter);
         }

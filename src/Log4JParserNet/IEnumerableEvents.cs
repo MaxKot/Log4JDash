@@ -4,6 +4,6 @@ namespace Log4JParserNet
 {
     public interface IEnumerableOfEvents : IEnumerable<Event>
     {
-        IEnumerableOfEvents Where (Filter filter);
+        IEnumerableOfEvents Where (FilterBuilder filter);
     }
 }

@@ -41,9 +41,9 @@ namespace Log4JDash.Web.Domain
                 return this;
             }
 
-            var filterBuilder = query_.CreateFilter ();
+            var filter = query_.CreateFilter ();
 
-            var stats = statsCache_.GetStats (logFile, filterBuilder);
+            var stats = statsCache_.GetStats (logFile, filter);
             var matchesTimeWindow = query_.MinTimestamp <= stats.LatestTimestamp &&
                                     stats.EarliestTimestamp <= query_.MaxTimestamp;
             if (!matchesTimeWindow)
@@ -57,21 +57,18 @@ namespace Log4JDash.Web.Domain
 
             if (matchingEvents > skipRemaining_)
             {
-                using (var filter = filterBuilder?.Build ())
-                {
-                    var fileEvents = logFile.GetEventsReverse ();
-                    var filteredFileEvents = filter != null
-                        ? fileEvents.Where (filter)
-                        : fileEvents;
+                var fileEvents = logFile.GetEventsReverse ();
+                var filteredFileEvents = filter != null
+                    ? fileEvents.Where (filter)
+                    : fileEvents;
 
-                    var selectedFileEvents = filteredFileEvents
-                        .Skip (skipRemaining_)
-                        .Take (query_.Quantity - events_.Count)
-                        .Select (x => new EventModel (x));
-                    events_.AddRange (selectedFileEvents);
+                var selectedFileEvents = filteredFileEvents
+                    .Skip (skipRemaining_)
+                    .Take (query_.Quantity - events_.Count)
+                    .Select (x => new EventModel (x));
+                events_.AddRange (selectedFileEvents);
 
-                    skipRemaining_ = 0;
-                }
+                skipRemaining_ = 0;
             }
             else
             {

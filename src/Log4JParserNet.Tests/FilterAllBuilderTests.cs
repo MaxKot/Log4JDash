@@ -43,11 +43,10 @@ namespace Log4JParserNet.Tests
 
             using (var sourceStream = new MemoryStream (sampleBytes))
             using (var source = Log4JFile.Create (sourceStream))
-            using (var filter = subject.Build ())
             {
                 source.Encoding = Encoding.GetEncoding (1251);
 
-                var actual = source.GetEvents ().Where (filter);
+                var actual = source.GetEvents ().Where (subject);
                 Assert.That (actual, Is.EqualTo (expected));
             }
         }

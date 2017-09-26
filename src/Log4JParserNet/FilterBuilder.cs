@@ -10,7 +10,7 @@ namespace Log4JParserNet
 
         }
 
-        public abstract Filter Build ();
+        internal abstract HandleGraph<FilterHandle> Build ();
 
         public abstract void AcceptVisitor (IFilterBuilderVisitor visitor);
 
@@ -53,5 +53,34 @@ namespace Log4JParserNet
 
         public static FilterTimestampBuilder Timestamp (DateTime min, DateTime max)
             => new FilterTimestampBuilder (min, max);
+
+        internal static AssociatedHandlesCollection<HandleGraph<FilterHandle>> Build (IReadOnlyList<FilterBuilder> filterBuilders)
+        {
+            var result = new AssociatedHandlesCollection<HandleGraph<FilterHandle>> (filterBuilders.Count);
+
+            try
+            {
+                foreach (var filterBuilder in filterBuilders)
+                {
+                    var filter = filterBuilder.Build ();
+                    result.Add (filter);
+                }
+
+                return result;
+            }
+            catch (Exception initEx)
+            {
+                try
+                {
+                    result.Dispose ();
+                }
+                catch (Exception cleanupEx)
+                {
+                    throw new AggregateException (initEx, cleanupEx);
+                }
+
+                throw;
+            }
+        }
     }
 }

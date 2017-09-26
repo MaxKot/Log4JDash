@@ -76,13 +76,13 @@ namespace Log4JParserNet
             return hashCode;
         }
 
-        public override Filter Build ()
+        internal override HandleGraph<FilterHandle> Build ()
         {
             FilterHandle result = null;
             try
             {
                 Log4JParserC.Log4JFilterInitLevelC (out result, Min, Max);
-                return Filter.Simple (result);
+                return HandleGraph.Simple (result);
             }
             catch (Exception ex)
             {

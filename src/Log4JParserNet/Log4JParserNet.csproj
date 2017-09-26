@@ -62,9 +62,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssociatedFiltersCollection.cs" />
+    <Compile Include="AssociatedHandlesCollection.cs" />
     <Compile Include="Disposable.cs" />
-    <Compile Include="Filter.cs" />
     <Compile Include="FilterAllBuilder.cs" />
     <Compile Include="FilterAnyBuilder.cs" />
     <Compile Include="FilterBuilder.cs" />
@@ -77,6 +76,7 @@
     <Compile Include="FilterMessageBuilder.cs" />
     <Compile Include="FilterNotBuilder.cs" />
     <Compile Include="FilterTimestampBuilder.cs" />
+    <Compile Include="HandleGraph.cs" />
     <Compile Include="IFilterBuilderVisitor.cs" />
     <Compile Include="Log4JEventProperty.cs" />
     <Compile Include="Log4JFile.cs" />

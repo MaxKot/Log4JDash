@@ -29,13 +29,13 @@ namespace Log4JParserNet
         public override int GetHashCode ()
             => -2065107890 + LoggerComparer.GetHashCode (Logger);
 
-        public override Filter Build ()
+        internal override HandleGraph<FilterHandle> Build ()
         {
             FilterHandle result = null;
             try
             {
                 Log4JParserC.Log4JFilterInitLoggerNt (out result, Logger);
-                return Filter.Simple (result);
+                return HandleGraph.Simple (result);
             }
             catch (Exception ex)
             {

@@ -56,21 +56,18 @@ namespace Log4JParserDashNet
                             FilterBuilder.Logger ("Root.ChildB")
                         );
 
-                        using (var filter = filterAll.Build ())
+                        var matchingEvents = eventSource
+                            .GetEvents ()
+                            .Where (filterAll)
+                            .Take (20)
+                            .ToList ();
+
+                        foreach (var @event in matchingEvents)
                         {
-                            var matchingEvents = eventSource
-                                .GetEvents ()
-                                .Where (filter)
-                                .Take (20)
-                                .ToList ();
-
-                            foreach (var @event in matchingEvents)
-                            {
-                                PrintEvent (@event);
-                            }
-
-                            Console.WriteLine ("Found events: {0}", matchingEvents.Count);
+                            PrintEvent (@event);
                         }
+
+                        Console.WriteLine ("Found events: {0}", matchingEvents.Count);
                     }
                 }
 
