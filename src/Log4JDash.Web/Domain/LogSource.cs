@@ -28,7 +28,7 @@ namespace Log4JDash.Web.Domain
             ? Path.Combine (HostingEnvironment.MapPath ("~"), config_.DirectoryPath)
             : config_.DirectoryPath;
 
-        private LogFileStatsCache statsCache_;
+        private readonly LogFileStatsCache statsCache_;
 
         public LogSource (ILogDirectoryConfig config, LogFileStatsCache statsCache)
         {

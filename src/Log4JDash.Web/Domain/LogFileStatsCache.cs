@@ -147,8 +147,8 @@ namespace Log4JDash.Web.Domain
                 = new KeyComparer ();
         }
 
-        private ConcurrentDictionary<Key, LogFileStats> impl_
-            = new ConcurrentDictionary<Key, LogFileStats> (KeyComparer.Instance);
+        private readonly ConcurrentDictionary<Key, LogFileStats> impl_
+             = new ConcurrentDictionary<Key, LogFileStats> (KeyComparer.Instance);
 
         public LogFileStats GetStats (ILogFile logFile, Filter filter)
             => impl_.GetOrAdd (new Key (logFile, filter), k => LogFileStats.GatherStats (logFile, k.UnstatableFilter));
