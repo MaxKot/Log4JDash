@@ -9,6 +9,10 @@ namespace Log4JDash.Web
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            var controllerActivator = new MyControllerActivator ();
+            var controllerFactory = new DefaultControllerFactory (controllerActivator);
+            ControllerBuilder.Current.SetControllerFactory (controllerFactory);
         }
     }
 }
