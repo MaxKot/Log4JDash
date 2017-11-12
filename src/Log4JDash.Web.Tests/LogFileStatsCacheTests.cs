@@ -1,4 +1,5 @@
-﻿using Log4JDash.Web.Domain;
+﻿using System.Threading;
+using Log4JDash.Web.Domain;
 using Log4JParserNet;
 using NUnit.Framework;
 
@@ -55,6 +56,40 @@ namespace Log4JDash.Web.Tests
                 Assert.That (actual.GroupStats[new LogFileStats.EventGroupKey ("DEBUG", "Root.ChildB.LoggerB2")], Is.EqualTo (2));
                 Assert.That (actual.EarliestTimestamp, Is.EqualTo (1500000002000L));
                 Assert.That (actual.LatestTimestamp, Is.EqualTo (1500000006000L));
+            }
+        }
+
+        [Test]
+        public void DoesNotRereadUsedFiles ()
+        {
+            using (var firstAccess = new StringLogFile ("sample", Sample))
+            using (var secondAccess = firstAccess.Clone ())
+            {
+                var subject = new LogFileStatsCache ();
+
+                subject.GetStats (firstAccess, null);
+                subject.GetStats (secondAccess, null);
+
+                Assert.That (secondAccess.WasRead, Is.False);
+            }
+        }
+
+        [Test]
+        public void HintAddsFilesToCache ()
+        {
+            using (var file = new StringLogFile ("sample", Sample))
+            {
+                var subject = new LogFileStatsCache ();
+
+                using (subject.StartPrecacheThread ())
+                {
+                    subject.Hint (file, null);
+                    Thread.Sleep (100);
+
+                    subject.GetStats (file, null);
+                }
+
+                Assert.That (file.WasRead, Is.False);
             }
         }
     }

@@ -7,9 +7,7 @@ using Log4JParserNet;
 
 namespace Log4JDash.Web.Tests
 {
-    internal sealed class StringLogFile
-        : ILogFile
-        , ICloneable
+    internal sealed class StringLogFile : ILogFile
     {
         private static readonly Encoding Encoding = Encoding.UTF8;
 

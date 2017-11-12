@@ -7,7 +7,7 @@ using Log4JParserNet;
 
 namespace Log4JDash.Web.Domain
 {
-    internal sealed class LogFile : IDisposable, ILogFile
+    internal sealed class LogFile : ILogFile
     {
         public string FileName => fileStream_.Name;
 
@@ -33,6 +33,18 @@ namespace Log4JDash.Web.Domain
             size_ = new Lazy<long> (() => fileStream_.Length);
             fileStream_ = File.Open (fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
+
+        public LogFile (LogFile other)
+            : this (other.FileName, other.maxSize_, other.encoding_)
+        {
+
+        }
+
+        public LogFile Clone ()
+            => new LogFile (this);
+
+        object ICloneable.Clone ()
+            => Clone ();
 
         private Log4JFile OpenLog4JFile ()
         {
