@@ -48,10 +48,10 @@ namespace Log4JDash.Web.Domain
             var logFiles = new LogFilesCollection (files, encoding, query.SourceSize);
             var size = query.SourceSize ?? logFiles.Sum (f => f.Size);
 
+            var accumulator = new LogAccumulator (statsCache_, query);
+            var hintMaker = new CacheHintMaker (statsCache_, query, accumulator);
             var events = logFiles
-                .Scan (new LogAccumulator (statsCache_, query), (a, f) => a.Consume (f))
-                .TakeWhile (a => !a.IsComplete)
-                .Last ()
+                .Aggregate (hintMaker, (a, f) => a.Consume (f))
                 .Events
                 .ToList ();
             events.Reverse ();

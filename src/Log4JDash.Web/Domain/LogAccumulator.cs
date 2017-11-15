@@ -2,9 +2,47 @@
 using System.Diagnostics;
 using System.Linq;
 using Log4JDash.Web.Models;
+using Log4JParserNet;
 
 namespace Log4JDash.Web.Domain
 {
+    internal sealed class CacheHintMaker
+    {
+        private readonly LogFileStatsCache statsCache_;
+
+        private readonly Filter filter_;
+
+        private LogAccumulator accumulator_;
+
+        public IReadOnlyList<EventModel> Events => accumulator_.Events;
+
+        public CacheHintMaker
+            (LogFileStatsCache statsCache, ILogQuery query, LogAccumulator accumulator)
+        {
+            Debug.Assert (statsCache != null, "PrecacheScheduler.ctor: statsCache is null.");
+            Debug.Assert (query != null, "PrecacheScheduler.ctor: query is null.");
+            Debug.Assert (accumulator != null, "PrecacheScheduler.ctor: accumulator is null.");
+
+            statsCache_ = statsCache;
+            filter_ = query.CreateFilter ();
+            accumulator_ = accumulator;
+        }
+
+        public CacheHintMaker Consume (ILogFile logFile)
+        {
+            if (accumulator_.IsComplete)
+            {
+                statsCache_.Hint (logFile, filter_);
+            }
+            else
+            {
+                accumulator_ = accumulator_.Consume (logFile);
+            }
+
+            return this;
+        }
+    }
+
     internal sealed class LogAccumulator
     {
         private readonly LogFileStatsCache statsCache_;

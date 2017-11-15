@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using Log4JDash.Web.Models;
 using Log4JDash.Web.Mvc;
@@ -10,9 +11,14 @@ namespace Log4JDash.Web.Controllers
     {
         private readonly LogRepository repository_;
 
-        public LogController ()
+        internal LogController (LogRepository repository)
         {
-            repository_ = new LogRepository ();
+            if (repository == null)
+            {
+                throw new ArgumentNullException (nameof (repository));
+            }
+
+            repository_ = repository;
         }
 
         // GET: Log

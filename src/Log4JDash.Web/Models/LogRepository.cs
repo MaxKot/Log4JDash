@@ -1,17 +1,22 @@
 ﻿using System.Collections.Generic;
-using Log4JDash.Web.Configuration;
+using System.Diagnostics;
 using Log4JDash.Web.Domain;
 
 namespace Log4JDash.Web.Models
 {
-    public sealed class LogRepository
+    internal sealed class LogRepository
     {
-        private readonly LogSourceProvider logSourceProvider_ = new LogSourceProvider (KnownSections.LogSourceProvider (), LogFileStatsCache.Default);
+        private readonly LogSourceProvider logSourceProvider_;
+
+        public LogRepository (LogSourceProvider logSourceProvider)
+        {
+            Debug.Assert (logSourceProvider != null, "LogRepository.ctor: logSourceProvider is null.");
+
+            logSourceProvider_ = logSourceProvider;
+        }
 
         public IEnumerable<string> GetSources ()
-        {
-            return logSourceProvider_.GetSources ();
-        }
+            => logSourceProvider_.GetSources ();
 
         public EventsCollection GetEvents (LogQuery query)
         {
