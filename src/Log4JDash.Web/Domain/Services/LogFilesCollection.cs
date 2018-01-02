@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace Log4JDash.Web.Domain
+namespace Log4JDash.Web.Domain.Services
 {
     internal sealed class LogFilesCollection
          : IEnumerable<LogFile>

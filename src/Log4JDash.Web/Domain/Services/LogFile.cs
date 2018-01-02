@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Log4JParserNet;
 
-namespace Log4JDash.Web.Domain
+namespace Log4JDash.Web.Domain.Services
 {
     internal sealed class LogFile : ILogFile
     {

@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Log4JDash.Web.Domain
+namespace Log4JDash.Web.Domain.Services
 {
     public class LogDirectoryElement
         : ConfigurationElement

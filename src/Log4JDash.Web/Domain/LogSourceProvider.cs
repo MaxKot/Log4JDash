@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Log4JDash.Web.Domain.Services;
 
 namespace Log4JDash.Web.Domain
 {

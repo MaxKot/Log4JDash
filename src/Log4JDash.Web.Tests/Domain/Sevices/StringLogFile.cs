@@ -3,9 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Log4JDash.Web.Domain;
+using Log4JDash.Web.Domain.Services;
 using Log4JParserNet;
 
-namespace Log4JDash.Web.Tests
+namespace Log4JDash.Web.Tests.Domain.Services
 {
     internal sealed class StringLogFile : ILogFile
     {

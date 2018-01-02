@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Log4JDash.Web.Configuration;
 using Log4JDash.Web.Domain;
+using Log4JDash.Web.Domain.Services;
 using Log4JDash.Web.Models;
 
 namespace Log4JDash.Web

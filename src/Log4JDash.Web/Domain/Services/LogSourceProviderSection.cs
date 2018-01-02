@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
 
-namespace Log4JDash.Web.Domain
+namespace Log4JDash.Web.Domain.Services
 {
     public class LogSourceProviderSection
         : ConfigurationSection

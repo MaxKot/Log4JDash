@@ -83,11 +83,11 @@
     <Compile Include="EventExpectation.cs" />
     <Compile Include="Formatter.cs" />
     <Compile Include="FormattersSetup.cs" />
-    <Compile Include="LogAccumulatorTest.cs" />
-    <Compile Include="LogFileStatsCacheTests.cs" />
+    <Compile Include="Domain\Sevices\LogAccumulatorTest.cs" />
+    <Compile Include="Domain\Sevices\LogFileStatsCacheTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleLogQuery.cs" />
-    <Compile Include="StringLogFile.cs" />
+    <Compile Include="Domain\Sevices\StringLogFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Log4JParserNet;
 
-namespace Log4JDash.Web.Domain
+namespace Log4JDash.Web.Domain.Services
 {
     internal sealed partial class LogFileStatsCache
     {

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Hosting;
+using Log4JDash.Web.Domain.Services;
 using Log4JDash.Web.Models;
 
 namespace Log4JDash.Web.Domain

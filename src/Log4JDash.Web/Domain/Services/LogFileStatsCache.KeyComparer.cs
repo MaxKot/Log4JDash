@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Log4JDash.Web.Domain
+namespace Log4JDash.Web.Domain.Services
 {
     internal sealed partial class LogFileStatsCache
     {

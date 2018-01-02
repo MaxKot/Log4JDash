@@ -1,9 +1,9 @@
 ﻿using System.Threading;
-using Log4JDash.Web.Domain;
+using Log4JDash.Web.Domain.Services;
 using Log4JParserNet;
 using NUnit.Framework;
 
-namespace Log4JDash.Web.Tests
+namespace Log4JDash.Web.Tests.Domain.Services
 {
     [TestFixture]
     public class LogFileStatsCacheTests
