@@ -11,12 +11,12 @@ namespace Log4JDash.Web.Models
         public string Id { get; set; }
 
         [HiddenInput (DisplayValue = false)]
-        public long? Size { get; set; }
+        public string Snapshot { get; set; }
 
-        public LogSourceModel (string id, long? size)
+        public LogSourceModel (string id, string snapshot)
         {
             Id = id;
-            Size = size;
+            Snapshot = snapshot;
         }
 
         public LogSourceModel (string id)
@@ -32,8 +32,6 @@ namespace Log4JDash.Web.Models
         }
 
         public override string ToString ()
-        {
-            return Converter.ConvertToString (this);
-        }
+            => Converter.ConvertToString (this);
     }
 }

@@ -17,11 +17,11 @@ namespace Log4JDash.Web.Models
 
         public string SourceId => Source.Value?.Id;
 
-        public long? SourceSize => Source.Value?.Size;
+        public string Snapshot => Source.Value?.Snapshot;
 
         private static readonly string DefaultMinLevel = LogLevelInput.DefaultLevels[0];
 
-        [DefaultValueSource ("DefaultMinLevel")]
+        [DefaultValueSource (nameof (DefaultMinLevel))]
         public LogLevelInput MinLevel { get; set; }
 
         private const string DefaultLogger = null;
@@ -40,7 +40,7 @@ namespace Log4JDash.Web.Models
 
         private static readonly DateTime DefaultMinTime = DateTime.MinValue;
 
-        [DefaultValueSource ("DefaultMinTime")]
+        [DefaultValueSource (nameof (DefaultMinTime))]
         [DisplayFormat (ApplyFormatInEditMode = true, DataFormatString = DateFormatSting)]
         public DateTime MinTime { get; set; }
 
@@ -48,11 +48,12 @@ namespace Log4JDash.Web.Models
 
         private static readonly DateTime DefaultMaxTime = DateTime.MaxValue;
 
-        [DefaultValueSource ("DefaultMaxTime")]
+        [DefaultValueSource (nameof (DefaultMaxTime))]
         [DisplayFormat (ApplyFormatInEditMode = true, DataFormatString = DateFormatSting)]
         public DateTime MaxTime { get; set; }
 
-        public Int64 MaxTimestamp => Timestamp.FromDateTime (MaxTime);
+        public Int64 MaxTimestamp
+            => Timestamp.FromDateTime (MaxTime);
 
         private const string DefaultMessage = null;
 
@@ -70,7 +71,8 @@ namespace Log4JDash.Web.Models
         [DefaultValue (DefaultQuantity)]
         public EventsQuantity Quantity { get; set; }
 
-        int ILogQuery.Quantity => Quantity;
+        int ILogQuery.Quantity
+            => Quantity;
 
         private const int DefaultOffset = 0;
 
@@ -95,7 +97,7 @@ namespace Log4JDash.Web.Models
         {
             if (other == null)
             {
-                throw new ArgumentNullException ("other");
+                throw new ArgumentNullException (nameof (other));
             }
 
             Source = other.Source != null
@@ -117,19 +119,13 @@ namespace Log4JDash.Web.Models
         }
 
         public LogQuery Clone ()
-        {
-            return new LogQuery (this);
-        }
+            => new LogQuery (this);
 
         object ICloneable.Clone ()
-        {
-            return Clone ();
-        }
+            => Clone ();
 
         public RouteValueDictionary GetRouteValues ()
-        {
-            return GetRouteValues (null);
-        }
+            => GetRouteValues (null);
 
         public RouteValueDictionary GetRouteValues (string memberName)
         {
@@ -140,52 +136,52 @@ namespace Log4JDash.Web.Models
 
             if (Source != null)
             {
-                foreach (var item in Source.GetRouteValues ("Source"))
+                foreach (var item in Source.GetRouteValues (nameof (Source)))
                 {
                     result.Add (prefix + item.Key, item.Value);
                 }
             }
             if (MinLevel != null && MinLevel.Value != DefaultMinLevel)
             {
-                foreach (var item in MinLevel.GetRouteValues ("MinLevel"))
+                foreach (var item in MinLevel.GetRouteValues (nameof (MinLevel)))
                 {
                     result.Add (prefix + item.Key, item.Value);
                 }
             }
             if (!String.IsNullOrWhiteSpace (Logger))
             {
-                result.Add (prefix + "Logger", Logger);
+                result.Add (prefix + nameof (Logger), Logger);
             }
             if (!String.IsNullOrWhiteSpace (Thread))
             {
-                result.Add (prefix + "Thread", Thread);
+                result.Add (prefix + nameof (Thread), Thread);
             }
             if (MinTime > DefaultMinTime)
             {
-                result.Add (prefix + "MinTime", MinTime.ToString (DateFormat));
+                result.Add (prefix + nameof (MinTime), MinTime.ToString (DateFormat));
             }
             if (MaxTime < DefaultMaxTime)
             {
-                result.Add (prefix + "MaxTime", MaxTime.ToString (DateFormat));
+                result.Add (prefix + nameof (MaxTime), MaxTime.ToString (DateFormat));
             }
             if (!String.IsNullOrWhiteSpace (Message))
             {
-                result.Add (prefix + "Message", Message);
+                result.Add (prefix + nameof (Message), Message);
             }
             if (!String.IsNullOrWhiteSpace (Throwable))
             {
-                result.Add (prefix + "Throwable", Throwable);
+                result.Add (prefix + nameof (Throwable), Throwable);
             }
             if (Quantity != null && Quantity.Value != DefaultQuantity)
             {
-                foreach (var item in Quantity.GetRouteValues ("Quantity"))
+                foreach (var item in Quantity.GetRouteValues (nameof (Quantity)))
                 {
                     result.Add (prefix + item.Key, item.Value);
                 }
             }
             if (Offset > DefaultOffset)
             {
-                result.Add (prefix + "Offset", Offset);
+                result.Add (prefix + nameof (Offset), Offset);
             }
 
             return result;

@@ -68,16 +68,17 @@ namespace Log4JDash.Web.Tests.Domain.Sevices
             var immutableSize = GetSize (immutableFilePath_);
             var mutableSize = GetSize (mutableFilePath_);
 
-            var totalSize = immutableSize + mutableSize;
-
             var files = new[]
             {
                 mutableFilePath_,
                 immutableFilePath_
             };
-            var subject = new LogFilesCollection (files, encoding, totalSize);
+            var initialCollection = new LogFilesCollection (files, encoding);
+            var initialCollectionSnapshot = initialCollection.GetSnapshot ();
 
             File.AppendAllText (mutableFilePath_, MutableContentPart2);
+
+            var subject = new LogFilesCollection (files, encoding, initialCollectionSnapshot);
 
             using (var enumerator = subject.GetEnumerator ())
             {

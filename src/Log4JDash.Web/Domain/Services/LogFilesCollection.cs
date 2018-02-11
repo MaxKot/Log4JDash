@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace Log4JDash.Web.Domain.Services
@@ -25,14 +26,16 @@ namespace Log4JDash.Web.Domain.Services
 
             private long? remainingSize_;
 
-            public Enumerator (IEnumerator<string> filesEnumerator, Encoding encoding, long? maxSize)
+            public Enumerator (IEnumerable<string> files, Encoding encoding, string snapshot)
             {
-                Debug.Assert (filesEnumerator != null, "LogFilesCollection.Enumerator.ctor: filesEnumerator is null.");
+                Debug.Assert (files != null, "LogFilesCollection.Enumerator.ctor: files is null.");
                 Debug.Assert (encoding != null, "LogFilesCollection.Enumerator.ctor: encoding is null.");
 
-                filesEnumerator_ = filesEnumerator;
+                filesEnumerator_ = files.GetEnumerator ();
                 encoding_ = encoding;
-                maxSize_ = maxSize;
+                maxSize_ = snapshot != null
+                    ? (long?) Int64.Parse (snapshot, System.Globalization.CultureInfo.InvariantCulture)
+                    : null;
                 remainingSize_ = maxSize_;
             }
 
@@ -104,22 +107,25 @@ namespace Log4JDash.Web.Domain.Services
 
         private readonly Encoding encoding_;
 
-        private readonly long? maxSize_;
+        private readonly string snapshot_;
 
-        public LogFilesCollection (IEnumerable<string> files, Encoding encoding, long? maxSize = null)
+        public LogFilesCollection (IEnumerable<string> files, Encoding encoding, string snapshot = null)
         {
             Debug.Assert (files != null, "LogFilesCollection.ctor: files is null.");
             Debug.Assert (encoding != null, "LogFilesCollection.ctor: encoding is null.");
 
             files_ = files;
             encoding_ = encoding;
-            maxSize_ = maxSize;
+            snapshot_ = snapshot;
         }
 
         public IEnumerator<LogFile> GetEnumerator ()
-            => new Enumerator (files_.GetEnumerator (), encoding_, maxSize_);
+            => new Enumerator (files_, encoding_, snapshot_);
 
         IEnumerator IEnumerable.GetEnumerator ()
             => GetEnumerator ();
+
+        public string GetSnapshot ()
+            => snapshot_ ?? Enumerable.Sum (this, f => f.Size).ToString (System.Globalization.CultureInfo.InvariantCulture);
     }
 }

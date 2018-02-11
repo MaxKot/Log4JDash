@@ -8,7 +8,7 @@ namespace Log4JDash.Web.Tests
     {
         public string SourceId { get; set; }
 
-        public long? SourceSize { get; set; }
+        public string Snapshot { get; set; }
 
         public long MinTimestamp { get; set; } = Int64.MinValue;
 

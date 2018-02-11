@@ -6,7 +6,7 @@ namespace Log4JDash.Web.Domain
     {
         string SourceId { get; }
 
-        long? SourceSize { get; }
+        string Snapshot { get; }
 
         long MinTimestamp { get; }
 
