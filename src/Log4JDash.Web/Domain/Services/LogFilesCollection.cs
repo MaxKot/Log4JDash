@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -10,13 +11,74 @@ namespace Log4JDash.Web.Domain.Services
     internal sealed class LogFilesCollection
          : IEnumerable<LogFile>
     {
+        private sealed class Snapshot
+        {
+            private static readonly IFormatProvider Format = CultureInfo.InvariantCulture;
+
+            private const char Separator = '/';
+
+            public int Count { get; }
+
+            public long FirstFileSize { get; }
+
+            private Snapshot (int count, long firstFileSize)
+            {
+                Debug.Assert (count >= 0, "LogFilesCollection.Snapshot.ctor: count is less than zero.");
+                Debug.Assert (firstFileSize >= 0, "LogFilesCollection.Snapshot.ctor: firstFileSize is less than zero.");
+
+                Count = count;
+                FirstFileSize = firstFileSize;
+            }
+
+            public override string ToString ()
+                => String.Format (Format, "{0}" + Separator + "{1}", Count, FirstFileSize);
+
+            public static Snapshot Parse (string s)
+            {
+                Debug.Assert (s != null, "LogFilesCollection.Snapshot.ctor: s is null.");
+
+                var separatorIndex = s.IndexOf (Separator);
+                Debug.Assert (separatorIndex >= 0, "LogFilesCollection.Snapshot.ctor: separatorIndex is less than zero.");
+
+                var countString = s.Remove (separatorIndex);
+                var count = Int32.Parse (countString, Format);
+
+                var firstFileSizeString = s.Substring (separatorIndex + 1);
+                var firstFileSize = Int64.Parse (firstFileSizeString, Format);
+
+                return new Snapshot (count, firstFileSize);
+            }
+
+            public static Snapshot Create (IReadOnlyList<string> files, Encoding encoding)
+            {
+                Debug.Assert (files != null, "LogFilesCollection.Snapshot.ctor: files is null.");
+                Debug.Assert (encoding != null, "LogFilesCollection.Snapshot.ctor: encoding is null.");
+
+                var count = files.Count;
+                long firstFileSize;
+                if (files.Any ())
+                {
+                    using (var firstFile = OpenFile (files.First (), encoding, null))
+                    {
+                        firstFileSize = firstFile.Size;
+                    }
+                }
+                else
+                {
+                    firstFileSize = 0;
+                }
+
+                return new Snapshot (count, firstFileSize);
+            }
+        }
+
         private sealed class Enumerator : IEnumerator<LogFile>
         {
             private readonly IEnumerator<string> filesEnumerator_;
 
             private readonly Encoding encoding_;
 
-            private readonly long? maxSize_;
+            private readonly Snapshot snapshot_;
 
             private LogFile current_;
 
@@ -24,19 +86,19 @@ namespace Log4JDash.Web.Domain.Services
 
             object IEnumerator.Current => Current;
 
-            private long? remainingSize_;
+            private int readFiles_;
 
-            public Enumerator (IEnumerable<string> files, Encoding encoding, string snapshot)
+            public Enumerator (IReadOnlyList<string> files, Encoding encoding, Snapshot snapshot)
             {
                 Debug.Assert (files != null, "LogFilesCollection.Enumerator.ctor: files is null.");
                 Debug.Assert (encoding != null, "LogFilesCollection.Enumerator.ctor: encoding is null.");
+                Debug.Assert (snapshot != null, "LogFilesCollection.Enumerator.ctor: snapshot is null.");
 
                 filesEnumerator_ = files.GetEnumerator ();
                 encoding_ = encoding;
-                maxSize_ = snapshot != null
-                    ? (long?) Int64.Parse (snapshot, System.Globalization.CultureInfo.InvariantCulture)
-                    : null;
-                remainingSize_ = maxSize_;
+                snapshot_ = snapshot;
+
+                readFiles_ = 0;
             }
 
             public void Dispose ()
@@ -73,24 +135,18 @@ namespace Log4JDash.Web.Domain.Services
                 current_?.Dispose ();
                 current_ = null;
 
-                if (remainingSize_ <= 0L || !filesEnumerator_.MoveNext ())
+                if (readFiles_ >= snapshot_.Count || !filesEnumerator_.MoveNext ())
                 {
                     return false;
                 }
 
-                var file = OpenFile (filesEnumerator_.Current, remainingSize_);
-                remainingSize_ -= file.Size;
+                var maxSize = readFiles_ <= 0
+                    ? (long?) snapshot_.FirstFileSize
+                    : null;
+                current_ = OpenFile (filesEnumerator_.Current, encoding_, maxSize);
+                ++readFiles_;
 
-                current_ = file;
                 return true;
-            }
-
-            private LogFile OpenFile (string fileName, long? maxSize)
-            {
-                Trace.WriteLine ($"Opening log4j file. File name: '{fileName}'.", "Log4JDash.Web.Domain.Log4JFilesCollection");
-                var file = new LogFile (fileName, maxSize, encoding_);
-
-                return file;
             }
 
             public void Reset ()
@@ -99,24 +155,29 @@ namespace Log4JDash.Web.Domain.Services
 
                 current_?.Dispose ();
                 current_ = null;
-                remainingSize_ = maxSize_;
+                readFiles_ = 0;
             }
         }
 
-        private readonly IEnumerable<string> files_;
+        private readonly IReadOnlyList<string> files_;
 
         private readonly Encoding encoding_;
 
-        private readonly string snapshot_;
+        private readonly Snapshot snapshot_;
 
         public LogFilesCollection (IEnumerable<string> files, Encoding encoding, string snapshot = null)
         {
             Debug.Assert (files != null, "LogFilesCollection.ctor: files is null.");
             Debug.Assert (encoding != null, "LogFilesCollection.ctor: encoding is null.");
 
-            files_ = files;
+            files_ = files is IReadOnlyList<string> filesList
+                ? filesList
+                : files.ToList ();
             encoding_ = encoding;
-            snapshot_ = snapshot;
+
+            snapshot_ = snapshot != null
+                ? Snapshot.Parse (snapshot)
+                : Snapshot.Create (files_, encoding_);
         }
 
         public IEnumerator<LogFile> GetEnumerator ()
@@ -126,6 +187,14 @@ namespace Log4JDash.Web.Domain.Services
             => GetEnumerator ();
 
         public string GetSnapshot ()
-            => snapshot_ ?? Enumerable.Sum (this, f => f.Size).ToString (System.Globalization.CultureInfo.InvariantCulture);
+            => snapshot_.ToString ();
+
+        private static LogFile OpenFile (string fileName, Encoding encoding, long? maxSize)
+        {
+            Trace.WriteLine ($"Opening log4j file. File name: '{fileName}'.", "Log4JDash.Web.Domain.Log4JFilesCollection");
+            var file = new LogFile (fileName, maxSize, encoding);
+
+            return file;
+        }
     }
 }

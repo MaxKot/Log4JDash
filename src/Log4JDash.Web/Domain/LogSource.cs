@@ -105,8 +105,7 @@ namespace Log4JDash.Web.Domain
                     .OrderByDescending (mf => GetDate (mf.Match))
                     .ThenBy (mf => GetRolloverAsc (mf.Match))
                     .ThenByDescending (mf => GetRolloverDesc (mf.Match))
-                    .Select (f => f.Filename)
-                    .ToList ();
+                    .Select (f => f.Filename);
             }
             else
             {
