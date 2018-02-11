@@ -19,6 +19,7 @@
     <ClCompile Include="Log4JFilter.c" />
     <ClCompile Include="Log4JIterator.c" />
     <ClCompile Include="LevelParser.c" />
+    <ClCompile Include="Log4JAllocator.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LevelParserLevels.py" />

@@ -9,6 +9,16 @@
 #define LOG4JPARSERC_API __declspec(dllimport)
 #endif
 
+// Allocator
+
+typedef void *(__cdecl Log4JAlloc) (size_t);
+
+typedef void __cdecl Log4JFree (void *);
+
+LOG4JPARSERC_API void Log4JSetAllocator (Log4JAlloc *alloc, Log4JFree *free);
+
+LOG4JPARSERC_API void Log4JSetDefaultAllocator ();
+
 // Event
 
 typedef void *Log4JEvent;
