@@ -86,7 +86,7 @@ namespace Log4JDash.Web.Domain.Services
 
             object IEnumerator.Current => Current;
 
-            private int readFiles_;
+            private long? nextFileMaxSize_;
 
             public Enumerator (IReadOnlyList<string> files, Encoding encoding, Snapshot snapshot)
             {
@@ -94,11 +94,11 @@ namespace Log4JDash.Web.Domain.Services
                 Debug.Assert (encoding != null, "LogFilesCollection.Enumerator.ctor: encoding is null.");
                 Debug.Assert (snapshot != null, "LogFilesCollection.Enumerator.ctor: snapshot is null.");
 
-                filesEnumerator_ = files.GetEnumerator ();
+                filesEnumerator_ = files.Skip (files.Count - snapshot.Count).GetEnumerator ();
                 encoding_ = encoding;
                 snapshot_ = snapshot;
 
-                readFiles_ = 0;
+                nextFileMaxSize_ = snapshot_.FirstFileSize;
             }
 
             public void Dispose ()
@@ -135,16 +135,13 @@ namespace Log4JDash.Web.Domain.Services
                 current_?.Dispose ();
                 current_ = null;
 
-                if (readFiles_ >= snapshot_.Count || !filesEnumerator_.MoveNext ())
+                if (!filesEnumerator_.MoveNext ())
                 {
                     return false;
                 }
 
-                var maxSize = readFiles_ <= 0
-                    ? (long?) snapshot_.FirstFileSize
-                    : null;
-                current_ = OpenFile (filesEnumerator_.Current, encoding_, maxSize);
-                ++readFiles_;
+                current_ = OpenFile (filesEnumerator_.Current, encoding_, nextFileMaxSize_);
+                nextFileMaxSize_ = null;
 
                 return true;
             }
@@ -155,7 +152,7 @@ namespace Log4JDash.Web.Domain.Services
 
                 current_?.Dispose ();
                 current_ = null;
-                readFiles_ = 0;
+                nextFileMaxSize_ = 0;
             }
         }
 

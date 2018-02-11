@@ -29,11 +29,14 @@ namespace Log4JDash.Web.Tests.Domain.Sevices
 
         private string mutableFilePath_;
 
+        private string newFilePath_;
+
         [SetUp]
         public void SetUp ()
         {
             immutableFilePath_ = Path.GetTempFileName ();
             mutableFilePath_ = Path.GetTempFileName ();
+            newFilePath_ = Path.GetTempFileName ();
         }
 
         [TearDown]
@@ -41,11 +44,18 @@ namespace Log4JDash.Web.Tests.Domain.Sevices
         {
             try
             {
-                File.Delete (mutableFilePath_);
+                File.Delete (newFilePath_);
             }
             finally
             {
-                File.Delete (immutableFilePath_);
+                try
+                {
+                    File.Delete (mutableFilePath_);
+                }
+                finally
+                {
+                    File.Delete (immutableFilePath_);
+                }
             }
         }
 
@@ -68,16 +78,23 @@ namespace Log4JDash.Web.Tests.Domain.Sevices
             var immutableSize = GetSize (immutableFilePath_);
             var mutableSize = GetSize (mutableFilePath_);
 
-            var files = new[]
+            var initialFiles = new[]
             {
                 mutableFilePath_,
                 immutableFilePath_
             };
-            var initialCollection = new LogFilesCollection (files, encoding);
+            var initialCollection = new LogFilesCollection (initialFiles, encoding);
             var initialCollectionSnapshot = initialCollection.GetSnapshot ();
 
             File.AppendAllText (mutableFilePath_, MutableContentPart2);
+            File.WriteAllText (newFilePath_, ImmutableContent);
 
+            var files = new[]
+            {
+                newFilePath_,
+                mutableFilePath_,
+                immutableFilePath_
+            };
             var subject = new LogFilesCollection (files, encoding, initialCollectionSnapshot);
 
             using (var enumerator = subject.GetEnumerator ())
