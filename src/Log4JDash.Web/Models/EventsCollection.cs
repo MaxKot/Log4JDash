@@ -8,13 +8,13 @@ namespace Log4JDash.Web.Models
 
         public string Source { get; }
 
-        public long SourceSize { get; }
+        public string Snapshot { get; }
 
-        public EventsCollection (IReadOnlyList<EventModel> events, string source, long sourceSize)
+        public EventsCollection (IReadOnlyList<EventModel> events, string source, string snapshot)
         {
             Events = events;
             Source = source;
-            SourceSize = sourceSize;
+            Snapshot = snapshot;
         }
     }
 }

@@ -80,6 +80,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Sevices\LogFilesCollectionTests.cs" />
     <Compile Include="EventExpectation.cs" />
     <Compile Include="Formatter.cs" />
     <Compile Include="FormattersSetup.cs" />

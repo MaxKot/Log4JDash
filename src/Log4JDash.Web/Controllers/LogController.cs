@@ -27,12 +27,12 @@ namespace Log4JDash.Web.Controllers
             var eventsCollection = repository_.GetEvents (formModel);
 
             var sourceId = eventsCollection.Source;
-            var sourceSize = eventsCollection.SourceSize;
-            var source = new LogSourceModel (sourceId, sourceSize);
+            var snapshot = eventsCollection.Snapshot;
+            var source = new LogSourceModel (sourceId, snapshot);
 
             var sources = repository_
                 .GetSources ()
-                .Select (id => new LogSourceModel (id, id == sourceId ? (long?) sourceSize : null))
+                .Select (id => new LogSourceModel (id, id == sourceId ? snapshot : null))
                 .ToList ();
 
             formModel.Source = new LogSourceInput (source, sources);

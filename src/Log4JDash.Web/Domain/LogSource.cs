@@ -46,8 +46,8 @@ namespace Log4JDash.Web.Domain
             var files = GetFiles (true);
             var encoding = config_.Encoding;
 
-            var logFiles = new LogFilesCollection (files, encoding, query.SourceSize);
-            var size = query.SourceSize ?? logFiles.Sum (f => f.Size);
+            var logFiles = new LogFilesCollection (files, encoding, query.Snapshot);
+            var size = logFiles.GetSnapshot ();
 
             var accumulator = new LogAccumulator (statsCache_, query);
             var hintMaker = new CacheHintMaker (statsCache_, query, accumulator);
@@ -105,8 +105,7 @@ namespace Log4JDash.Web.Domain
                     .OrderByDescending (mf => GetDate (mf.Match))
                     .ThenBy (mf => GetRolloverAsc (mf.Match))
                     .ThenByDescending (mf => GetRolloverDesc (mf.Match))
-                    .Select (f => f.Filename)
-                    .ToList ();
+                    .Select (f => f.Filename);
             }
             else
             {

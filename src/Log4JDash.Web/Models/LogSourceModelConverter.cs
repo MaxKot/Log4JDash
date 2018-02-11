@@ -28,21 +28,15 @@ namespace Log4JDash.Web.Models
                 return null;
             }
 
-            var s = value as string;
-            if (s != null)
+            if (value is string s)
             {
                 var separator = s.LastIndexOf ('*');
                 if (separator >= 0)
                 {
                     var id = s.Substring (0, separator);
+                    var snapshot = s.Substring (separator + 1);
 
-                    var sizeString = s.Substring (separator + 1);
-                    long sizeLong;
-                    var size = Int64.TryParse (sizeString, out sizeLong)
-                        ? (long?) sizeLong
-                        : null;
-
-                    return new LogSourceModel (id, size);
+                    return new LogSourceModel (id, snapshot);
                 }
                 else
                 {
@@ -64,7 +58,7 @@ namespace Log4JDash.Web.Models
             if (destinationType == typeof (string))
             {
                 var logSource = (LogSourceModel) value;
-                return String.Format ("{0}*{1}", logSource.Id, logSource.Size);
+                return String.Format ("{0}*{1}", logSource.Id, logSource.Snapshot);
             }
 
             return base.ConvertTo (context, culture, value, destinationType);
