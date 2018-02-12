@@ -172,7 +172,7 @@ namespace Log4JDash.Web.Domain.Services
                 : files.ToList ();
             encoding_ = encoding;
 
-            snapshot_ = snapshot != null
+            snapshot_ = !String.IsNullOrWhiteSpace (snapshot)
                 ? Snapshot.Parse (snapshot)
                 : Snapshot.Create (files_, encoding_);
         }

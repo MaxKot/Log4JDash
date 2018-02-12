@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using Log4JDash.Web.Domain.Services;
 using NUnit.Framework;
@@ -83,7 +84,7 @@ namespace Log4JDash.Web.Tests.Domain.Sevices
                 mutableFilePath_,
                 immutableFilePath_
             };
-            var initialCollection = new LogFilesCollection (initialFiles, encoding);
+            var initialCollection = new LogFilesCollection (initialFiles, encoding, String.Empty);
             var initialCollectionSnapshot = initialCollection.GetSnapshot ();
 
             File.AppendAllText (mutableFilePath_, MutableContentPart2);
