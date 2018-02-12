@@ -15,7 +15,7 @@ namespace Log4JDash.Web.Domain.Services
         {
             private static readonly IFormatProvider Format = CultureInfo.InvariantCulture;
 
-            private const char Separator = '/';
+            private const char Separator = '\\';
 
             public int Count { get; }
 
