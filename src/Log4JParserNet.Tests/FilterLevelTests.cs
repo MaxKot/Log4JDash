@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Text;
+using Log4JParserNet.Tests.NUnit;
 using NUnit.Framework;
 
 namespace Log4JParserNet.Tests
@@ -19,6 +20,7 @@ namespace Log4JParserNet.Tests
         private static readonly byte[] sampleBytes = Encoding.GetEncoding (1251).GetBytes (Sample);
 
         [Test]
+        [VerifyLog4JAllocator]
         public void FiltersEventsWithMinLevel ()
         {
             var expected = new[]
@@ -67,6 +69,7 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
+        [VerifyLog4JAllocator]
         public void FiltersEventsWithMaxLevel ()
         {
             var expected = new[]
@@ -115,6 +118,7 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
+        [VerifyLog4JAllocator]
         public void FiltersEventsWithLevelInterval ()
         {
             var expected = new[]
@@ -163,6 +167,7 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
+        [VerifyLog4JAllocator]
         public void FiltersEventsWithLevelExactValue ()
         {
             var expected = new[]

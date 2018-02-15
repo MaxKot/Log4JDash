@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using Log4JParserNet.Tests.NUnit;
 using NUnit.Framework;
 
 namespace Log4JParserNet.Tests
@@ -18,6 +19,7 @@ namespace Log4JParserNet.Tests
         private static readonly byte[] sample1Bytes = Encoding.GetEncoding (1251).GetBytes (Sample1);
 
         [Test]
+        [VerifyLog4JAllocator]
         public void EnumeratesEventsDirectly ()
         {
             var expected = new[]
@@ -124,6 +126,7 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
+        [VerifyLog4JAllocator]
         public void EnumeratesEventReversed ()
         {
             var expected = new[]
@@ -237,6 +240,7 @@ namespace Log4JParserNet.Tests
         private static readonly byte[] sampleIncompleteBytes = Encoding.GetEncoding (1251).GetBytes (SampleIncomplete);
 
         [Test]
+        [VerifyLog4JAllocator]
         public void CanReadIncompleteFile ()
         {
             var expected = new[]
@@ -289,6 +293,7 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
+        [VerifyLog4JAllocator]
         public void CanReadIncompleteFileInReverseOrder ()
         {
             var expected = new[]
@@ -349,6 +354,7 @@ namespace Log4JParserNet.Tests
         private static readonly byte[] sampleErrorInMiddleBytes = Encoding.GetEncoding (1251).GetBytes (SampleErrorInMiddle);
 
         [Test]
+        [VerifyLog4JAllocator]
         public void CanReadFileWithErrorInMiddle ()
         {
             var expected = new[]
@@ -401,6 +407,7 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
+        [VerifyLog4JAllocator]
         public void CanReadFileWithErrorInMiddleInReverseOrder ()
         {
             var expected = new[]
@@ -479,6 +486,7 @@ namespace Log4JParserNet.Tests
         private static readonly byte[] SampleProperties16Bytes = Encoding.GetEncoding (1251).GetBytes (SampleProperties16);
 
         [Test]
+        [VerifyLog4JAllocator]
         public void CanReadEventWithPropertiesCountEqualToPropertyBufferSize ()
         {
             var expected = new[]
@@ -553,6 +561,7 @@ namespace Log4JParserNet.Tests
         private static readonly byte[] SampleProperties17Bytes = Encoding.GetEncoding (1251).GetBytes (SampleProperties17);
 
         [Test]
+        [VerifyLog4JAllocator]
         public void CanReadEventWithPropertiesCountGreaterThanPropertyBufferSize ()
         {
             var expected = new[]
@@ -643,6 +652,7 @@ namespace Log4JParserNet.Tests
         private static readonly byte[] SampleProperties32Bytes = Encoding.GetEncoding (1251).GetBytes (SampleProperties32);
 
         [Test]
+        [VerifyLog4JAllocator]
         public void CanReadEventWithPropertiesCountMultiplierOfPropertyBufferSize ()
         {
             var expected = new[]
@@ -720,6 +730,7 @@ namespace Log4JParserNet.Tests
         private static readonly byte[] sampleCDataBytes = Encoding.GetEncoding (1251).GetBytes (SampleCData);
 
         [Test]
+        [VerifyLog4JAllocator]
         public void HandlesCDataNodes ()
         {
             var expected = new[]
@@ -768,6 +779,7 @@ namespace Log4JParserNet.Tests
         private static readonly byte[] sampleEscapedCDataBytes = Encoding.GetEncoding (1251).GetBytes (SampleEscapedCData);
 
         [Test]
+        [VerifyLog4JAllocator]
         public void HandlesEscapedCDataNodes ()
         {
             var expected = new[]
@@ -802,6 +814,7 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
+        [VerifyLog4JAllocator]
         public void CanOpenFilesConcurrentlyWithLogWriter ()
         {
             const string sample = Sample1;
@@ -940,6 +953,7 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
+        [VerifyLog4JAllocator]
         public void CanGetFileSizeLogWriter ()
         {
             const string sample = Sample1;
@@ -984,6 +998,7 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
+        [VerifyLog4JAllocator]
         public void HandlesExcessiveMaxLogSize ()
         {
             var maxSignedValue = checked((1UL << 8 * IntPtr.Size - 1) - 1);

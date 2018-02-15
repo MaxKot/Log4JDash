@@ -12,6 +12,18 @@ namespace Log4JParserNet
             DocumentErrors = 20
         }
 
+        [UnmanagedFunctionPointer (CallingConvention.Cdecl)]
+        public delegate IntPtr Alloc (UIntPtr size);
+
+        [UnmanagedFunctionPointer (CallingConvention.Cdecl)]
+        public delegate void Free (IntPtr ptr);
+
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static void Log4JSetAllocator (Alloc alloc, Free free);
+
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static void Log4JSetDefaultAllocator ();
+
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventLevel
             (EventHandle log4JEvent, out IntPtr value, out UIntPtr size);

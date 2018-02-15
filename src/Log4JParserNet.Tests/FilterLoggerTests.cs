@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using Log4JParserNet.Tests.NUnit;
 using NUnit.Framework;
 
 namespace Log4JParserNet.Tests
@@ -18,6 +19,7 @@ namespace Log4JParserNet.Tests
         private static readonly byte[] sampleBytes = Encoding.GetEncoding (1251).GetBytes (Sample);
 
         [Test]
+        [VerifyLog4JAllocator]
         public void FiltersEventsWithLoggerStartingWithPrefix ()
         {
             var expected = new[]
@@ -76,6 +78,7 @@ namespace Log4JParserNet.Tests
         }
 
         [Test]
+        [VerifyLog4JAllocator]
         public void FiltersEventsWithLoggerExactMatch ()
         {
             var expected = new[]
