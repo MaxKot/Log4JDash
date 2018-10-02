@@ -12,6 +12,18 @@ namespace Log4JParserNet
             DocumentErrors = 20
         }
 
+        [UnmanagedFunctionPointer (CallingConvention.Cdecl)]
+        public delegate IntPtr Alloc (UIntPtr size);
+
+        [UnmanagedFunctionPointer (CallingConvention.Cdecl)]
+        public delegate void Free (IntPtr ptr);
+
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static void Log4JSetAllocator (Alloc alloc, Free free);
+
+        [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
+        extern public static void Log4JSetDefaultAllocator ();
+
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JEventLevel
             (EventHandle log4JEvent, out IntPtr value, out UIntPtr size);
@@ -68,7 +80,7 @@ namespace Log4JParserNet
         extern public static bool Log4JFilterApply (FilterHandle self, EventHandle @event);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JFilterInitLevelC
+        extern public static Status Log4JFilterInitLevelC
             (
             out FilterHandle self,
             [MarshalAs (UnmanagedType.LPStr)]
@@ -78,39 +90,39 @@ namespace Log4JParserNet
             );
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JFilterInitLoggerNt
+        extern public static Status Log4JFilterInitLoggerNt
             (out FilterHandle self, [MarshalAs (UnmanagedType.LPStr)] string logger);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JFilterInitMessageNt
+        extern public static Status Log4JFilterInitMessageNt
             (out FilterHandle self, [MarshalAs (UnmanagedType.LPStr)] string message);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JFilterInitTimestamp
+        extern public static Status Log4JFilterInitTimestamp
             (out FilterHandle self, Int64 min, Int64 max);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JFilterInitAll (out FilterHandle self);
+        extern public static Status Log4JFilterInitAll (out FilterHandle self);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JFilterAllAdd (FilterHandle self, FilterHandle childFilter);
+        extern public static Status Log4JFilterAllAdd (FilterHandle self, FilterHandle childFilter);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JFilterAllRemove
             (FilterHandle self, FilterHandle childFilter);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JFilterInitAny (out FilterHandle self);
+        extern public static Status Log4JFilterInitAny (out FilterHandle self);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JFilterAnyAdd (FilterHandle self, FilterHandle childFilter);
+        extern public static Status Log4JFilterAnyAdd (FilterHandle self, FilterHandle childFilter);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static void Log4JFilterAnyRemove
             (FilterHandle self, FilterHandle childFilter);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static void Log4JFilterInitNot
+        extern public static Status Log4JFilterInitNot
             (out FilterHandle self, FilterHandle childFilter);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]

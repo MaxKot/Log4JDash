@@ -100,8 +100,10 @@
     <Compile Include="Formatter.cs" />
     <Compile Include="FormattersSetup.cs" />
     <Compile Include="Log4JFileTests.cs" />
+    <Compile Include="NUnit\Helpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimestampTests.cs" />
+    <Compile Include="NUnit\VerifyLog4JAllocatorAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Log4JParserNet\Log4JParserNet.csproj">

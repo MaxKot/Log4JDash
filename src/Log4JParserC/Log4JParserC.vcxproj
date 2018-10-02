@@ -165,6 +165,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="LevelParser.c" />
+    <ClCompile Include="Log4JAllocator.c" />
     <ClCompile Include="Log4JEvent.cpp" />
     <ClCompile Include="Log4JFilter.c" />
     <ClCompile Include="Log4JIterator.c" />

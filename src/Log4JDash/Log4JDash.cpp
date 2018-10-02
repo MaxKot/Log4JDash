@@ -116,9 +116,30 @@ void parse_xml (const char *filename) {
     TIME_TRACE_END (total);
 }
 
+static size_t last_alloc_id = 0;
+static std::map<void *, std::pair<size_t, size_t>> allocations;
+
+void *debug_alloc (size_t size)
+{
+    auto result = calloc (size, 1);
+    allocations[result] = std::make_pair (++last_alloc_id, size);
+
+    return result;
+}
+
+void debug_free (void *ptr)
+{
+    free (ptr);
+    allocations.erase (ptr);
+}
+
 int main (int argc, char **argv)
 {
     _CrtSetDbgFlag (_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+#if _DEBUG
+    Log4JSetAllocator (&debug_alloc, &debug_free);
+#endif
 
     //char buffer_in[10 * 1204];
 
@@ -128,6 +149,14 @@ int main (int argc, char **argv)
     const char filename[] = "test-log.cyr.xml";
 
     parse_xml (filename);
+
+    for each (auto a in allocations)
+    {
+        auto addr = a.first;
+        auto id = a.second.first;
+        auto size = a.second.second;
+        cout << "Unfreed memory: allocation #" << id << ", " << size << " bytes at " << addr << endl;
+    }
 
     return 0;
 }

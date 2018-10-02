@@ -17,6 +17,7 @@
 #include <iostream>
 #include <set>
 #include <limits>
+#include <map>
 
 #include <rapidxml\rapidxml.hpp>
 #include <rapidxml\rapidxml_iterators.hpp>

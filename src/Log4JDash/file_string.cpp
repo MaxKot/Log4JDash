@@ -19,6 +19,8 @@ file_string::file_string (const char * filename) {
             fread (_buffer, 1, length, f);
             _str = reinterpret_cast<char *> (_buffer);
             _str[length] = '\0';
+        } else {
+            _str = nullptr;
         }
 
         fclose (f);

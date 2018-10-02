@@ -9,6 +9,16 @@
 #define LOG4JPARSERC_API __declspec(dllimport)
 #endif
 
+// Allocator
+
+typedef void *(__cdecl Log4JAlloc) (size_t);
+
+typedef void __cdecl Log4JFree (void *);
+
+LOG4JPARSERC_API void Log4JSetAllocator (Log4JAlloc *alloc, Log4JFree *free);
+
+LOG4JPARSERC_API void Log4JSetDefaultAllocator ();
+
 // Event
 
 typedef void *Log4JEvent;
@@ -72,39 +82,39 @@ LOG4JPARSERC_API bool Log4JFilterApply (const Log4JFilter *self, const Log4JEven
 
 // Level filter
 
-LOG4JPARSERC_API void Log4JFilterInitLevelC (Log4JFilter **self, const char *min, const char *max);
+LOG4JPARSERC_API Log4JStatus Log4JFilterInitLevelC (Log4JFilter **self, const char *min, const char *max);
 
 // Logger filter
 
-LOG4JPARSERC_API void Log4JFilterInitLoggerFs (Log4JFilter **self, const char *logger, const size_t loggerSize);
-LOG4JPARSERC_API void Log4JFilterInitLoggerNt (Log4JFilter **self, const char *logger);
+LOG4JPARSERC_API Log4JStatus Log4JFilterInitLoggerFs (Log4JFilter **self, const char *logger, const size_t loggerSize);
+LOG4JPARSERC_API Log4JStatus Log4JFilterInitLoggerNt (Log4JFilter **self, const char *logger);
 
 // Message filter
 
-LOG4JPARSERC_API void Log4JFilterInitMessageFs (Log4JFilter **self, const char *message, const size_t messageSize);
-LOG4JPARSERC_API void Log4JFilterInitMessageNt (Log4JFilter **self, const char *message);
+LOG4JPARSERC_API Log4JStatus Log4JFilterInitMessageFs (Log4JFilter **self, const char *message, const size_t messageSize);
+LOG4JPARSERC_API Log4JStatus Log4JFilterInitMessageNt (Log4JFilter **self, const char *message);
 
 // Timestamp filter
 
-LOG4JPARSERC_API void Log4JFilterInitTimestamp (Log4JFilter **self, int64_t min, int64_t max);
+LOG4JPARSERC_API Log4JStatus Log4JFilterInitTimestamp (Log4JFilter **self, int64_t min, int64_t max);
 
 // All filter
 
-LOG4JPARSERC_API void Log4JFilterInitAll (Log4JFilter **self);
+LOG4JPARSERC_API Log4JStatus Log4JFilterInitAll (Log4JFilter **self);
 
-LOG4JPARSERC_API void Log4JFilterAllAdd (Log4JFilter *self, const Log4JFilter *childFilter);
+LOG4JPARSERC_API Log4JStatus Log4JFilterAllAdd (Log4JFilter *self, const Log4JFilter *childFilter);
 LOG4JPARSERC_API void Log4JFilterAllRemove (Log4JFilter *self, const Log4JFilter *childFilter);
 
 // Any filter
 
-LOG4JPARSERC_API void Log4JFilterInitAny (Log4JFilter **self);
+LOG4JPARSERC_API Log4JStatus Log4JFilterInitAny (Log4JFilter **self);
 
-LOG4JPARSERC_API void Log4JFilterAnyAdd (Log4JFilter *self, const Log4JFilter *childFilter);
+LOG4JPARSERC_API Log4JStatus Log4JFilterAnyAdd (Log4JFilter *self, const Log4JFilter *childFilter);
 LOG4JPARSERC_API void Log4JFilterAnyRemove (Log4JFilter *self, const Log4JFilter *childFilter);
 
 // Not filter
 
-LOG4JPARSERC_API void Log4JFilterInitNot (Log4JFilter **self, const Log4JFilter *childFilter);
+LOG4JPARSERC_API Log4JStatus Log4JFilterInitNot (Log4JFilter **self, const Log4JFilter *childFilter);
 
 // Iterators
 

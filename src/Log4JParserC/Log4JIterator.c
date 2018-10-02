@@ -76,7 +76,7 @@ LOG4JPARSERC_API void Log4JIteratorDestroy (Log4JIterator *self)
         .MoveNext = NULL,
         .Current = NULL
     };
-    free (self);
+    Free_ (self);
 }
 
 LOG4JPARSERC_API bool Log4JIteratorMoveNext (Log4JIterator *self)
@@ -110,7 +110,7 @@ typedef struct
 
 void Log4JIteratorInitEventSourceBase_ (Log4JIterator **self, const Log4JEventSource *source)
 {
-    Log4JIteratorEventSourceBaseContext_ *context = (Log4JIteratorEventSourceBaseContext_ *) malloc (sizeof (*context));
+    Log4JIteratorEventSourceBaseContext_ *context = (Log4JIteratorEventSourceBaseContext_ *) Alloc_ (sizeof (*context));
     *context = (Log4JIteratorEventSourceBaseContext_)
     {
         .Source = source,
@@ -118,7 +118,7 @@ void Log4JIteratorInitEventSourceBase_ (Log4JIterator **self, const Log4JEventSo
         .First = NULL
     };
 
-    Log4JIterator *result = (Log4JIterator *) malloc (sizeof *result);
+    Log4JIterator *result = (Log4JIterator *) Alloc_ (sizeof *result);
     *result = (Log4JIterator)
     {
         #ifdef _DEBUG
@@ -143,7 +143,7 @@ void Log4JIteratorEventSourceBaseDestroy_ (void *context)
         .Current = NULL,
         .First = NULL
     };
-    free (contextD);
+    Free_ (contextD);
 }
 
 const Log4JEvent Log4JIteratorEventSourceBaseCurrent_ (const void *context, size_t *id)
@@ -261,10 +261,10 @@ typedef struct
 
 LOG4JPARSERC_API void Log4JIteratorInitFilter (Log4JIterator **self, Log4JIterator *inner, const Log4JFilter *filter)
 {
-    Log4JIteratorFilterContext_ *context = (Log4JIteratorFilterContext_ *) malloc (sizeof *context);
+    Log4JIteratorFilterContext_ *context = (Log4JIteratorFilterContext_ *) Alloc_ (sizeof *context);
     *context = (Log4JIteratorFilterContext_) { .Inner = inner, .Filter = filter };
 
-    Log4JIterator *result = (Log4JIterator *) malloc (sizeof *result);
+    Log4JIterator *result = (Log4JIterator *) Alloc_ (sizeof *result);
     *result = (Log4JIterator)
     {
         #ifdef _DEBUG
@@ -284,7 +284,7 @@ void Log4JIteratorFilterDestroy_ (void *context)
     Log4JIteratorFilterContext_ *contextF = (Log4JIteratorFilterContext_ *) context;
 
     *contextF = (Log4JIteratorFilterContext_ ) { .Inner = NULL, .Filter = NULL };
-    free (contextF);
+    Free_ (contextF);
 }
 
 bool Log4JIteratorFilterMoveNext_ (void *context)
