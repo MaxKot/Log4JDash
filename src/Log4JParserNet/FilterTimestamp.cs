@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace Log4JParserNet
 {
@@ -40,7 +41,7 @@ namespace Log4JParserNet
             return hashCode;
         }
 
-        internal override HandleGraph<FilterHandle> Build ()
+        internal override HandleGraph<FilterHandle> Build (Encoding encoding)
         {
             FilterHandle result = null;
             try

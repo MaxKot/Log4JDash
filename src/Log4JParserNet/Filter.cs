@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Log4JParserNet
 {
@@ -10,7 +11,7 @@ namespace Log4JParserNet
 
         }
 
-        internal abstract HandleGraph<FilterHandle> Build ();
+        internal abstract HandleGraph<FilterHandle> Build (Encoding encoding);
 
         public abstract void AcceptVisitor (IFilterVisitor visitor);
 
@@ -54,7 +55,8 @@ namespace Log4JParserNet
         public static FilterTimestamp Timestamp (DateTime min, DateTime max)
             => new FilterTimestamp (min, max);
 
-        internal static AssociatedHandlesCollection<HandleGraph<FilterHandle>> Build (IReadOnlyList<Filter> filters)
+        internal static AssociatedHandlesCollection<HandleGraph<FilterHandle>> Build
+            (Encoding encoding, IReadOnlyList<Filter> filters)
         {
             var result = new AssociatedHandlesCollection<HandleGraph<FilterHandle>> (filters.Count);
 
@@ -62,7 +64,7 @@ namespace Log4JParserNet
             {
                 foreach (var filter in filters)
                 {
-                    var filterHandle = filter.Build ();
+                    var filterHandle = filter.Build (encoding);
                     result.Add (filterHandle);
                 }
 

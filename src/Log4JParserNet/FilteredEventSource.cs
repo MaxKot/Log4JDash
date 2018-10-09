@@ -53,7 +53,9 @@ namespace Log4JParserNet
 
         bool IEventSource.IsInvalid => source_.IsInvalid;
 
-        Encoding IEventSource.Encoding => source_.Encoding;
+        private Encoding Encoding => source_.Encoding;
+
+        Encoding IEventSource.Encoding => Encoding;
 
         public FilteredEventSource (IEventSource source, Filter filter)
         {
@@ -69,7 +71,7 @@ namespace Log4JParserNet
             HandleGraph<FilterHandle> filterHandle = null;
             try
             {
-                filterHandle = filter_.Build ();
+                filterHandle = filter_.Build (Encoding);
                 return new Enumerator (source_.GetEnumerator (), filterHandle);
             }
             catch

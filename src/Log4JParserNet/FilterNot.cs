@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Log4JParserNet
 {
@@ -28,7 +29,7 @@ namespace Log4JParserNet
         public override int GetHashCode ()
             => -1938063594 + Child.GetHashCode ();
 
-        internal override HandleGraph<FilterHandle> Build ()
+        internal override HandleGraph<FilterHandle> Build (Encoding encoding)
         {
             HandleGraph<FilterHandle> child = null;
             FilterHandle primaryFilter = null;
@@ -41,7 +42,7 @@ namespace Log4JParserNet
 
             try
             {
-                child = Child.Build ();
+                child = Child.Build (encoding);
 
                 Log4JParserC.Log4JFilterInitNot (out primaryFilter, child.Handle);
 

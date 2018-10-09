@@ -8,15 +8,23 @@ namespace Log4JParserNet.Tests
     [TestFixture]
     public class FilterLoggerTests
     {
-        private const string Sample = @"<?xml version=""1.0"" encoding=""windows-1251""?>
+        private const string SamplePreludeWin1251 = @"<?xml version=""1.0"" encoding=""windows-1251""?>";
+
+        private const string SamplePreludeUtf8 = @"<?xml version=""1.0"" encoding=""utf8""?>";
+
+        private const string Sample = @"
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353782"" level=""INFO"" thread=""Thread-1""><log4j:message>#1. Test event A.</log4j:message></log4j:event>
 <log4j:event logger=""Root.ChildB.LoggerB2"" timestamp=""1411231353792"" level=""DEBUG"" thread=""Thread-2""><log4j:message>#2. Test event B.</log4j:message></log4j:event>
 <log4j:event logger=""Root.ChildA.LoggerA2"" timestamp=""1411231353792"" level=""FATAL"" thread=""Thread-3""><log4j:message>#3. Test event C. С кирилицей.</log4j:message></log4j:event>
 <log4j:event logger=""Root.ChildA.LoggerA1"" timestamp=""1411231353793"" level=""WARN"" thread=""Thread-4""><log4j:message>#4. Test event E.</log4j:message></log4j:event>
 <log4j:event logger=""Root.ChildA.LoggerA1"" timestamp=""1411231353795"" level=""ERROR"" thread=""Thread-5""><log4j:message>#5. Test event F.</log4j:message></log4j:event>
+<log4j:event logger=""Root.ЛоггерК.ЛоггерК1"" timestamp=""1411231353796"" level=""WARN"" thread=""Thread-6""><log4j:message>#6. Test event G.</log4j:message></log4j:event>
+<log4j:event logger=""Root.ЛоггерК.ЛоггерК2"" timestamp=""1411231353797"" level=""ERROR"" thread=""Thread-7""><log4j:message>#7. Test event H.</log4j:message></log4j:event>
 ";
 
-        private static readonly byte[] sampleBytes = Encoding.GetEncoding (1251).GetBytes (Sample);
+        private static readonly byte[] sampleBytesWin1251 = Encoding.GetEncoding (1251).GetBytes (SamplePreludeWin1251 + Sample);
+
+        private static readonly byte[] sampleBytesUtf8 = Encoding.UTF8.GetBytes (SamplePreludeUtf8 + Sample);
 
         [Test]
         [VerifyLog4JAllocator]
@@ -68,10 +76,88 @@ namespace Log4JParserNet.Tests
 
             var subject = Filter.Logger ("Root.ChildA");
 
-            using (var sourceStream = new MemoryStream (sampleBytes))
+            using (var sourceStream = new MemoryStream (sampleBytesWin1251))
             using (var source = Log4JFile.Create (sourceStream))
             {
                 source.Encoding = Encoding.GetEncoding (1251);
+                var actual = source.GetEvents ().Where (subject);
+                Assert.That (actual, Is.EqualTo (expected));
+            }
+        }
+
+        [Test]
+        [VerifyLog4JAllocator]
+        public void FiltersEventsWithLoggerStartingWithNonAsciiPrefixInWindows1251 ()
+        {
+            var expected = new[]
+            {
+                new EventExpectation
+                {
+                    Level = Level.Warn,
+                    Logger = "Root.ЛоггерК.ЛоггерК1",
+                    Thread = "Thread-6",
+                    Timestamp = 1411231353796L,
+                    Message = "#6. Test event G.",
+                    Throwable = null,
+                    Id = 836
+                },
+                new EventExpectation
+                {
+                    Level = Level.Error,
+                    Logger = "Root.ЛоггерК.ЛоггерК2",
+                    Thread = "Thread-7",
+                    Timestamp = 1411231353797L,
+                    Message = "#7. Test event H.",
+                    Throwable = null,
+                    Id = 1001
+                }
+            };
+
+            var subject = Filter.Logger ("Root.ЛоггерК");
+
+            using (var sourceStream = new MemoryStream (sampleBytesWin1251))
+            using (var source = Log4JFile.Create (sourceStream))
+            {
+                source.Encoding = Encoding.GetEncoding (1251);
+                var actual = source.GetEvents ().Where (subject);
+                Assert.That (actual, Is.EqualTo (expected));
+            }
+        }
+
+        [Test]
+        [VerifyLog4JAllocator]
+        public void FiltersEventsWithLoggerStartingWithNonAsciiPrefixInUtf8 ()
+        {
+            var expected = new[]
+            {
+                new EventExpectation
+                {
+                    Level = Level.Warn,
+                    Logger = "Root.ЛоггерК.ЛоггерК1",
+                    Thread = "Thread-6",
+                    Timestamp = 1411231353796L,
+                    Message = "#6. Test event G.",
+                    Throwable = null,
+                    Id = 846
+                },
+                new EventExpectation
+                {
+                    Level = Level.Error,
+                    Logger = "Root.ЛоггерК.ЛоггерК2",
+                    Thread = "Thread-7",
+                    Timestamp = 1411231353797L,
+                    Message = "#7. Test event H.",
+                    Throwable = null,
+                    Id = 1025
+                }
+            };
+
+            var subject = Filter.Logger ("Root.ЛоггерК");
+
+            using (var sourceStream = new MemoryStream (sampleBytesUtf8))
+            using (var source = Log4JFile.Create (sourceStream))
+            {
+                source.Encoding = Encoding.UTF8;
                 var actual = source.GetEvents ().Where (subject);
                 Assert.That (actual, Is.EqualTo (expected));
             }
@@ -107,10 +193,68 @@ namespace Log4JParserNet.Tests
 
             var subject = Filter.Logger ("Root.ChildA.LoggerA1");
 
-            using (var sourceStream = new MemoryStream (sampleBytes))
+            using (var sourceStream = new MemoryStream (sampleBytesWin1251))
             using (var source = Log4JFile.Create (sourceStream))
             {
                 source.Encoding = Encoding.GetEncoding (1251);
+                var actual = source.GetEvents ().Where (subject);
+                Assert.That (actual, Is.EqualTo (expected));
+            }
+        }
+
+        [Test]
+        [VerifyLog4JAllocator]
+        public void FiltersEventsWithLoggerExactMatchWithNonAsciiCharactersInWindows1251 ()
+        {
+            var expected = new[]
+            {
+                new EventExpectation
+                {
+                    Level = Level.Warn,
+                    Logger = "Root.ЛоггерК.ЛоггерК1",
+                    Thread = "Thread-6",
+                    Timestamp = 1411231353796L,
+                    Message = "#6. Test event G.",
+                    Throwable = null,
+                    Id = 836
+                }
+            };
+
+            var subject = Filter.Logger ("Root.ЛоггерК.ЛоггерК1");
+
+            using (var sourceStream = new MemoryStream (sampleBytesWin1251))
+            using (var source = Log4JFile.Create (sourceStream))
+            {
+                source.Encoding = Encoding.GetEncoding (1251);
+                var actual = source.GetEvents ().Where (subject);
+                Assert.That (actual, Is.EqualTo (expected));
+            }
+        }
+
+        [Test]
+        [VerifyLog4JAllocator]
+        public void FiltersEventsWithLoggerExactMatchWithNonAsciiCharactersInUtf8 ()
+        {
+            var expected = new[]
+            {
+                new EventExpectation
+                {
+                    Level = Level.Warn,
+                    Logger = "Root.ЛоггерК.ЛоггерК1",
+                    Thread = "Thread-6",
+                    Timestamp = 1411231353796L,
+                    Message = "#6. Test event G.",
+                    Throwable = null,
+                    Id = 846
+                }
+            };
+
+            var subject = Filter.Logger ("Root.ЛоггерК.ЛоггерК1");
+
+            using (var sourceStream = new MemoryStream (sampleBytesUtf8))
+            using (var source = Log4JFile.Create (sourceStream))
+            {
+                source.Encoding = Encoding.UTF8;
                 var actual = source.GetEvents ().Where (subject);
                 Assert.That (actual, Is.EqualTo (expected));
             }

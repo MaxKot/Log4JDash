@@ -90,12 +90,12 @@ namespace Log4JParserNet
             );
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static Status Log4JFilterInitLoggerNt
-            (out FilterHandle self, [MarshalAs (UnmanagedType.LPStr)] string logger);
+        extern public static Status Log4JFilterInitLoggerFs
+            (out FilterHandle self, [MarshalAs (UnmanagedType.LPArray)] byte[] logger, UIntPtr loggerSize);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
-        extern public static Status Log4JFilterInitMessageNt
-            (out FilterHandle self, [MarshalAs (UnmanagedType.LPStr)] string message);
+        extern public static Status Log4JFilterInitMessageFs
+            (out FilterHandle self, [MarshalAs (UnmanagedType.LPArray)] byte[] message, UIntPtr messageSize);
 
         [DllImport ("Log4JParserC.dll", CallingConvention = CallingConvention.Cdecl)]
         extern public static Status Log4JFilterInitTimestamp

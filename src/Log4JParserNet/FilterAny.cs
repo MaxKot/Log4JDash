@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Log4JParserNet
 {
@@ -47,7 +48,7 @@ namespace Log4JParserNet
         public void Clear ()
             => children_.Clear ();
 
-        internal override HandleGraph<FilterHandle> Build ()
+        internal override HandleGraph<FilterHandle> Build (Encoding encoding)
         {
             AssociatedHandlesCollection<HandleGraph<FilterHandle>> children = null;
             FilterHandle primaryFilter = null;
@@ -60,7 +61,7 @@ namespace Log4JParserNet
 
             try
             {
-                children = Build (children_.ToArray ());
+                children = Build (encoding, children_.ToArray ());
 
                 Log4JParserC.Log4JFilterInitAny (out primaryFilter);
                 foreach (var child in children)

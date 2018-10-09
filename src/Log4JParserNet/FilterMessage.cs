@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Log4JParserNet
 {
@@ -29,12 +30,20 @@ namespace Log4JParserNet
         public override int GetHashCode ()
             => 2114237065 + MessageComparer.GetHashCode (Message);
 
-        internal override HandleGraph<FilterHandle> Build ()
+        internal override HandleGraph<FilterHandle> Build (Encoding encoding)
         {
+            if (encoding == null)
+            {
+                throw new ArgumentNullException (nameof (encoding));
+            }
+
+            var message = encoding.GetBytes (Message);
+            var messageSize = new UIntPtr ((uint) message.Length);
+
             FilterHandle result = null;
             try
             {
-                Log4JParserC.Log4JFilterInitMessageNt (out result, Message);
+                Log4JParserC.Log4JFilterInitMessageFs (out result, message, messageSize);
                 return HandleGraph.Simple (result);
             }
             catch (Exception ex)
