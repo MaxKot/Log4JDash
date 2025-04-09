@@ -75,7 +75,7 @@ namespace Log4JParserNet.Tests.NUnit
 
             private const string AllocationsKey = "VerifyLog4JAllocatorCommand.Allocations";
 
-            private static ConcurrentDictionary<IntPtr, Allocation> GetAllocations (IPropertyBag testProperties)
+            private static ConcurrentDictionary<IntPtr, Allocation> GetAllocations (TestContext.PropertyBagAdapter testProperties)
                 => testProperties[AllocationsKey]
                     .OfType<ConcurrentDictionary<IntPtr, Allocation>> ()
                     ?.LastOrDefault ();
