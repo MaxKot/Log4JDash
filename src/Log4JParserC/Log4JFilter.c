@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "Log4JParserC.h"
+#include "Private.h"
 
 typedef bool Log4JFilterApplyCb_ (void *context, const Log4JEvent event);
 
