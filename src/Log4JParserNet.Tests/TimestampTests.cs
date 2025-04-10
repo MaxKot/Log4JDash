@@ -40,7 +40,7 @@ namespace Log4JParserNet.Tests
             var logXmlBuilder = new StringBuilder ();
             using (var writer = new StringWriter (logXmlBuilder))
             {
-                var layout = new XmlLayoutSchemaLog4j ();
+                var layout = new XmlLayoutSchemaLog4J ();
                 var appender = new TextWriterAppender
                 {
                     ImmediateFlush = true,
