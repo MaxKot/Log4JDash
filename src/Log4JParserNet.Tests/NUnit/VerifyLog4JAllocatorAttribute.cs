@@ -117,8 +117,7 @@ namespace Log4JParserNet.Tests.NUnit
                         var size = allocation.Size;
                         var stackTace = allocation.StackTace;
 
-                        const string format = "Memory allocation #{0} leaked: {1} bytes at {2}. Allocation stack trace:\r\n---\r\n{3}...";
-                        Assert.Fail (format, id, size, address, stackTace);
+                        Assert.Fail ($"Memory allocation #{id} leaked: {size} bytes at {address}. Allocation stack trace:\r\n---\r\n{stackTace}...");
                     }
                 });
             }
