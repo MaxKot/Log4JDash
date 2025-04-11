@@ -1,6 +1,29 @@
 @setlocal
 @echo off
 for %%f in (
+    "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
+    "%ProgramFiles%\Microsoft Visual Studio\Installer\vswhere.exe"
+) do (
+    if exist "%%f" (
+        set "VsWhere=%%f"
+        goto :vswherefound
+    )
+)
+
+goto :novswhere
+
+:vswherefound
+for /F "tokens=* USEBACKQ" %%f in (`%VsWhere% -property installationPath`) do (
+    set "VsInstallationPath=%%f"
+)
+
+if exist "%VsInstallationPath%\Common7\Tools\VsMSBuildCmd.bat" (
+    set VsMSBuildCmd="%VsInstallationPath%\Common7\Tools\VsMSBuildCmd.bat"
+    goto :found
+)
+
+:novswhere
+for %%f in (
     "%VS170COMNTOOLS%VsMSBuildCmd.bat"
     "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsMSBuildCmd.bat"
     "%ProgramFiles%\Microsoft Visual Studio\2022\Professional\Common7\Tools\VsMSBuildCmd.bat"
