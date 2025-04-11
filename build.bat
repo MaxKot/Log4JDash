@@ -1,6 +1,20 @@
 @setlocal
 @echo off
 for %%f in (
+    "%VS170COMNTOOLS%VsMSBuildCmd.bat"
+    "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles%\Microsoft Visual Studio\2022\Professional\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles%\Microsoft Visual Studio\2022\Community\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles(x86)%\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles(x86)%\Microsoft Visual Studio\2022\Professional\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles(x86)%\Microsoft Visual Studio\2022\Community\Common7\Tools\VsMSBuildCmd.bat"
+    "%VS160COMNTOOLS%VsMSBuildCmd.bat"
+    "%ProgramFiles%\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles%\Microsoft Visual Studio\2019\Professional\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles%\Microsoft Visual Studio\2019\Community\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\Common7\Tools\VsMSBuildCmd.bat"
+    "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Community\Common7\Tools\VsMSBuildCmd.bat"
     "%VS150COMNTOOLS%VsMSBuildCmd.bat"
     "%ProgramFiles%\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsMSBuildCmd.bat"
     "%ProgramFiles%\Microsoft Visual Studio\2017\Professional\Common7\Tools\VsMSBuildCmd.bat"
