@@ -52,6 +52,17 @@
   </PropertyGroup>
 
   <!--
+    Set aspnet_compiler.exe directory to ensure compiler platform matches application target.
+  -->
+  <PropertyGroup>
+    <_ProbeAspnetCompilerPath Condition="'$(AspnetCompilerPath)' == '' and  '$(ManagedPlatform)' == 'x86'">$(windir)\Microsoft.NET\Framework\v4.0.30319\</_ProbeAspnetCompilerPath>
+    <_ProbeAspnetCompilerPath Condition="'$(AspnetCompilerPath)' == '' and  '$(ManagedPlatform)' == 'x64'">$(windir)\Microsoft.NET\Framework64\v4.0.30319\</_ProbeAspnetCompilerPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AspnetCompilerPath Condition="'$(AspnetCompilerPath)' == '' and '$(_ProbeAspnetCompilerPath)' != '' and exists('$(_ProbeAspnetCompilerPath)')">$(_ProbeAspnetCompilerPath)</AspnetCompilerPath>
+  </PropertyGroup>
+
+  <!--
     Build targets
   -->
 
@@ -163,7 +174,8 @@
                     Clean="True"
                     Force="True"
                     Debug="False"
-                    Updateable="False" />
+                    Updateable="False"
+                    ToolPath="$(AspnetCompilerPath)" />
     <Exec Command='"$(AspNetMerge)" "%(DashWebProject.PrecompiledOutputDir)" -o %(DashWebProject.PrecompiledAssembly) -r' />
     <ItemGroup>
       <_DashWebFile Include="%(DashWebProject.PrecompiledOutputDir)\**\*">
