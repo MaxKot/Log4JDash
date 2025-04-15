@@ -54,6 +54,7 @@
   <!--
     Set aspnet_compiler.exe directory to ensure compiler platform matches application target.
   -->
+
   <PropertyGroup>
     <_ProbeAspnetCompilerPath Condition="'$(AspnetCompilerPath)' == '' and  '$(ManagedPlatform)' == 'x86'">$(windir)\Microsoft.NET\Framework\v4.0.30319\</_ProbeAspnetCompilerPath>
     <_ProbeAspnetCompilerPath Condition="'$(AspnetCompilerPath)' == '' and  '$(ManagedPlatform)' == 'x64'">$(windir)\Microsoft.NET\Framework64\v4.0.30319\</_ProbeAspnetCompilerPath>
