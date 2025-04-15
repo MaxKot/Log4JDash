@@ -9,7 +9,7 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">Win32</Platform>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
 
     <RootPath>$(MSBuildProjectDirectory)\..\</RootPath>
 
